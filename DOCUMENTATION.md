@@ -81,3 +81,49 @@ Bulo.Cloud Sentinel is an enterprise-grade video surveillance and situational aw
 
 ---
 _All naming, logs, UI labels, and code structures use “Bulo.Cloud Sentinel” branding._
+
+## 📝 User Guides & Tutorials
+
+### Mission Planner
+- How to create, edit, and manage missions
+- Importing and exporting KML/KMZ mission files
+- Using the 2D map and 3D mission preview
+- Real-time mission control and manual overrides
+
+### Drone Command Hub
+- Sending commands and monitoring telemetry
+- Switching between manual and automated flight modes
+
+### AI Integrations
+- Using AI tools for alert summarization and analysis
+- Configuring API keys and audit logging
+
+## 📦 Deployment Manifests
+
+- Dockerfiles for all services are in their respective directories
+- `docker-compose.yml` includes all core and AI microservices
+- Kubernetes manifests (to be added) will support scalable deployments
+
+---
+
+## 📝 User Guides & Tutorials
+
+### Mission Planner
+- How to create, edit, and manage missions
+- Importing and exporting KML/KMZ mission files
+- Using the 2D map and 3D mission preview
+- Real-time mission control and manual overrides
+
+### Drone Command Hub
+- Sending commands and monitoring telemetry
+- Switching between manual and automated flight modes
+
+### AI Integrations
+- Using AI tools for alert summarization and analysis
+- Configuring API keys and audit logging
+
+## 📦 Deployment Manifests
+
+- Dockerfiles for all services are in their respective directories
+- `docker-compose.yml` includes all core and AI microservices
+- Kubernetes manifests (to be added) will support scalable deployments
