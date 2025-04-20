@@ -4,6 +4,7 @@ from typing import Optional, Dict, Any
 import os
 import httpx
 import asyncio
+from fastapi import FastAPI, UploadFile, File, HTTPException, Depends, Response
 from backend.api.dependencies import get_current_user
 from bulo_sentinel_ai.audit_log import log_audit_entry
 from bulo_sentinel_ai.monitoring import router as monitoring_router
