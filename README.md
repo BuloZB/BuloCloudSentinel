@@ -1,64 +1,75 @@
-# Bulo.Cloud Sentinel 👁️‍🗨️
+# Bulo.Cloud Sentinel
 
-[![CI](https://github.com/BuloZB/BuloCloudSentinel/actions/workflows/ci.yml/badge.svg)](https://github.com/BuloZB/BuloCloudSentinel/actions/workflows/ci.yml)
-[![Docker](https://img.shields.io/docker/cloud/build/bulozbd/bulo-cloud-sentinel)](https://hub.docker.com/r/bulozbd/bulo-cloud-sentinel)
-[![License](https://img.shields.io/github/license/BuloZB/BuloCloudSentinel)]()
+Bulo.Cloud Sentinel is a comprehensive, modular, and scalable surveillance and situational awareness platform designed for modern security operations. It integrates real-time video streaming, AI-powered analytics, drone command and telemetry, and advanced mission planning into a unified system.
 
-**Modular | Containerized | Secure | Scalable**
+## Key Features
 
-## 🚀 Quick Start
+- 🎥 **Incident Timeline & Smart Playback**  
+  FastAPI backend and React frontend providing event timelines with AI-generated labels, thumbnails, and synchronized video playback.
 
-1. Create `.env` from `.env.example` and fill secrets.
-2. Run `docker-compose up -d`.
-3. Access services:
-   - Backend API: `http://localhost:8000`
-   - AI Integrations: `http://localhost:8002`
-   - Frontend: `http://localhost:3000`
-   - RTMP server stats: `http://localhost:8080/stat`
-   - Prometheus metrics: `http://localhost:8002/monitoring/metrics`
+- 🚁 **Drone Command & Telemetry Hub**  
+  Real-time MAVLink telemetry ingestion and command dispatch with map-based UI and JWT-secured APIs.
 
-## 📖 Modules & Features
+- 🤖 **AI Model Management & Training Panel**  
+  Upload, activate, and manage custom AI models (YOLOv8, TensorFlow) with MinIO storage and scheduled training.
 
-### 🎥 Incident Timeline & Smart Playback
-- FastAPI events API
-- React/Tailwind UI with thumbnails & filters
-- Synchronized video clip highlights
+- 📋 **Device Inventory & Health Status**  
+  Centralized registry for cameras, sensors, and drones with health monitoring and alerting via Novu.
 
-### 🚁 Drone Command & Telemetry Hub
-- MAVLink telemetry & command endpoints
-- Map view, live telemetry, JWT security
+- 🔒 **Access Audit Log & Session Inspector**  
+  Comprehensive audit logging of user actions with export capabilities and RBAC security.
 
-### 🤖 AI Model Management & Training Panel
-- Upload, activate, rollback custom YOLO/TensorFlow models
-- MinIO storage & training scheduler
+- 🧠 **AI Integrations Microservice**  
+  Modular FastAPI service integrating multiple AI providers (ChatGPT, Claude, Gemini, DALL·E, Whisper) with audit logging and Prometheus metrics.
 
-### 📋 Device Inventory & Health Status
-- Registry for cameras, sensors, drones
-- Health checks & alerts via Novu
+- 🚀 **Advanced Drone Mission Planning**  
+  Web-based mission planner with 2D/3D visualization, real-time telemetry integration, hybrid flight modes, and WebSocket-based control.
 
-### 🔒 Access Audit Log & Session Inspector
-- Full audit of user actions
-- Export to CSV/JSON, OpenSearch analytics
+## Technology Stack
 
-### 🧠 AI Integrations
-- FastAPI microservice with adapters:
-  - ChatGPT, Claude, Gemini, DALL·E, Whisper
-- Endpoints: `/ai/chat`, `/ai/vision/analyze`, `/ai/audio/transcribe`, `/ai/status`
-- Persistent audit logging & Prometheus metrics
-- React AI Tools panel
+- ⚛️ **Frontend:** React, Tailwind CSS, React-Leaflet, React-Three-Fiber  
+- 🐍 **Backend:** FastAPI (Python), SQLAlchemy, PostgreSQL  
+- 🔐 **Authentication:** Keycloak (OAuth2, RBAC)  
+- 🐳 **Containerization:** Docker, Kubernetes  
+- 📡 **Messaging:** MQTT, WebSockets  
+- 📊 **Monitoring:** Prometheus, Grafana  
+- 💾 **Storage:** MinIO, PostgreSQL
 
-## 📦 Deployment
+## Getting Started
 
-```bash
-git clone https://github.com/BuloZB/BuloCloudSentinel.git
-cd BuloCloudSentinel
-docker-compose up -d
-```
+1. Clone the repository:  
+   ```bash
+   git clone https://github.com/BuloZB/BuloCloudSentinel.git
+   cd BuloCloudSentinel
+   ```
 
-## 📄 Documentation & Wiki
+2. Create a `.env` file based on `.env.example` and fill in all required secrets and API keys.
 
-- Full docs: see [`docs/wiki/Home.md`](docs/wiki/Home.md)
-- Architecture diagram and module details in the wiki.
+3. Build and start all services using Docker Compose:  
+   ```bash
+   docker-compose up -d
+   ```
+
+4. Access the services:  
+   - Backend API: `http://localhost:8000`  
+   - AI Integrations: `http://localhost:8002`  
+   - Frontend UI: `http://localhost:3000`  
+   - RTMP Server Stats: `http://localhost:8080/stat`  
+   - Prometheus Metrics: `http://localhost:8002/monitoring/metrics`
+
+## Documentation & Support
+
+- 📚 API documentation available at `/docs` for each FastAPI service.  
+- 🏗️ Detailed architecture and usage guides in the [GitHub Wiki](https://github.com/BuloZB/BuloCloudSentinel/wiki).  
+- 📖 User guides and tutorials for mission planning, drone control, and AI tools included in the documentation.
+
+## Contributing
+
+Contributions are welcome! Please follow the established code style and submit pull requests for review.
+
+## License
+
+This project is licensed under the MIT License.
 
 ---
 
