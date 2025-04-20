@@ -1,8 +1,5 @@
-# RTMP Server Dockerfile
-FROM tiangolo/nginx-rtmp
+FROM nginx:alpine
 
 COPY nginx.conf /etc/nginx/nginx.conf
 
-EXPOSE 1935 80
-
-CMD ["nginx", "-g", "daemon off;"]
+EXPOSE 1935 8080

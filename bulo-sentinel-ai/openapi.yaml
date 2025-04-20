@@ -1,0 +1,102 @@
+openapi: 3.1.0
+info:
+  title: Bulo.Cloud Sentinel AI Integrations API
+  version: 0.1.0
+paths:
+  /ai/chat:
+    post:
+      summary: Proxy to LLMs with role/user context
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatRequest'
+      responses:
+        '200':
+          description: Successful response with AI output
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: string
+        '400':
+          description: Unsupported AI tool
+        '500':
+          description: Internal server error
+  /ai/vision/analyze:
+    post:
+      summary: Send image to multimodal AI
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Analysis result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  filename:
+                    type: string
+                  size:
+                    type: integer
+  /ai/audio/transcribe:
+    post:
+      summary: Convert uploaded audio into text
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Transcription result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  filename:
+                    type: string
+                  size:
+                    type: integer
+  /ai/status:
+    get:
+      summary: Show tool availability and health
+      responses:
+        '200':
+          description: Status of AI tools
+          content:
+            application/json:
+              schema:
+                type: object
+components:
+  schemas:
+    ChatRequest:
+      type: object
+      properties:
+        tool:
+          type: string
+          description: AI tool identifier
+        prompt:
+          type: string
+          description: Input prompt for the AI tool
+        context:
+          type: object
+          description: Optional context for the AI tool

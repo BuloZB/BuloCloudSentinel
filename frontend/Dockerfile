@@ -1,18 +1,26 @@
-# Frontend Dockerfile for React + Vite + Tailwind CSS
-FROM node:18-alpine AS build
+# Use official Node.js image as base
+FROM node:18-alpine
 
+# Set working directory
 WORKDIR /app
 
-COPY package.json package-lock.json ./
-RUN npm ci
+# Copy package.json and package-lock.json
+COPY frontend/package*.json ./
 
-COPY . .
+# Install dependencies
+RUN npm install
+
+# Copy frontend source code
+COPY frontend/ ./frontend/
+
+# Build the React app
 RUN npm run build
 
-FROM nginx:alpine
+# Install serve to serve the build folder
+RUN npm install -g serve
 
-COPY --from=build /app/dist /usr/share/nginx/html
+# Expose port
+EXPOSE 3000
 
-EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
+# Command to serve the build folder
+CMD ["serve", "-s", "frontend/build", "-l", "3000"]

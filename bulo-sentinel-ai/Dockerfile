@@ -10,19 +10,19 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements file
-COPY ai_detection/requirements.txt .
+COPY bulo-sentinel-ai/requirements.txt .
 
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy AI detection source code
-COPY ai_detection/ ./ai_detection/
+# Copy AI integrations source code
+COPY bulo-sentinel-ai/ ./bulo-sentinel-ai/
 
 # Expose port
-EXPOSE 8001
+EXPOSE 8002
 
 # Healthcheck endpoint
-HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 CMD curl -f http://localhost:8001/health || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 CMD curl -f http://localhost:8002/health || exit 1
 
 # Command to run the FastAPI app with Uvicorn
-CMD ["uvicorn", "ai_detection.ai_model_management:router", "--host", "0.0.0.0", "--port", "8001", "--reload"]
+CMD ["uvicorn", "bulo-sentinel-ai.main:app", "--host", "0.0.0.0", "--port", "8002"]

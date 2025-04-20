@@ -1,46 +1,85 @@
-version: "3.8"
+version: '3.8'
 
 services:
-  frontend:
-    build:
-      context: ./frontend
-    ports:
-      - "3000:80"
-    environment:
-      - VITE_BACKEND_URL=http://backend:8000
-    depends_on:
-      - backend
-
   backend:
     build:
       context: ./backend
     ports:
       - "8000:8000"
     environment:
-      - DATABASE_URL=sqlite:///./app.db
-      - JWT_SECRET=your_jwt_secret_here
-    volumes:
-      - backend_data:/app/data
+      - ENV=production
+    depends_on:
+      - db
+      - redis
 
   ai_detection:
     build:
       context: ./ai_detection
     ports:
-      - "5000:5000"
+      - "8001:8001"
     environment:
-      - BACKEND_API_URL=http://backend:8000/api/detections
+      - ENV=production
     depends_on:
-      - backend
+      - minio
+
+  ai_integrations:
+    build:
+      context: ./bulo-sentinel-ai
+    ports:
+      - "8002:8002"
+    environment:
+      - ENV=production
+      - CHATGPT_API_KEY=${CHATGPT_API_KEY}
+      - CLAUDE_API_KEY=${CLAUDE_API_KEY}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - DALLE_API_KEY=${DALLE_API_KEY}
+      - WHISPER_API_KEY=${WHISPER_API_KEY}
+      - AI_AUDIT_LOG_FILE=/data/ai_audit_log.json
+    volumes:
+      - ai_audit_data:/data
+    depends_on:
+      - minio
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - ENV=production
 
   rtmp_server:
     build:
       context: ./rtmp_server
     ports:
       - "1935:1935"
-      - "8080:80"
+      - "8080:8080"
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: sentinel
+      POSTGRES_PASSWORD: sentinelpassword
+      POSTGRES_DB: sentineldb
     volumes:
-      - rtmp_hls:/tmp/hls
+      - pgdata:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+
+  minio:
+    image: minio/minio
+    command: server /data
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    ports:
+      - "9000:9000"
+    volumes:
+      - miniodata:/data
 
 volumes:
-  backend_data:
-  rtmp_hls:
+  pgdata:
+  miniodata:
