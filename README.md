@@ -1,106 +1,91 @@
-# 🚀 Bulo.Cloud Sentinel
+# Bulo.Cloud Sentinel
 
-![Architecture](https://img.shields.io/badge/Architecture-Clean%20Architecture-blue)
-![Language](https://img.shields.io/badge/Language-Python%20%26%20JavaScript-yellow)
-![License](https://img.shields.io/badge/License-MIT-green)
-![Status](https://img.shields.io/badge/Status-Production%20Ready-brightgreen)
+Bulo.Cloud Sentinel is a modular, containerized surveillance and situational awareness platform. This repository contains the core services and integrations required to run a scalable, secure, and extendable security system.
 
----
+## Overview of Core Modules
 
-## Overview
+1. **Incident Timeline & Smart Playback**
+   - FastAPI backend serving incident events and metadata
+   - React/Tailwind frontend component with thumbnails, filters, and search
+   - Video segment API for synchronized playback
 
-Bulo.Cloud Sentinel is a **highly modular, scalable, and secure** cloud-based system designed for **real-time video streaming**, **AI-powered object detection**, and **dynamic alerting**. Built with enterprise-grade principles, it emphasizes:
+2. **Drone Command & Telemetry Hub**
+   - FastAPI service with MAVLink telemetry and command endpoints
+   - Frontend React component to display live telemetry and send commands
+   - JWT-based security placeholder for authorized clients
 
-- **Effective separation of layers and components**
-- **Robust security and authentication**
-- **Extensible and maintainable architecture**
-- **Optimized performance and scalability**
+3. **AI Model Management & Training Panel**
+   - FastAPI endpoints for uploading, listing, activating, and rolling back YOLO/TensorFlow models
+   - In-memory demo store (replaceable by MinIO)
+   - Docker container for AI training microservice
 
----
+4. **Device Inventory & Health Status**
+   - Central registry API for cameras, sensors, and drones
+   - Metadata storage, health checks, and PATCH configuration
+   - Alerts via Novu (email/SMS) when critical devices go offline
 
-## 🏗️ Architecture
+5. **Access Audit Log & Session Inspector**
+   - API for recording and retrieving user actions (login, settings, commands)
+   - OpenSearch-ready JSON entries for analytics
+   - Export endpoints for CSV and JSON
 
-The system follows a **layered architecture** with strict separation of concerns:
+6. **AI Integrations Microservice**
+   - Unified FastAPI service under `bulo-sentinel-ai/`
+   - Modular adapters for:
+     - ChatGPT (OpenAI)
+     - Claude (Anthropic)
+     - Gemini (Google)
+     - DALL·E (OpenAI image)
+     - Whisper (OpenAI speech-to-text)
+   - Endpoints:
+     - `POST /ai/chat`
+     - `POST /ai/vision/analyze`
+     - `POST /ai/audio/transcribe`
+     - `GET /ai/status`
+   - Persistent Audit Logging: `ai_audit_log.json`
+   - Prometheus metrics at `/monitoring/metrics`
+   - OpenAPI documentation under `bulo-sentinel-ai/openapi.yaml`
+   - Frontend AI Tools Panel React component
 
-- **Frontend:** React SPA with Tailwind CSS, JWT authentication, and real-time HLS video streaming.
-- **Backend API:** FastAPI with domain-driven design, repository pattern, JWT security, and async database access.
-- **AI Detection Service:** Containerized Python service running YOLOv8 for real-time object detection.
-- **RTMP Server:** Nginx with RTMP module for video ingestion and HLS streaming.
-- **Configuration:** Externalized and validated via Pydantic.
-- **Deployment:** Docker Compose orchestration for seamless multi-service deployment.
+## Deployment
 
----
+All services are containerized and orchestrated via `docker-compose.yml`.  
+- `backend` at port 8000  
+- `ai_detection` at port 8001  
+- `ai_integrations` at port 8002  
+- `frontend` at port 3000  
+- `rtmp_server` at ports 1935 and 8080  
+- `db` (Postgres), `redis`, and `minio` for persistence
 
-## ⚙️ Features
+### Environment Variables
 
-- **Authentication & Authorization:** Secure JWT-based login and user management.
-- **Real-Time Video Streaming:** RTMP ingestion with HLS playback in frontend.
-- **AI-Powered Detection:** Scalable AI service for object detection on video streams.
-- **Extensible API:** Clean, well-documented RESTful endpoints.
-- **Robust Configuration:** Environment-based, validated, and secure.
-- **Comprehensive Testing:** Unit, integration, and E2E test readiness.
-- **Production Ready:** Security best practices, async performance, and modular design.
+Place secrets in a `.env` file or CI/CD secrets:
 
----
+```
+# Backend / AI Integrations
+CHATGPT_API_KEY=…
+CLAUDE_API_KEY=…
+GEMINI_API_KEY=…
+DALLE_API_KEY=…
+WHISPER_API_KEY=…
+AI_AUDIT_LOG_FILE=/data/ai_audit_log.json
 
-## 📚 Documentation
-
-For detailed technical documentation, architecture diagrams, and development guidelines, see [DOCUMENTATION.md](./DOCUMENTATION.md).
-
----
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-- Docker & Docker Compose
-- Python 3.11+ (for local development)
-- Node.js 18+ (for frontend development)
-
-### Running the System
-
-```bash
-docker compose up -d --build
+# Database
+POSTGRES_USER=…
+POSTGRES_PASSWORD=…
+POSTGRES_DB=…
 ```
 
-This command builds and starts all services: frontend, backend, AI detection, and RTMP server.
+## Documentation
+
+- OpenAPI / Swagger for each FastAPI service under `/docs`
+- AI Integrations schema in `bulo-sentinel-ai/openapi.yaml`
+- High-level architecture and module details in `DOCUMENTATION.md`
+
+## Changelog
+
+See the [CHANGELOG.md](CHANGELOG.md) (or GitHub Releases) for detailed version-by-version updates.
 
 ---
 
-## 🛠️ Development
-
-- Backend code follows **Clean Architecture** with domain, application, infrastructure, and API layers.
-- Frontend uses React with Tailwind CSS and React Router.
-- AI Detection service is containerized for scalability.
-- RTMP server configured for secure streaming and HLS support.
-
----
-
-## 🔐 Security
-
-- Passwords hashed with bcrypt.
-- JWT tokens with configurable expiration.
-- Input validation with Pydantic.
-- Recommendations for rate limiting and brute force protection.
-
----
-
-## 📈 Future Enhancements
-
-- Rate limiting and security middleware.
-- Advanced AI detection features.
-- Cloud storage integration.
-- Telegram alerts and geospatial mapping.
-- CI/CD pipeline integration.
-
----
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License.
-
----
-
-*Crafted with ❤️ for high-quality enterprise systems.*
+All naming, logs, UI labels, and code structures use “Bulo.Cloud Sentinel” branding.

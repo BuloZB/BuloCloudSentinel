@@ -1,218 +1,80 @@
-# Bulo.Cloud Sentinel - Technical Documentation
+# Bulo.Cloud Sentinel Documentation
 
-## Overview
+## Introduction
+Bulo.Cloud Sentinel is an enterprise-grade video surveillance and situational awareness platform. It combines real-time video streaming, AI-powered analytics, and secure control of drones and IoT devices into a modular, containerized solution.
 
-Bulo.Cloud Sentinel is a modular, scalable, and secure cloud-based system designed for real-time video streaming, AI-based object detection, and alerting. The system is architected following enterprise-grade principles emphasizing clean architecture, separation of concerns, dependency inversion, and externalized configuration.
+## Core Modules
 
-This document provides a comprehensive technical overview of the system architecture, components, interfaces, security considerations, configuration management, deployment, and testing strategies.
+### 1. Incident Timeline & Smart Playback
+- **Backend**: FastAPI service (`/incident-timeline` endpoints) serving incident logs with timestamps, AI labels, thumbnails, and metadata filters.
+- **Frontend**: React + Tailwind component (`IncidentTimeline.js`) with event list, label filtering, metadata search, and synchronized video clip highlights.
+- **Storage**: Events stored in a database (PostgreSQL) with full-text search through OpenSearch integration.
 
----
+### 2. Drone Command & Telemetry Hub
+- **Backend**: FastAPI service (`/drone-hub` endpoints) for real-time MAVLink telemetry ingestion and command dispatch (takeoff, waypoint, return home) via dynamic adapters (MAVSDK/DroneBridge).
+- **Frontend**: React component (`DroneCommandHub.js`) displaying map view (Mapbox/Leaflet), telemetry data, and command UI with JWT security.
+- **Video Relay**: GStreamer WebRTC/RTSP for live video streaming.
 
-## Architecture
+### 3. AI Model Management & Training Panel
+- **Backend**: FastAPI service (`/ai-model-management`) with endpoints for upload, list, activate, and rollback of custom YOLOv8/TensorFlow models.
+- **Storage**: MinIO for model blobs and JSON metadata.
+- **Training**: Celery worker or cron-based batch jobs training on labeled incident footage; hot-swap support.
 
-### Layered Architecture
+### 4. Device Inventory & Health Status
+- **Backend**: FastAPI service (`/device-inventory`) managing registry of cameras, sensors, and drones with metadata (zone, IP, status, last activity, critical flag).
+- **Frontend**: React UI for device dashboard, health indicators, manual restart/config actions.
+- **Alerts**: Novu notification integration for critical device offline events.
 
-The system is divided into the following layers:
+### 5. Access Audit Log & Session Inspector
+- **Backend**: FastAPI service (`/audit-log`) capturing all user sessions, logins, settings changes, and command usage.
+- **Search & Export**: Full filtering, sorting, and export to CSV/JSON; OpenSearch indexing for analytics.
+- **Security**: Keycloak-based RBAC for admin access.
 
-- **Presentation Layer (Frontend):** React-based SPA using Tailwind CSS for styling, responsible for user interaction, authentication, and real-time video display.
+### 6. AI Integrations Microservice
+- **Location**: `bulo-sentinel-ai/`
+- **Architecture**: Modular adapter pattern implementing a base `AIAdapter` interface.
+- **Adapters**:
+  - ChatGPT (OpenAI)
+  - Claude (Anthropic)
+  - Gemini (Google)
+  - DALL·E (OpenAI Image)
+  - Whisper (OpenAI Speech-to-Text)
+- **Endpoints**:
+  - `POST /ai/chat`  
+  - `POST /ai/vision/analyze`  
+  - `POST /ai/audio/transcribe`  
+  - `GET /ai/status`  
+- **Logging**: Persistent JSON audit log (`ai_audit_log.json`) via `bulo-sentinel-ai/audit_log.py`.
+- **Monitoring**: Prometheus metrics (`/monitoring/metrics`) using middleware and a dedicated router (`bulo-sentinel-ai/monitoring.py`).
+- **Documentation**: OpenAPI schema in `bulo-sentinel-ai/openapi.yaml`.
 
-- **API Layer (Backend):** FastAPI-based RESTful API exposing endpoints for setup, authentication, user info, and detections. Implements JWT authentication and input validation.
+## Deployment & Orchestration
 
-- **Business Layer (Domain & Application):** Encapsulates domain entities, value objects, business rules, and services. Implements use cases and coordinates data access.
+- **Docker Compose** (`docker-compose.yml`) orchestrates all services:
+  - `backend` (8000)
+  - `ai_detection` (8001)
+  - `ai_integrations` (8002)
+  - `frontend` (3000)
+  - `rtmp_server` (1935/8080)
+  - `db`, `redis`, `minio` for persistence
+- **Dockerfiles** are available per service for container builds.
+- **Health Checks**: Each container exposes `/health` or metrics endpoints for CI/CD readiness checks.
 
-- **Data Access Layer:** Abstracted repository interfaces with SQLAlchemy ORM implementations for persistence. Ensures decoupling of business logic from database specifics.
+## Configuration
 
-- **Infrastructure Layer:** Manages configuration, database connections, security utilities, and external integrations.
+Configure all services via environment variables and `.env` files.  
+- Backend & AI Integrations: API keys, audit log path  
+- Database: Postgres credentials  
+- MinIO: Access keys  
+- Monitoring: Prometheus scraping configuration
 
-- **AI Detection Service:** Containerized Python service processing real-time video streams using YOLOv8, sending detection results to backend API.
+## Changelog Highlights
 
-- **RTMP Server:** Nginx-based RTMP server with HLS support for video streaming ingestion and distribution.
-
-- **Dronecore Module:** Modular drone control system integrating PX4, ArduPilot, Betaflight, SITL simulators, and FPV video streaming.
-
-### Component Diagram
-
-```mermaid
-graph TD
-  Frontend -->|REST API| BackendAPI
-  BackendAPI -->|Repository Interfaces| BusinessLayer
-  BusinessLayer -->|Repository Implementations| DataAccessLayer
-  DataAccessLayer --> Database[(Database)]
-  AIService -->|Detection Results| BackendAPI
-  RTMPServer --> Frontend
-  Dronecore --> BackendAPI
-```
-
----
-
-## Backend Detailed Design
-
-### Domain Model
-
-- **User Entity:** Immutable dataclass representing user with id, username, email, hashed password, active status, and superuser flag.
-
-- **Value Objects:** Email class with validation ensuring correct email format.
-
-### Repository Pattern
-
-- **IUserRepository:** Abstract interface defining async methods for CRUD operations on User entities.
-
-- **SqlAlchemyUserRepository:** Concrete implementation using SQLAlchemy async ORM.
-
-### Business Services
-
-- **UserService:** Implements user registration, authentication, and retrieval using IUserRepository. Passwords verified with bcrypt.
-
-- **AuthService:** Handles password hashing, verification, and JWT token creation.
-
-### API Layer
-
-- **Endpoints:**
-  - `/api/setup`: Initializes database schema.
-  - `/api/login`: Authenticates user, returns JWT token.
-  - `/api/me`: Returns current user info based on JWT.
-  - `/api/detections`: Placeholder for detection data retrieval.
-
-- **Security:** JWT tokens signed with secret and HS256 algorithm, expiration configurable.
-
-- **Dependency Injection:** FastAPI dependencies provide repository instances.
-
-### Configuration
-
-- Managed via Pydantic BaseSettings with environment variable overrides.
-
-- Validates database URL format and JWT settings.
+- Added AI integrations microservice with multiple adapters and audit logging.  
+- Implemented modular FastAPI services for drones, incidents, devices, and audits.  
+- Built React/Tailwind frontend components for timeline, drone control, and AI tools.  
+- Integrated Prometheus metrics and OpenAPI documentation.  
+- Updated `docker-compose.yml` to include new AI microservice and monitoring volumes.
 
 ---
-
-## Frontend Detailed Design
-
-- React SPA bootstrapped with Create React App.
-
-- Tailwind CSS for responsive and dark mode styling.
-
-- JWT authentication with token stored in localStorage.
-
-- Protected routes redirect unauthenticated users to login.
-
-- Real-time video streaming embedded via ReactPlayer consuming HLS stream from RTMP server.
-
-- Alerts and logs section prepared for dynamic updates via WebSocket or polling.
-
----
-
-## AI Detection Service
-
-- Python container running YOLOv8 or similar model.
-
-- Processes RTMP/HLS video streams in real-time.
-
-- Sends detection results asynchronously to backend API.
-
-- Designed for scalability and GPU acceleration.
-
----
-
-## RTMP Server
-
-- Nginx with RTMP module configured for stream ingestion.
-
-- Supports stream key authentication and HLS transcoding.
-
-- Serves HLS streams to frontend clients.
-
----
-
-## Dronecore Module
-
-- **FlightControllerAdapter:** Interface defining flight controller communication.
-
-- **PX4Adapter, ArduPilotAdapter, BetaflightAdapter:** Implementations for popular autopilot stacks.
-
-- **MAVLinkClient:** Asynchronous MAVLink protocol client.
-
-- **DroneTelemetryService:** Manages telemetry subscriptions and notifications.
-
-- **DroneMissionPlanner:** Mission waypoint management.
-
-- **FailsafeManager:** Emergency fallback handling.
-
-- **SITLSimulationBridge:** Simulator integration.
-
-- **FPVVideoStream:** Placeholder for FPV video decoding.
-
----
-
-## Security Considerations
-
-- Passwords hashed with bcrypt.
-
-- JWT tokens with expiration and secure signing.
-
-- Input validation with Pydantic.
-
-- Externalized secrets via environment variables.
-
-- Recommendations for rate limiting, brute force protection, CORS, and security headers.
-
----
-
-## Configuration Management
-
-- Hierarchical configuration with defaults, environment-specific, and instance-specific overrides.
-
-- Validation at startup to fail fast on invalid config.
-
-- Sensitive data managed via environment variables.
-
----
-
-## Testing Strategy
-
-- Unit tests for domain entities, services, and repositories.
-
-- Integration tests for API endpoints and database interactions.
-
-- E2E tests for frontend user flows.
-
-- Performance and security testing recommended.
-
-- SITL-based test suite and fake telemetry generators for dronecore.
-
----
-
-## Deployment
-
-- Dockerfiles for all components with multi-stage builds.
-
-- Docker Compose orchestration for local and production-like environments.
-
-- Environment variables externalized and documented in `.env.example`.
-
-- Recommendations for CI/CD integration and monitoring.
-
----
-
-## Future Enhancements
-
-- Implement rate limiting and security middleware.
-
-- Add comprehensive logging and monitoring.
-
-- Expand AI detection capabilities and alerting.
-
-- Integrate cloud storage and advanced AI optimizations.
-
-- Implement Telegram alerts and geospatial mapping.
-
-- Extend dronecore with additional autopilot adapters and FPV video processing.
-
----
-
-## Contact and Contribution
-
-For questions or contributions, please contact the development team or submit issues and pull requests via the GitHub repository.
-
----
-
-*This documentation is generated to provide a detailed technical overview for developers and architects working on the Bulo.Cloud Sentinel system.*
+This documentation reflects the latest changes and enhancements across the Bulo.Cloud Sentinel platform.
