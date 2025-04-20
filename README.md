@@ -95,10 +95,6 @@ This command builds and starts all services: frontend, backend, AI detection, an
 
 ---
 
-## 🤝 Contributing
-
-Contributions are welcome! Please open issues or pull requests on the GitHub repository.
-
 ---
 
 ## 📄 License
