@@ -28,6 +28,8 @@ The system is divided into the following layers:
 
 - **RTMP Server:** Nginx-based RTMP server with HLS support for video streaming ingestion and distribution.
 
+- **Dronecore Module:** Modular drone control system integrating PX4, ArduPilot, Betaflight, SITL simulators, and FPV video streaming.
+
 ### Component Diagram
 
 ```mermaid
@@ -38,6 +40,7 @@ graph TD
   DataAccessLayer --> Database[(Database)]
   AIService -->|Detection Results| BackendAPI
   RTMPServer --> Frontend
+  Dronecore --> BackendAPI
 ```
 
 ---
@@ -59,6 +62,8 @@ graph TD
 ### Business Services
 
 - **UserService:** Implements user registration, authentication, and retrieval using IUserRepository. Passwords verified with bcrypt.
+
+- **AuthService:** Handles password hashing, verification, and JWT token creation.
 
 ### API Layer
 
@@ -118,6 +123,26 @@ graph TD
 
 ---
 
+## Dronecore Module
+
+- **FlightControllerAdapter:** Interface defining flight controller communication.
+
+- **PX4Adapter, ArduPilotAdapter, BetaflightAdapter:** Implementations for popular autopilot stacks.
+
+- **MAVLinkClient:** Asynchronous MAVLink protocol client.
+
+- **DroneTelemetryService:** Manages telemetry subscriptions and notifications.
+
+- **DroneMissionPlanner:** Mission waypoint management.
+
+- **FailsafeManager:** Emergency fallback handling.
+
+- **SITLSimulationBridge:** Simulator integration.
+
+- **FPVVideoStream:** Placeholder for FPV video decoding.
+
+---
+
 ## Security Considerations
 
 - Passwords hashed with bcrypt.
@@ -152,6 +177,8 @@ graph TD
 
 - Performance and security testing recommended.
 
+- SITL-based test suite and fake telemetry generators for dronecore.
+
 ---
 
 ## Deployment
@@ -177,6 +204,8 @@ graph TD
 - Integrate cloud storage and advanced AI optimizations.
 
 - Implement Telegram alerts and geospatial mapping.
+
+- Extend dronecore with additional autopilot adapters and FPV video processing.
 
 ---
 
