@@ -3,8 +3,8 @@ from fastapi.security import OAuth2PasswordBearer
 from jose import jwt, JWTError
 from backend.infrastructure.config.config import settings
 from backend.api.dependencies import get_user_repository
+from backend.application.services.auth_service import AuthService
 from backend.domain.repositories.user_repository import IUserRepository
-from backend.domain.services.user_service import UserService
 
 router = APIRouter()
 
@@ -23,8 +23,8 @@ async def get_current_user(token: str = Depends(oauth2_scheme), user_repo: IUser
             raise credentials_exception
     except JWTError:
         raise credentials_exception
-    user_service = UserService(user_repo)
-    user = await user_service.get_user_by_username(username)
+    auth_service = AuthService(user_repo)
+    user = await user_repo.get_by_username(username)
     if user is None:
         raise credentials_exception
     return user
