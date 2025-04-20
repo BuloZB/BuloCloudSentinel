@@ -1,80 +1,83 @@
-# Bulo.Cloud Sentinel Documentation
+[![CI](https://github.com/BuloZB/BuloCloudSentinel/actions/workflows/ci.yml/badge.svg)](https://github.com/BuloZB/BuloCloudSentinel/actions/workflows/ci.yml) [![Docker](https://img.shields.io/docker/cloud/build/bulozbd/bulo-cloud-sentinel)](https://hub.docker.com/r/bulozbd/bulo-cloud-sentinel) [![License](https://img.shields.io/github/license/BuloZB/BuloCloudSentinel)]()
 
-## Introduction
-Bulo.Cloud Sentinel is an enterprise-grade video surveillance and situational awareness platform. It combines real-time video streaming, AI-powered analytics, and secure control of drones and IoT devices into a modular, containerized solution.
+# 📖 Bulo.Cloud Sentinel Documentation
 
-## Core Modules
+## 💡 Introduction
+Bulo.Cloud Sentinel is an enterprise-grade video surveillance and situational awareness platform combining real-time video streaming, AI analytics, and secure drone/IoT control in a modular, containerized architecture.
 
-### 1. Incident Timeline & Smart Playback
-- **Backend**: FastAPI service (`/incident-timeline` endpoints) serving incident logs with timestamps, AI labels, thumbnails, and metadata filters.
-- **Frontend**: React + Tailwind component (`IncidentTimeline.js`) with event list, label filtering, metadata search, and synchronized video clip highlights.
-- **Storage**: Events stored in a database (PostgreSQL) with full-text search through OpenSearch integration.
+## 📚 Core Modules
 
-### 2. Drone Command & Telemetry Hub
-- **Backend**: FastAPI service (`/drone-hub` endpoints) for real-time MAVLink telemetry ingestion and command dispatch (takeoff, waypoint, return home) via dynamic adapters (MAVSDK/DroneBridge).
-- **Frontend**: React component (`DroneCommandHub.js`) displaying map view (Mapbox/Leaflet), telemetry data, and command UI with JWT security.
-- **Video Relay**: GStreamer WebRTC/RTSP for live video streaming.
+### 🎥 Incident Timeline & Smart Playback
+- **Backend**: FastAPI events API (`/incident-timeline`)
+- **Frontend**: React + Tailwind UI (`IncidentTimeline.js`)
+- **Storage**: PostgreSQL + OpenSearch for full-text search
 
-### 3. AI Model Management & Training Panel
-- **Backend**: FastAPI service (`/ai-model-management`) with endpoints for upload, list, activate, and rollback of custom YOLOv8/TensorFlow models.
-- **Storage**: MinIO for model blobs and JSON metadata.
-- **Training**: Celery worker or cron-based batch jobs training on labeled incident footage; hot-swap support.
+### 🚁 Drone Command & Telemetry Hub
+- **Backend**: FastAPI MAVLink telemetry & command service (`/drone-hub`)
+- **Frontend**: React map & telemetry UI (`DroneCommandHub.js`)
+- **Streaming**: GStreamer WebRTC/RTSP relay
 
-### 4. Device Inventory & Health Status
-- **Backend**: FastAPI service (`/device-inventory`) managing registry of cameras, sensors, and drones with metadata (zone, IP, status, last activity, critical flag).
-- **Frontend**: React UI for device dashboard, health indicators, manual restart/config actions.
-- **Alerts**: Novu notification integration for critical device offline events.
+### 🤖 AI Model Management & Training Panel
+- **Backend**: FastAPI model CRUD (`/ai-model-management`)
+- **Storage**: MinIO object storage
+- **Training**: Scheduled Celery jobs for YOLO/TensorFlow models
 
-### 5. Access Audit Log & Session Inspector
-- **Backend**: FastAPI service (`/audit-log`) capturing all user sessions, logins, settings changes, and command usage.
-- **Search & Export**: Full filtering, sorting, and export to CSV/JSON; OpenSearch indexing for analytics.
-- **Security**: Keycloak-based RBAC for admin access.
+### 📋 Device Inventory & Health Status
+- **Backend**: FastAPI catalog & health checks (`/device-inventory`)
+- **Alerts**: Novu email/SMS notifications for offline devices
 
-### 6. AI Integrations Microservice
+### 🔒 Access Audit Log & Session Inspector
+- **Backend**: FastAPI audit endpoints (`/audit-log`)
+- **Export**: CSV/JSON, OpenSearch indexing
+- **Security**: Keycloak RBAC for admin access
+
+### 🧠 AI Integrations Microservice
 - **Location**: `bulo-sentinel-ai/`
-- **Architecture**: Modular adapter pattern implementing a base `AIAdapter` interface.
-- **Adapters**:
-  - ChatGPT (OpenAI)
-  - Claude (Anthropic)
-  - Gemini (Google)
-  - DALL·E (OpenAI Image)
-  - Whisper (OpenAI Speech-to-Text)
+- **Pattern**: Adapter interface (`AIAdapter`)
+- **Adapters**: ChatGPT, Claude, Gemini, DALL·E, Whisper
 - **Endpoints**:
-  - `POST /ai/chat`  
-  - `POST /ai/vision/analyze`  
-  - `POST /ai/audio/transcribe`  
-  - `GET /ai/status`  
-- **Logging**: Persistent JSON audit log (`ai_audit_log.json`) via `bulo-sentinel-ai/audit_log.py`.
-- **Monitoring**: Prometheus metrics (`/monitoring/metrics`) using middleware and a dedicated router (`bulo-sentinel-ai/monitoring.py`).
-- **Documentation**: OpenAPI schema in `bulo-sentinel-ai/openapi.yaml`.
+  - `POST /ai/chat` 💬
+  - `POST /ai/vision/analyze` 🖼️
+  - `POST /ai/audio/transcribe` 🎙️
+  - `GET /ai/status` 📊
+- **Audit Log**: `ai_audit_log.json`
+- **Monitoring**: `/monitoring/metrics` via Prometheus
+- **Docs**: OpenAPI spec at `bulo-sentinel-ai/openapi.yaml`
 
-## Deployment & Orchestration
+## ☸️ Deployment & Orchestration
+- **Docker Compose** (`docker-compose.yml`):
+  - `backend` (8000)  
+  - `ai_detection` (8001)  
+  - `ai_integrations` (8002)  
+  - `frontend` (3000)  
+  - `rtmp_server` (1935/8080)  
+  - `db`, `redis`, `minio`  
+- **Commands**:
+  ```bash
+  docker-compose up -d
+  ```
 
-- **Docker Compose** (`docker-compose.yml`) orchestrates all services:
-  - `backend` (8000)
-  - `ai_detection` (8001)
-  - `ai_integrations` (8002)
-  - `frontend` (3000)
-  - `rtmp_server` (1935/8080)
-  - `db`, `redis`, `minio` for persistence
-- **Dockerfiles** are available per service for container builds.
-- **Health Checks**: Each container exposes `/health` or metrics endpoints for CI/CD readiness checks.
+## ⚙️ Configuration
+- Environment variables via `.env`:
+  ```bash
+  # AI Integrations
+  CHATGPT_API_KEY=…
+  CLAUDE_API_KEY=…
+  GEMINI_API_KEY=…
+  DALLE_API_KEY=…
+  WHISPER_API_KEY=…
+  AI_AUDIT_LOG_FILE=/data/ai_audit_log.json
+  ```
 
-## Configuration
+## 🗂️ Documentation & Wiki
+- **API Docs**: `/docs` on each FastAPI service  
+- **Wiki**: https://github.com/BuloZB/BuloCloudSentinel/wiki
 
-Configure all services via environment variables and `.env` files.  
-- Backend & AI Integrations: API keys, audit log path  
-- Database: Postgres credentials  
-- MinIO: Access keys  
-- Monitoring: Prometheus scraping configuration
-
-## Changelog Highlights
-
-- Added AI integrations microservice with multiple adapters and audit logging.  
-- Implemented modular FastAPI services for drones, incidents, devices, and audits.  
-- Built React/Tailwind frontend components for timeline, drone control, and AI tools.  
-- Integrated Prometheus metrics and OpenAPI documentation.  
-- Updated `docker-compose.yml` to include new AI microservice and monitoring volumes.
+## 📅 Changelog Highlights
+- 🆕 Added AI integrations microservice with modular adapters  
+- 🔄 Implemented audit logging, Prometheus metrics, and OpenAPI docs  
+- ⚙️ Integrated new services into `docker-compose.yml`  
+- 📚 Updated README and Documentation with badges and icons
 
 ---
-This documentation reflects the latest changes and enhancements across the Bulo.Cloud Sentinel platform.
+_All naming, logs, UI labels, and code structures use “Bulo.Cloud Sentinel” branding._
