@@ -1,0 +1,46 @@
+version: "3.8"
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "3000:80"
+    environment:
+      - VITE_BACKEND_URL=http://backend:8000
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=sqlite:///./app.db
+      - JWT_SECRET=your_jwt_secret_here
+    volumes:
+      - backend_data:/app/data
+
+  ai_detection:
+    build:
+      context: ./ai_detection
+    ports:
+      - "5000:5000"
+    environment:
+      - BACKEND_API_URL=http://backend:8000/api/detections
+    depends_on:
+      - backend
+
+  rtmp_server:
+    build:
+      context: ./rtmp_server
+    ports:
+      - "1935:1935"
+      - "8080:80"
+    volumes:
+      - rtmp_hls:/tmp/hls
+
+volumes:
+  backend_data:
+  rtmp_hls:
