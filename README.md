@@ -184,19 +184,6 @@ bulo-cloud-sentinel/
 └── docs/                 # Documentation
 ```
 
-### CI/CD Workflows
-
-Bulo.Cloud Sentinel uses GitHub Actions for continuous integration and deployment:
-
-- **🛡️ Security Scanning**: Daily security scans using various tools (Safety, Bandit, npm audit, OWASP Dependency-Check, Trivy)
-- **💪 Testing**: Comprehensive test suite for all components (backend, frontend, anti-jamming service, vision system)
-- **🔍 Linting**: Code quality checks using Flake8, Black, isort, mypy, ESLint, and Prettier
-- **📦 Docker Builds**: Automated Docker image builds for all components
-- **🔄 Dependency Updates**: Regular checks for dependency updates
-- **💾 Database Migrations**: Automated database migration checks
-
-All workflows run daily at midnight to ensure the codebase remains secure and up-to-date.
-
 ### Contributing
 
 1. Fork the repository
