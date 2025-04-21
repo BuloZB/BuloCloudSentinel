@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import DOMPurify from 'dompurify';
 import './Widget.css';
 
 const DroneStatusWidget = ({ id, title, settings, onRemove }) => {
@@ -16,13 +17,24 @@ const DroneStatusWidget = ({ id, title, settings, onRemove }) => {
           throw new Error(`Error: ${response.status}`);
         }
         const data = await response.json();
-        setDrones(data);
-        
+
+        // Sanitize drone data
+        const sanitizedDrones = data.map(drone => ({
+          ...drone,
+          name: DOMPurify.sanitize(drone.name),
+          type: DOMPurify.sanitize(drone.type),
+          status: DOMPurify.sanitize(drone.status),
+          mission: drone.mission ? DOMPurify.sanitize(drone.mission) : null,
+          location: drone.location ? DOMPurify.sanitize(drone.location) : null
+        }));
+
+        setDrones(sanitizedDrones);
+
         // Set first drone as selected if none is selected
-        if (!selectedDroneId && data.length > 0) {
-          setSelectedDroneId(data[0].id);
+        if (!selectedDroneId && sanitizedDrones.length > 0) {
+          setSelectedDroneId(sanitizedDrones[0].id);
         }
-        
+
         setIsLoading(false);
       } catch (error) {
         console.error('Error fetching drones:', error);
@@ -32,10 +44,10 @@ const DroneStatusWidget = ({ id, title, settings, onRemove }) => {
     };
 
     fetchDrones();
-    
+
     // Set up polling for drone status updates
     const intervalId = setInterval(fetchDrones, 10000); // Poll every 10 seconds
-    
+
     return () => clearInterval(intervalId);
   }, [selectedDroneId, settings?.defaultDroneId]);
 
@@ -64,14 +76,14 @@ const DroneStatusWidget = ({ id, title, settings, onRemove }) => {
   return (
     <div className="widget drone-status-widget">
       <div className="widget-header">
-        <h3 className="widget-title">{title}</h3>
+        <h3 className="widget-title">{DOMPurify.sanitize(title)}</h3>
         {onRemove && (
           <button className="widget-remove-btn" onClick={onRemove}>
             &times;
           </button>
         )}
       </div>
-      
+
       <div className="widget-content">
         {isLoading ? (
           <div className="widget-loading">Loading...</div>
@@ -94,35 +106,35 @@ const DroneStatusWidget = ({ id, title, settings, onRemove }) => {
                 ))}
               </select>
             </div>
-            
+
             {selectedDrone ? (
               <div className="drone-details">
                 <div className="drone-status">
-                  <span 
-                    className="status-indicator" 
+                  <span
+                    className="status-indicator"
                     style={{ backgroundColor: getStatusColor(selectedDrone.status) }}
                   ></span>
                   <span className="status-text">{selectedDrone.status}</span>
                 </div>
-                
+
                 <div className="drone-info">
                   <div className="info-item">
                     <span className="info-label">Model:</span>
                     <span className="info-value">{selectedDrone.model}</span>
                   </div>
-                  
+
                   <div className="info-item">
                     <span className="info-label">Serial:</span>
                     <span className="info-value">{selectedDrone.serial_number}</span>
                   </div>
-                  
+
                   <div className="info-item">
                     <span className="info-label">Battery:</span>
                     <span className="info-value">
                       {selectedDrone.battery_level ? `${selectedDrone.battery_level}%` : 'N/A'}
                     </span>
                   </div>
-                  
+
                   {selectedDrone.location && (
                     <div className="info-item">
                       <span className="info-label">Location:</span>
@@ -132,7 +144,7 @@ const DroneStatusWidget = ({ id, title, settings, onRemove }) => {
                     </div>
                   )}
                 </div>
-                
+
                 <div className="drone-actions">
                   <button className="action-btn">Connect</button>
                   <button className="action-btn">RTH</button>
