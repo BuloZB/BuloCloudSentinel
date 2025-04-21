@@ -1,0 +1,93 @@
+video_streams:
+  frame_buffer_size: 10
+  reconnect_interval: 5
+
+event_broker:
+  type: redis
+  host: redis
+  port: 6379
+  channel_prefix: ai_analytics
+
+detection:
+  default_model: yolov8n
+  confidence_threshold: 0.5
+  max_detection_fps: 10
+  models:
+    - name: yolov8n
+      path: models/detection/yolov8n.pt
+      description: YOLOv8 Nano - Fast, lightweight model
+    - name: yolov8m
+      path: models/detection/yolov8m.pt
+      description: YOLOv8 Medium - Balanced speed and accuracy
+    - name: yolov8l
+      path: models/detection/yolov8l.pt
+      description: YOLOv8 Large - High accuracy model
+
+recognition:
+  face_recognition_threshold: 0.7
+  license_plate_confidence_threshold: 0.8
+  max_recognition_fps: 5
+  face_models:
+    - name: face_recognition
+      path: models/recognition/face_recognition.pt
+      description: Face recognition model
+  license_plate_models:
+    - name: license_plate_recognition
+      path: models/recognition/license_plate.pt
+      description: License plate recognition model
+
+behavior:
+  loitering_threshold: 60
+  crowd_threshold: 5
+  running_speed_threshold: 2.0
+  direction_change_threshold: 90.0
+  max_analysis_fps: 5
+  patterns:
+    - name: loitering
+      description: Person staying in one area for too long
+      parameters:
+        min_duration: 60
+        max_movement: 2.0
+      alert_level: warning
+    - name: running
+      description: Person moving at high speed
+      parameters:
+        min_speed: 2.0
+      alert_level: info
+    - name: crowd
+      description: Multiple people gathering in one area
+      parameters:
+        min_people: 5
+        max_distance: 3.0
+      alert_level: warning
+    - name: direction_change
+      description: Person changing direction frequently
+      parameters:
+        min_angle: 90.0
+        max_time: 2.0
+      alert_level: info
+
+analytics:
+  data_retention_days: 90
+  training_interval_hours: 24
+  anomaly_detection_enabled: true
+  prediction_enabled: true
+  model_types:
+    - name: time_series
+      description: Time series prediction
+      algorithms:
+        - prophet
+        - arima
+        - lstm
+    - name: classification
+      description: Classification prediction
+      algorithms:
+        - random_forest
+        - svm
+        - neural_network
+    - name: regression
+      description: Regression prediction
+      algorithms:
+        - xgboost
+        - linear_regression
+        - neural_network

@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  ai_analytics:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bulo_ai_analytics
+    restart: unless-stopped
+    ports:
+      - "8060:8060"
+    volumes:
+      - ./config:/app/config
+      - ./models:/app/models
+      - ./storage:/app/storage
+    environment:
+      - CONFIG_PATH=/app/config/config.yaml
+      - AI_ANALYTICS_DETECTION_CONFIDENCE_THRESHOLD=0.5
+      - AI_ANALYTICS_RECOGNITION_FACE_RECOGNITION_THRESHOLD=0.7
+      - AI_ANALYTICS_BEHAVIOR_LOITERING_THRESHOLD=60
+      - AI_ANALYTICS_ANALYTICS_DATA_RETENTION_DAYS=90
+    depends_on:
+      - redis
+    networks:
+      - bulo_network
+
+  redis:
+    image: redis:7-alpine
+    container_name: bulo_ai_analytics_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - bulo_network
+
+networks:
+  bulo_network:
+    external: true
+
+volumes:
+  redis_data:
