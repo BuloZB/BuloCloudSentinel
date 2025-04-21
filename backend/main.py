@@ -6,10 +6,13 @@ from backend.api import router as api_router
 from backend.api.fleet_management import initialize_service as init_fleet_service
 from backend.api.anduril_lattice import initialize_adapter as init_anduril_adapter
 from backend.api.geofencing import initialize_service as init_geofencing_service
+from backend.api.power_management import initialize_services as init_power_services
 from backend.fleet_management.coordinator import FleetCoordinatorService
 from backend.mission_planning.service import MissionPlanningService
 from backend.mission_execution.execution_service import MissionExecutionService
 from backend.geofencing.service import GeofencingService
+from backend.power_management.battery_service import BatteryMonitoringService
+from backend.power_management.energy_prediction import EnergyPredictionService
 from dronecore.drone_command_telemetry_hub import DroneCommandHub
 from backend.sensor_fusion.engine import SensorFusionEngine
 from backend.mesh_networking.mesh_network import MeshNetwork
@@ -69,6 +72,14 @@ async def lifespan(app: FastAPI):
         # Initialize geofencing service
         init_geofencing_service(geofencing_service)
 
+        # Initialize power management services
+        battery_service = BatteryMonitoringService(db_session=None, redis_url=None, drone_command_hub=drone_hub)
+        energy_prediction_service = EnergyPredictionService(db_session=None, drone_command_hub=drone_hub)
+        await battery_service.start()
+
+        # Initialize power management API
+        init_power_services(battery_service, energy_prediction_service)
+
         logger.info("Services initialized successfully")
     except Exception as e:
         logger.error(f"Error initializing services: {str(e)}")
@@ -83,6 +94,12 @@ async def lifespan(app: FastAPI):
         await geofencing_service.stop()
     except Exception as e:
         logger.error(f"Error stopping geofencing service: {str(e)}")
+
+    # Stop battery monitoring service
+    try:
+        await battery_service.stop()
+    except Exception as e:
+        logger.error(f"Error stopping battery monitoring service: {str(e)}")
 
 # Create FastAPI app
 app = FastAPI(title="Bulo.Cloud Sentinel Backend API", lifespan=lifespan)

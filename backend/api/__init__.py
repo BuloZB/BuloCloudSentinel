@@ -16,6 +16,7 @@ from backend.mission_planning.autonomous import router as autonomous_mission_rou
 from backend.api.anduril_lattice import router as anduril_lattice_router, initialize_adapter
 from backend.api.fleet_management import router as fleet_management_router, initialize_service as init_fleet_service
 from backend.api.geofencing import router as geofencing_router, initialize_service as init_geofencing_service
+from backend.api.power_management import router as power_management_router, initialize_services as init_power_services
 
 router = APIRouter()
 
@@ -36,3 +37,4 @@ router.include_router(anduril_lattice_router)
 router.include_router(autonomous_mission_router, prefix="/autonomous-missions")
 router.include_router(fleet_management_router)
 router.include_router(geofencing_router)
+router.include_router(power_management_router)

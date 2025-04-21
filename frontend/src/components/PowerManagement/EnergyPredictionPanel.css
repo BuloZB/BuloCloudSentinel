@@ -1,0 +1,393 @@
+.energy-prediction-panel {
+  display: flex;
+  height: calc(100vh - 64px); /* Adjust based on your header height */
+  overflow: hidden;
+}
+
+.energy-prediction-sidebar {
+  width: 320px;
+  padding: 16px;
+  background-color: #f5f5f5;
+  overflow-y: auto;
+  border-right: 1px solid #ddd;
+}
+
+.energy-prediction-sidebar h2 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 1.5rem;
+}
+
+.energy-prediction-content {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.error-message {
+  margin-bottom: 16px;
+  padding: 8px 12px;
+  background-color: #f8d7da;
+  color: #721c24;
+  border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.error-message button {
+  background: none;
+  border: none;
+  color: #721c24;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.prediction-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-section {
+  background-color: white;
+  padding: 16px;
+  border-radius: 4px;
+}
+
+.form-section h3 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 1.2rem;
+}
+
+.drone-list,
+.mission-list {
+  margin-bottom: 12px;
+}
+
+.drone-item,
+.mission-item {
+  padding: 10px 12px;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color 0.2s;
+}
+
+.drone-item:hover,
+.mission-item:hover {
+  background-color: #f0f9ff;
+}
+
+.drone-item.selected,
+.mission-item.selected {
+  background-color: #e9f7fe;
+  border-left: 3px solid #3498db;
+}
+
+.drone-name,
+.mission-name {
+  font-weight: 500;
+}
+
+.drone-status,
+.mission-type,
+.waypoint-count {
+  font-size: 0.8rem;
+  padding: 2px 6px;
+  border-radius: 10px;
+  text-transform: capitalize;
+}
+
+.drone-status.online {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.drone-status.offline {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.drone-status.flying {
+  background-color: #cce5ff;
+  color: #004085;
+}
+
+.mission-type {
+  background-color: #e2e3e5;
+  color: #383d41;
+}
+
+.waypoint-count {
+  background-color: #d1ecf1;
+  color: #0c5460;
+}
+
+.mission-item.custom {
+  background-color: #f0f0f0;
+}
+
+.mission-item.custom.selected {
+  background-color: #e9f7fe;
+  border-left: 3px solid #3498db;
+}
+
+.custom-waypoints {
+  margin-top: 12px;
+  padding: 12px;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+}
+
+.waypoints-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.waypoints-header h4 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.add-waypoint-button {
+  padding: 4px 8px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.add-waypoint-button:hover {
+  background-color: #2980b9;
+}
+
+.waypoint-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.waypoint-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  background-color: white;
+  border-radius: 4px;
+}
+
+.waypoint-coords {
+  font-size: 0.9rem;
+}
+
+.remove-waypoint-button {
+  background: none;
+  border: none;
+  color: #e74c3c;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0 4px;
+}
+
+.form-group {
+  margin-bottom: 12px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 4px;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.weather-data {
+  margin-top: 16px;
+  padding: 12px;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+}
+
+.weather-data h4 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 1rem;
+}
+
+.weather-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.weather-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.weather-label {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.weather-value {
+  font-weight: 500;
+}
+
+.predict-button {
+  padding: 12px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+.predict-button:hover:not(:disabled) {
+  background-color: #2980b9;
+}
+
+.predict-button:disabled {
+  background-color: #95a5a6;
+  cursor: not-allowed;
+}
+
+.prediction-results {
+  background-color: white;
+  padding: 24px;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.results-header h3 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.feasibility-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+.feasibility-badge.feasible {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.feasibility-badge.not-feasible {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.results-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.summary-item {
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+}
+
+.summary-label {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.summary-value {
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.results-details {
+  display: flex;
+  gap: 24px;
+}
+
+.factors-chart {
+  flex: 1;
+  height: 300px;
+}
+
+.recommendations {
+  flex: 1;
+  padding: 16px;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+}
+
+.recommendations h4 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 1.2rem;
+}
+
+.recommendation-list {
+  padding-left: 20px;
+  margin: 0;
+}
+
+.recommendation-list li {
+  margin-bottom: 8px;
+}
+
+.no-prediction,
+.no-data {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #666;
+  font-style: italic;
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-size: 1.2rem;
+  color: #666;
+}
+
+.empty-message {
+  padding: 12px;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+  text-align: center;
+  color: #666;
+  font-style: italic;
+}

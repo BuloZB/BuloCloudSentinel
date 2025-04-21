@@ -1,0 +1,366 @@
+.battery-monitor-panel {
+  display: flex;
+  height: calc(100vh - 64px); /* Adjust based on your header height */
+  overflow: hidden;
+}
+
+.battery-monitor-sidebar {
+  width: 320px;
+  padding: 16px;
+  background-color: #f5f5f5;
+  overflow-y: auto;
+  border-right: 1px solid #ddd;
+}
+
+.battery-monitor-sidebar h2 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 1.5rem;
+}
+
+.battery-monitor-content {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.error-message {
+  margin-bottom: 16px;
+  padding: 8px 12px;
+  background-color: #f8d7da;
+  color: #721c24;
+  border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.error-message button {
+  background: none;
+  border: none;
+  color: #721c24;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.drone-selection h3,
+.battery-metrics h3,
+.battery-thresholds h3 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 1.2rem;
+}
+
+.drone-list {
+  margin-bottom: 16px;
+}
+
+.drone-item {
+  padding: 10px 12px;
+  background-color: white;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color 0.2s;
+}
+
+.drone-item:hover {
+  background-color: #f0f9ff;
+}
+
+.drone-item.selected {
+  background-color: #e9f7fe;
+  border-left: 3px solid #3498db;
+}
+
+.drone-name {
+  font-weight: 500;
+}
+
+.drone-status {
+  font-size: 0.8rem;
+  padding: 2px 6px;
+  border-radius: 10px;
+  text-transform: capitalize;
+}
+
+.drone-status.online {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.drone-status.offline {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.drone-status.flying {
+  background-color: #cce5ff;
+  color: #004085;
+}
+
+.battery-metrics {
+  background-color: white;
+  padding: 16px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+}
+
+.battery-indicator {
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.battery-outer {
+  flex: 1;
+  height: 24px;
+  background-color: #f0f0f0;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-right: 12px;
+}
+
+.battery-inner {
+  height: 100%;
+  border-radius: 12px;
+  transition: width 0.3s ease;
+}
+
+.battery-inner.battery-normal {
+  background-color: #4caf50;
+}
+
+.battery-inner.battery-warning {
+  background-color: #ff9800;
+}
+
+.battery-inner.battery-critical {
+  background-color: #f44336;
+}
+
+.battery-percentage {
+  font-weight: bold;
+  font-size: 1.2rem;
+  min-width: 60px;
+  text-align: right;
+}
+
+.battery-percentage.battery-normal {
+  color: #4caf50;
+}
+
+.battery-percentage.battery-warning {
+  color: #ff9800;
+}
+
+.battery-percentage.battery-critical {
+  color: #f44336;
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.metric-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.metric-label {
+  font-size: 0.8rem;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.metric-value {
+  font-weight: 500;
+}
+
+.metric-value.battery-normal {
+  color: #4caf50;
+}
+
+.metric-value.battery-warning {
+  color: #ff9800;
+}
+
+.metric-value.battery-critical {
+  color: #f44336;
+}
+
+.battery-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.rth-button,
+.refresh-button {
+  flex: 1;
+  padding: 8px 0;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.rth-button {
+  background-color: #f44336;
+  color: white;
+}
+
+.rth-button:hover {
+  background-color: #d32f2f;
+}
+
+.refresh-button {
+  background-color: #3498db;
+  color: white;
+}
+
+.refresh-button:hover {
+  background-color: #2980b9;
+}
+
+.battery-thresholds {
+  background-color: white;
+  padding: 16px;
+  border-radius: 4px;
+}
+
+.thresholds-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.edit-button {
+  padding: 4px 8px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.edit-button:hover {
+  background-color: #2980b9;
+}
+
+.thresholds-display {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.threshold-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.threshold-label {
+  font-size: 0.8rem;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.threshold-value {
+  font-weight: 500;
+}
+
+.threshold-value.battery-warning {
+  color: #ff9800;
+}
+
+.threshold-value.battery-critical {
+  color: #f44336;
+}
+
+.thresholds-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-size: 0.9rem;
+  margin-bottom: 4px;
+}
+
+.form-group input {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.save-button {
+  padding: 8px 0;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+.save-button:hover {
+  background-color: #388e3c;
+}
+
+.battery-charts {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  height: 100%;
+}
+
+.chart-container {
+  flex: 1;
+  background-color: white;
+  padding: 16px;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.no-data,
+.no-selection {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #666;
+  font-style: italic;
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-size: 1.2rem;
+  color: #666;
+}
+
+.empty-message {
+  padding: 12px;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+  text-align: center;
+  color: #666;
+  font-style: italic;
+}

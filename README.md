@@ -35,11 +35,11 @@ Bulo.Cloud Sentinel is an enterprise-grade, open-source modular surveillance and
 - **Multiple Weather Providers**: Support for various weather data sources (OpenWeatherMap, WeatherAPI, etc.)
 
 ### 🔋 Power Management
-- **Battery Monitoring**: Real-time tracking of drone battery levels and health
-- **Energy-Aware Mission Planning**: Calculate energy requirements for missions before execution
-- **Dynamic Range Estimation**: Estimate flight range based on battery status, payload, and weather conditions
-- **Low Battery Alerts**: Proactive notifications for critical battery levels
-- **Return-to-Home Optimization**: Intelligent RTH planning based on remaining battery capacity
+- **Real-Time Battery Monitoring**: Track voltage, current, capacity, and temperature with customizable alert thresholds
+- **Predictive Energy Models**: AI-powered estimation of energy consumption based on mission parameters and environmental factors
+- **Adaptive Mission Planning**: Optimize flight paths and parameters to minimize energy use while ensuring mission completion
+- **Low Battery Alerts and Safe Return**: Automated notifications and return-to-home triggers when battery levels become critical
+- **Battery Health Analytics**: Long-term monitoring of battery degradation to predict maintenance needs
 
 ### 📜 Regulatory Compliance Tools
 - **Regulation Database**: Comprehensive database of drone regulations by region
