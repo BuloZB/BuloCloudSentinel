@@ -80,6 +80,37 @@ services:
     volumes:
       - miniodata:/data
 
+  telemetry_service:
+    build:
+      context: ./dronecore
+    command: python telemetry_service.py
+    ports:
+      - "8100:8100"
+    depends_on:
+      - redis
+      - db
+
+  video_service:
+    build:
+      context: ./dronecore
+    command: python video_service.py
+    ports:
+      - "8200:8200"
+    depends_on:
+      - redis
+      - minio
+
+  mission_service:
+    build:
+      context: ./dronecore
+    command: python mission_service.py
+    ports:
+      - "8300:8300"
+    depends_on:
+      - redis
+      - db
+
 volumes:
   pgdata:
   miniodata:
+  ai_audit_data:

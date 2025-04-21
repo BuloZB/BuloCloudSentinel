@@ -9,6 +9,7 @@ from backend.api.login import router as login_router
 from backend.api.me import router as me_router
 from backend.api.metrics import router as metrics_router
 from backend.api.missions import router as missions_router
+from backend.api.analytics import router as analytics_router
 
 app = FastAPI(
     title="Bulo.Cloud Sentinel Backend API",
@@ -34,3 +35,4 @@ app.include_router(metrics_router)
 app.include_router(missions_router, dependencies=[Depends(get_current_user)])
 from backend.api.ws_missions import router as ws_missions_router
 app.include_router(ws_missions_router, dependencies=[Depends(get_current_user)])
+app.include_router(analytics_router, dependencies=[Depends(get_current_user)])

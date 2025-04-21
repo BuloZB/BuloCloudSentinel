@@ -1,54 +1,27 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Request, Depends, HTTPException, status
 from pydantic import BaseModel
-from typing import List, Optional
 from datetime import datetime
-from backend.api.dependencies import get_current_user
+from backend.api.dependencies import verify_jwt_token
+from typing import List
 
-router = APIRouter(
-    prefix="/audit-log",
-    tags=["Access Audit Log & Session Inspector"]
-)
+router = APIRouter()
 
 class AuditLogEntry(BaseModel):
-    id: int
-    user: str
-    action: str
     timestamp: datetime
-    details: Optional[str]
+    username: str
+    action: str
+    resource: str
+    details: str
 
-# In-memory store for demo purposes
-audit_log_db = []
+# In-memory audit log storage for demo purposes
+audit_logs: List[AuditLogEntry] = []
 
-@router.get("/", response_model=List[AuditLogEntry])
-async def get_audit_logs(
-    user: Optional[str] = None,
-    action: Optional[str] = None,
-    start_time: Optional[datetime] = None,
-    end_time: Optional[datetime] = None,
-    current_user: str = Depends(get_current_user)
-):
-    results = audit_log_db
-    if user:
-        results = [entry for entry in results if entry.user == user]
-    if action:
-        results = [entry for entry in results if action.lower() in entry.action.lower()]
-    if start_time:
-        results = [entry for entry in results if entry.timestamp >= start_time]
-    if end_time:
-        results = [entry for entry in results if entry.timestamp <= end_time]
-    return results
+@router.post("/audit-log")
+async def log_event(entry: AuditLogEntry, token=Depends(verify_jwt_token)):
+    audit_logs.append(entry)
+    return {"detail": "Event logged"}
 
-@router.post("/", response_model=AuditLogEntry)
-async def add_audit_log(entry: AuditLogEntry, current_user: str = Depends(get_current_user)):
-    audit_log_db.append(entry)
-    return entry
-
-@router.get("/export/csv")
-async def export_audit_log_csv(current_user: str = Depends(get_current_user)):
-    # Placeholder for CSV export logic
-    return {"status": "CSV export not implemented"}
-
-@router.get("/export/json")
-async def export_audit_log_json(current_user: str = Depends(get_current_user)):
-    # Placeholder for JSON export logic
-    return {"status": "JSON export not implemented"}
+@router.get("/audit-log", response_model=List[AuditLogEntry])
+async def get_audit_logs(token=Depends(verify_jwt_token)):
+    # For simplicity, return all logs; in production, add filtering and pagination
+    return audit_logs

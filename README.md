@@ -1,76 +1,83 @@
 # Bulo.Cloud Sentinel
 
-Bulo.Cloud Sentinel is a comprehensive, modular, and scalable surveillance and situational awareness platform designed for modern security operations. It integrates real-time video streaming, AI-powered analytics, drone command and telemetry, and advanced mission planning into a unified system.
+Bulo.Cloud Sentinel is an open-source modular surveillance and drone management system designed for scalability, security, and advanced AI-powered analytics.
 
-## Key Features
+## Features
 
-- 🎥 **Incident Timeline & Smart Playback**  
-  FastAPI backend and React frontend providing event timelines with AI-generated labels, thumbnails, and synchronized video playback.
-
-- 🚁 **Drone Command & Telemetry Hub**  
-  Real-time MAVLink telemetry ingestion and command dispatch with map-based UI and JWT-secured APIs.
-
-- 🤖 **AI Model Management & Training Panel**  
-  Upload, activate, and manage custom AI models (YOLOv8, TensorFlow) with MinIO storage and scheduled training.
-
-- 📋 **Device Inventory & Health Status**  
-  Centralized registry for cameras, sensors, and drones with health monitoring and alerting via Novu.
-
-- 🔒 **Access Audit Log & Session Inspector**  
-  Comprehensive audit logging of user actions with export capabilities and RBAC security.
-
-- 🧠 **AI Integrations Microservice**  
-  Modular FastAPI service integrating multiple AI providers (ChatGPT, Claude, Gemini, DALL·E, Whisper) with audit logging and Prometheus metrics.
-
-- 🚀 **Advanced Drone Mission Planning**  
-  Web-based mission planner with 2D/3D visualization, real-time telemetry integration, hybrid flight modes, and WebSocket-based control.
-
-## Technology Stack
-
-- ⚛️ **Frontend:** React, Tailwind CSS, React-Leaflet, React-Three-Fiber  
-- 🐍 **Backend:** FastAPI (Python), SQLAlchemy, PostgreSQL  
-- 🔐 **Authentication:** Keycloak (OAuth2, RBAC)  
-- 🐳 **Containerization:** Docker, Kubernetes  
-- 📡 **Messaging:** MQTT, WebSockets  
-- 📊 **Monitoring:** Prometheus, Grafana  
-- 💾 **Storage:** MinIO, PostgreSQL
+- Advanced Drone Mission Planning with waypoint support, mission simulation, and import/export (KML/GPX).
+- AI-Powered Anomaly Detection for real-time video and telemetry analysis.
+- Role-Based Access Control (RBAC) integrated with JWT and Keycloak.
+- Comprehensive Admin Dashboard displaying system health, drone status, and audit logs.
+- Microservices architecture for telemetry, video, and mission handling.
+- Docker and Kubernetes deployment support.
 
 ## Getting Started
 
-1. Clone the repository:  
-   ```bash
+### Prerequisites
+
+- Docker and Docker Compose
+- Python 3.9+
+- Node.js and npm/yarn for frontend
+
+### Setup
+
+1. Clone the repository:
+   ```
    git clone https://github.com/BuloZB/BuloCloudSentinel.git
    cd BuloCloudSentinel
    ```
 
-2. Create a `.env` file based on `.env.example` and fill in all required secrets and API keys.
-
-3. Build and start all services using Docker Compose:  
-   ```bash
-   docker-compose up -d
+2. Copy and configure environment variables:
+   ```
+   cp .env.example .env
+   # Edit .env with your settings
    ```
 
-4. Access the services:  
-   - Backend API: `http://localhost:8000`  
-   - AI Integrations: `http://localhost:8002`  
-   - Frontend UI: `http://localhost:3000`  
-   - RTMP Server Stats: `http://localhost:8080/stat`  
-   - Prometheus Metrics: `http://localhost:8002/monitoring/metrics`
+3. Build and start services:
+   ```
+   docker-compose up --build
+   ```
 
-## Documentation & Support
+4. Access the frontend at `http://localhost:3000`.
 
-- 📚 API documentation available at `/docs` for each FastAPI service.  
-- 🏗️ Detailed architecture and usage guides in the [GitHub Wiki](https://github.com/BuloZB/BuloCloudSentinel/wiki).  
-- 📖 User guides and tutorials for mission planning, drone control, and AI tools included in the documentation.
+## Architecture
 
-## Contributing
+The system is composed of multiple microservices:
 
-Contributions are welcome! Please follow the established code style and submit pull requests for review.
+- **Backend API**: FastAPI-based REST API with modular routers.
+- **Dronecore**: Drone control and telemetry services with adapters for DJI, Ardupilot, PX4.
+- **AI Detection**: AI modules for anomaly detection with pluggable ML models.
+- **Frontend**: React-based UI with components for mission control, analytics, and admin dashboard.
+- **Supporting Services**: PostgreSQL, Redis, MinIO, RTMP server.
 
-## License
+## Security
 
-This project is licensed under the MIT License.
+- Full JWT-based authentication and authorization.
+- Role definitions: `admin`, `operator`, `observer`.
+- Backend audit logging of all access and control events.
+- Planned Keycloak integration for centralized identity management.
+
+## Development
+
+- Backend code is in `backend/` and `dronecore/`.
+- Frontend code is in `frontend/`.
+- AI detection modules are in `ai_detection/` and `bulo-sentinel-ai/`.
+- Use `docker-compose.yml` for local development and testing.
+
+## Future Work
+
+- Real-time telemetry simulation and SDK integration.
+- Enhanced mission planner UI with map and import/export.
+- Full Keycloak integration.
+- Kubernetes Helm charts for production deployment.
+- Expanded AI anomaly detection with real ML models.
+
+## Documentation
+
+See the `docs/wiki/` directory for detailed architecture and usage guides.
 
 ---
 
-*All naming, logs, UI labels, and code structures use “Bulo.Cloud Sentinel” branding.*
+# License
+
+This project is licensed under the MIT License.

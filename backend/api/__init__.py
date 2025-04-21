@@ -1,31 +1,26 @@
-from fastapi import FastAPI
+from fastapi import APIRouter
 from backend.api.incident_timeline import router as incident_timeline_router
-
-app = FastAPI(
-    title="Bulo.Cloud Sentinel Backend API",
-    description="API for Bulo.Cloud Sentinel modules",
-    version="0.1.0"
-)
-
-app.include_router(incident_timeline_router)
 from dronecore.drone_command_telemetry_hub import router as drone_hub_router
-
-app.include_router(drone_hub_router)
 from ai_detection.ai_model_management import router as ai_model_management_router
-
-app.include_router(ai_model_management_router)
 from backend.api.device_inventory import router as device_inventory_router
-
-app.include_router(device_inventory_router)
 from backend.api.audit_log import router as audit_log_router
-
-app.include_router(audit_log_router)
 from backend.api.login import router as login_router
-
-app.include_router(login_router)
 from backend.api.me import router as me_router
-
-app.include_router(me_router)
 from backend.api.metrics import router as metrics_router
+from backend.api.analyze_video import router as analyze_video_router
+from dronecore.mission_planner_service import router as mission_planner_router
+from backend.api.health import router as health_router
 
-app.include_router(metrics_router)
+router = APIRouter()
+
+router.include_router(incident_timeline_router)
+router.include_router(drone_hub_router)
+router.include_router(ai_model_management_router)
+router.include_router(device_inventory_router)
+router.include_router(audit_log_router)
+router.include_router(login_router)
+router.include_router(me_router)
+router.include_router(metrics_router)
+router.include_router(analyze_video_router, prefix="/ai")
+router.include_router(mission_planner_router, prefix="/missions")
+router.include_router(health_router)
