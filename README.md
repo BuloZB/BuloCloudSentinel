@@ -13,6 +13,8 @@ Bulo.Cloud Sentinel is an open-source surveillance platform with React/Tailwind 
 - **🔔 Alerting System**: Customizable notifications and alerts
 - **📱 Mobile Support**: Responsive design for field operations
 - **🔄 API Integration**: Extensible API for third-party services
+- **🚁 Drone Swarm System**: Advanced multi-drone coordination and mission planning
+- **👁️ Vision System**: Crowd density and vehicle analysis from aerial footage
 
 ## 🧩 Addons
 
@@ -95,6 +97,32 @@ The Indoor Drone System provides advanced capabilities for operating drones in G
 - **🗺️ 3D Mapping**: Real-time 3D environment reconstruction and mapping
 - **🔄 Sensor Fusion**: Tight integration of LiDAR, visual, and inertial data for robust positioning
 
+### 🚁 Drone Swarm System
+
+The Drone Swarm System extends Bulo.Cloud Sentinel's capabilities with advanced multi-drone coordination and autonomous mission planning:
+
+- **🤖 Multi-Drone Coordination**: Coordinate multiple drones simultaneously for complex missions
+- **🗺️ Autonomous Mission Planning**: Plan and execute autonomous missions with multiple waypoints
+- **🔄 Swarm Intelligence**: Implement swarm behaviors for efficient area coverage and task distribution
+- **⚠️ Collision Avoidance**: Advanced algorithms to prevent collisions between drones and obstacles
+- **📡 Mesh Networking**: Resilient communication between drones even when some are out of direct range
+- **🔋 Power Management**: Optimize missions based on battery levels and power consumption
+- **🌦️ Weather Integration**: Adapt missions based on current and forecasted weather conditions
+- **🚧 Geofencing**: Define no-fly zones and operational boundaries for safe operations
+
+### 👁️ Vision System for Crowd and Vehicle Analysis
+
+The Vision System microservice provides advanced computer vision capabilities for analyzing aerial footage from drones:
+
+- **👥 Crowd Density Estimation**: Accurate estimation of crowd density from aerial footage
+- **🚗 Vehicle Detection and Counting**: Detect and count vehicles by type (car, truck, bus, etc.)
+- **🔄 Flow Analysis**: Track movement patterns and flow of crowds and vehicles
+- **🌡️ Density Heat Maps**: Generate heat maps for visualizing crowd and vehicle density
+- **📊 Occupancy Analytics**: Calculate space utilization and occupancy rates
+- **📈 Trend Analysis**: Identify patterns and trends in historical data
+- **🗺️ Spatial Mapping**: Map detections to geographic coordinates
+- **⚡ Real-time Processing**: Process video streams in real-time with minimal latency
+
 ## 🛠️ Development
 
 ### Project Structure
@@ -118,6 +146,9 @@ bulo-cloud-sentinel/
 ├── addons/               # Platform addons
 │   ├── sentinelweb/      # SentinelWeb addon
 │   └── sentinel-ai/      # Sentinel AI addon
+├── drone_swarm_system/   # Drone Swarm System microservice
+├── vision_system/        # Vision System for crowd and vehicle analysis
+├── ai_analytics/         # Advanced AI and Analytics module
 └── docs/                 # Documentation
 ```
 
