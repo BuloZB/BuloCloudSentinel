@@ -1,0 +1,129 @@
+api:
+  host: "0.0.0.0"
+  port: 8080
+  ssl_cert: null
+  ssl_key: null
+  rate_limit: "60/minute"
+
+hardware:
+  kraken_sdr:
+    enabled: true
+    device_index: 0
+    center_frequency: 1575420000  # GPS L1 frequency (1575.42 MHz)
+    sample_rate: 2400000  # 2.4 MSPS
+    gain: 30.0  # dB
+    coherent_mode: true
+    reference_channel: 0
+
+  hackrf:
+    enabled: true
+    serial_number: null
+    center_frequency: 2450000000  # 2.45 GHz
+    tx_frequency: 2450000000  # 2.45 GHz
+    sample_rate: 10000000  # 10 MSPS
+    rx_gain: 30.0  # dB
+    tx_gain: 0.0  # dB
+
+  lora_sx127x:
+    enabled: true
+    port: "/dev/ttyUSB0"
+    frequency: 868000000  # 868 MHz
+    spreading_factor: 7  # SF7
+    bandwidth: 125000  # 125 kHz
+    coding_rate: 5  # 4/5
+    frequency_hopping: false
+    hop_period: 0
+    tx_power: 17  # dBm
+
+processing:
+  gnss_mitigation:
+    enabled: true
+    pulse_blanking:
+      threshold: 3.0
+      window_size: 1024
+    notch_filter:
+      threshold: 10.0
+      fft_size: 1024
+      overlap: 512
+    adaptive_filter_bank:
+      num_filters: 4
+      filter_length: 32
+      step_size: 0.01
+
+  doa_estimation:
+    enabled: true
+    num_sources: 1
+    angle_resolution: 1.0
+    sample_size: 1024
+    music:
+      enabled: true
+    esprit:
+      enabled: false
+
+  jamming_detection:
+    enabled: true
+    sample_size: 1024
+    detection_interval: 1.0
+    energy_detector:
+      enabled: true
+      threshold: 10.0
+      window_size: 1024
+    spectral_detector:
+      enabled: true
+      threshold: 10.0
+      fft_size: 1024
+      overlap: 512
+    cyclostationary_detector:
+      enabled: false
+      threshold: 0.8
+      window_size: 1024
+      num_lags: 128
+
+  fhss:
+    enabled: true
+    num_channels: 10
+    hop_interval: 1.0
+    base_frequency: 868000000
+    channel_spacing: 200000
+    seed: null
+
+security:
+  vault:
+    enabled: false
+    url: "http://127.0.0.1:8200"
+    token: null
+    path: "secret/anti_jamming_service"
+
+  tls:
+    enabled: false
+    cert_file: "certs/server.crt"
+    key_file: "certs/server.key"
+    ca_file: null
+    verify_client: false
+
+  rate_limiting:
+    enabled: true
+    default_limit: "60/minute"
+    auth_limit: "10/minute"
+    whitelist_ips: []
+    blacklist_ips: []
+
+rabbitmq:
+  enabled: true
+  host: "rabbitmq"
+  port: 5672
+  vhost: "/"
+  username: "bulo"
+  password: "sentinel"
+  exchange: "anti_jamming"
+  exchange_type: "topic"
+  routing_key: "jamming.alert"
+  alert_interval: 5.0
+
+logging:
+  level: "INFO"
+  file: "logs/anti_jamming_service.log"
+  max_size: 10485760  # 10 MB
+  backup_count: 5
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  json_format: false

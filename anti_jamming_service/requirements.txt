@@ -1,0 +1,39 @@
+# FastAPI and web server
+fastapi>=0.68.0
+uvicorn>=0.15.0
+starlette>=0.14.2
+pydantic>=1.8.2
+
+# Hardware interfaces
+pyrtlsdr>=0.2.91
+pyusb>=1.2.1
+pyserial>=3.5
+pyLoRa>=0.3.1
+
+# Signal processing
+numpy>=1.21.2
+scipy>=1.7.1
+matplotlib>=3.4.3
+
+# GNSS processing
+gnss-sdr-python>=0.1.0
+dronekit>=2.9.2
+
+# Security
+cryptography>=35.0.0
+hvac>=0.11.2  # HashiCorp Vault client
+python-jose>=3.3.0  # JWT
+passlib>=1.7.4  # Password hashing
+
+# Messaging
+pika>=1.2.0  # RabbitMQ client
+
+# Utilities
+pyyaml>=6.0
+python-dotenv>=0.19.1
+tenacity>=8.0.1  # Retry logic
+
+# Testing
+pytest>=6.2.5
+pytest-asyncio>=0.15.1
+httpx>=0.19.0  # For testing FastAPI
