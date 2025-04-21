@@ -10,6 +10,7 @@ from backend.api.metrics import router as metrics_router
 from backend.api.analyze_video import router as analyze_video_router
 from dronecore.mission_planner_service import router as mission_planner_router
 from backend.api.health import router as health_router
+from backend.api.sensor_fusion import router as sensor_fusion_router
 
 router = APIRouter()
 
@@ -24,3 +25,4 @@ router.include_router(metrics_router)
 router.include_router(analyze_video_router, prefix="/ai")
 router.include_router(mission_planner_router, prefix="/missions")
 router.include_router(health_router)
+router.include_router(sensor_fusion_router)
