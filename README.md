@@ -120,7 +120,14 @@ bulo-cloud-sentinel/
 
 ## 📄 License
 
-This project is licensed under the BSD-3-Clause License - see the LICENSE file for details.
+This project is licensed under the MIT License, a permissive free software license that allows anyone to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the software.
+
+In simple terms:
+- ✅ You can use this code for commercial purposes
+- ✅ You can modify the code and create derivative works
+- ✅ You can distribute the original or modified code
+- ✅ You can include this code in projects using different licenses
+- ✅ No warranty is provided, and the authors have no liability for damages
 
 ## 👏 Acknowledgments
 
