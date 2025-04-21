@@ -1,0 +1,3 @@
+"""
+SentinelWeb routers package.
+"""

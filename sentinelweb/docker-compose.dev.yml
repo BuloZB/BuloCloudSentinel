@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  sentinelweb:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sentinelweb
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - HOST=0.0.0.0
+      - PORT=3000
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=sentinelweb
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - SENTINEL_API_URL=${SENTINEL_API_URL:-http://bulocloud-sentinel-api:8000}
+      - SENTINEL_API_TOKEN=${SENTINEL_API_TOKEN:-}
+    volumes:
+      - ./backend/sentinel_web:/app/backend/sentinel_web
+      - sentinelweb_data:/app/backend/data
+    depends_on:
+      - redis
+      - db
+    networks:
+      - sentinelweb-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: sentinelweb-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - sentinelweb-network
+
+  db:
+    image: postgres:15-alpine
+    container_name: sentinelweb-db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=sentinelweb
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - sentinelweb-network
+
+volumes:
+  sentinelweb_data:
+  redis_data:
+  postgres_data:
+
+networks:
+  sentinelweb-network:
+    driver: bridge

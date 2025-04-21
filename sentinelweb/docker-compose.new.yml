@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+  sentinelweb:
+    build:
+      context: .
+      dockerfile: Dockerfile.new
+    ports:
+      - "8080:8080"
+    environment:
+      - SENTINEL_API_URL=http://bulocloud-sentinel-api:8000
+      - SENTINEL_API_TOKEN=
+      - RTMP_SERVER=rtmp://rtmp-server:1935
+      - SECRET_KEY=sentinelweb-secret-key
+    volumes:
+      - ./backend:/app/backend
+    depends_on:
+      - bulocloud-sentinel-api
+      - rtmp-server
+    networks:
+      - sentinel-network
+
+  bulocloud-sentinel-api:
+    image: bulocloud-sentinel-api:latest
+    ports:
+      - "8000:8000"
+    networks:
+      - sentinel-network
+
+  rtmp-server:
+    image: tiangolo/nginx-rtmp:latest
+    ports:
+      - "1935:1935"  # RTMP
+      - "8081:80"    # HTTP
+    networks:
+      - sentinel-network
+
+networks:
+  sentinel-network:
+    driver: bridge

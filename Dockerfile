@@ -1,0 +1,45 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    curl \
+    git \
+    libpq-dev \
+    gnupg \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Node.js 20.x
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get update \
+    && apt-get install -y nodejs \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy application code
+COPY . /app/
+
+# Install frontend dependencies and build
+WORKDIR /app
+RUN npm install
+RUN npm run build
+
+# Install backend dependencies
+RUN pip install --no-cache-dir -r backend/requirements.txt
+
+# Create necessary directories
+RUN mkdir -p /app/backend/data
+
+# Set environment variables
+ENV PYTHONPATH=/app
+ENV HOST=0.0.0.0
+ENV PORT=3000
+
+# Expose port
+EXPOSE 3000
+
+# Start the application
+CMD ["python", "-m", "backend.sentinel_web.main"]

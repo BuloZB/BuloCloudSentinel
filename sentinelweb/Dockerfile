@@ -1,3 +1,24 @@
+FROM node:20-slim AS frontend-builder
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git \
+    python3 \
+    python3-pip \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Clone OpenWebUI repository
+RUN git clone https://github.com/open-webui/open-webui.git /app/open-webui
+
+# Build frontend
+WORKDIR /app/open-webui
+RUN npm install
+RUN npm run build
+
+# Second stage: Python backend
 FROM python:3.11-slim
 
 WORKDIR /app
@@ -5,24 +26,21 @@ WORKDIR /app
 # Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
-    curl \
-    git \
     libpq-dev \
-    nodejs \
-    npm \
+    git \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy application code
-COPY . /app/
+# Copy OpenWebUI backend code
+COPY --from=frontend-builder /app/open-webui/backend /app/backend
+COPY --from=frontend-builder /app/open-webui/build /app/frontend/dist
 
-# Install frontend dependencies and build
-WORKDIR /app
-RUN npm install
-RUN npm run build
+# Copy SentinelWeb adaptation files
+COPY backend/sentinel_web /app/backend/sentinel_web
 
-# Install backend dependencies
-RUN pip install --no-cache-dir -r backend/requirements.txt
+# Copy requirements file and install dependencies
+COPY requirements.txt /app/
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Create necessary directories
 RUN mkdir -p /app/backend/data

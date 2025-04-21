@@ -1,0 +1,37 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    curl \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# Clone OpenWebUI repository
+RUN git clone https://github.com/open-webui/open-webui.git /app/open-webui
+
+# Install OpenWebUI dependencies
+WORKDIR /app/open-webui/backend
+RUN pip install --no-cache-dir -e .
+
+# Copy SentinelWeb code
+COPY backend /app/backend
+
+# Install SentinelWeb dependencies
+WORKDIR /app/backend
+RUN pip install --no-cache-dir -e .
+
+# Set environment variables
+ENV PYTHONPATH=/app:/app/open-webui:/app/backend
+ENV SENTINEL_API_URL=http://bulocloud-sentinel-api:8000
+ENV SENTINEL_API_TOKEN=""
+ENV RTMP_SERVER=rtmp://rtmp-server:1935
+ENV SECRET_KEY=sentinelweb-secret-key
+
+# Expose port
+EXPOSE 8080
+
+# Run the application
+CMD ["python", "-m", "uvicorn", "sentinel_web.main_fixed:app", "--host", "0.0.0.0", "--port", "8080"]

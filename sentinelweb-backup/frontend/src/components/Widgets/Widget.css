@@ -1,0 +1,404 @@
+.widget {
+  width: 100%;
+  height: 100%;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.widget-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.widget-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #343a40;
+}
+
+.widget-remove-btn {
+  background: none;
+  border: none;
+  color: #6c757d;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.widget-remove-btn:hover {
+  background-color: #e9ecef;
+  color: #dc3545;
+}
+
+.widget-content {
+  flex: 1;
+  padding: 16px;
+  overflow: auto;
+}
+
+.widget-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #6c757d;
+}
+
+.widget-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #dc3545;
+  text-align: center;
+  padding: 16px;
+}
+
+.widget-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #6c757d;
+  text-align: center;
+  font-style: italic;
+}
+
+/* Drone Status Widget */
+.drone-status-widget .drone-selector {
+  margin-bottom: 16px;
+}
+
+.drone-status-widget .drone-selector select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  background-color: #fff;
+  font-size: 14px;
+}
+
+.drone-status-widget .drone-status {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+  padding: 8px 12px;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+}
+
+.drone-status-widget .status-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.drone-status-widget .status-text {
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.drone-status-widget .drone-info {
+  margin-bottom: 16px;
+}
+
+.drone-status-widget .info-item {
+  display: flex;
+  margin-bottom: 8px;
+}
+
+.drone-status-widget .info-label {
+  width: 80px;
+  font-weight: 500;
+  color: #6c757d;
+}
+
+.drone-status-widget .info-value {
+  flex: 1;
+}
+
+.drone-status-widget .drone-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.drone-status-widget .action-btn {
+  flex: 1;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  background-color: #007bff;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.drone-status-widget .action-btn:hover {
+  background-color: #0069d9;
+}
+
+/* Map Widget */
+.map-widget .map-container {
+  height: 100%;
+  min-height: 200px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+/* Video Widget */
+.video-widget .video-container {
+  height: 100%;
+  min-height: 200px;
+  background-color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.video-widget .video-stream {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.video-widget .video-controls {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  right: 16px;
+  display: flex;
+  gap: 8px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.video-widget:hover .video-controls {
+  opacity: 1;
+}
+
+.video-widget .video-control-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.5);
+  border: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* Telemetry Widget */
+.telemetry-widget .telemetry-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.telemetry-widget .telemetry-item {
+  padding: 12px;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.telemetry-widget .telemetry-value {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.telemetry-widget .telemetry-label {
+  font-size: 12px;
+  color: #6c757d;
+  text-transform: uppercase;
+}
+
+/* Battery Widget */
+.battery-widget .battery-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.battery-widget .battery-level {
+  width: 80%;
+  height: 40px;
+  background-color: #e9ecef;
+  border-radius: 20px;
+  margin-bottom: 16px;
+  overflow: hidden;
+  position: relative;
+}
+
+.battery-widget .battery-fill {
+  height: 100%;
+  border-radius: 20px;
+  transition: width 0.5s ease;
+}
+
+.battery-widget .battery-fill.high {
+  background-color: #28a745;
+}
+
+.battery-widget .battery-fill.medium {
+  background-color: #ffc107;
+}
+
+.battery-widget .battery-fill.low {
+  background-color: #dc3545;
+}
+
+.battery-widget .battery-percentage {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-weight: 600;
+  color: #343a40;
+}
+
+.battery-widget .battery-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  width: 100%;
+}
+
+.battery-widget .battery-stat {
+  text-align: center;
+}
+
+.battery-widget .stat-value {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.battery-widget .stat-label {
+  font-size: 12px;
+  color: #6c757d;
+}
+
+/* Mission Widget */
+.mission-widget .mission-list {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.mission-widget .mission-item {
+  padding: 12px;
+  border-radius: 4px;
+  background-color: #f8f9fa;
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+
+.mission-widget .mission-item:hover {
+  background-color: #e9ecef;
+}
+
+.mission-widget .mission-item.selected {
+  background-color: #007bff;
+  color: white;
+}
+
+.mission-widget .mission-name {
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.mission-widget .mission-details {
+  font-size: 12px;
+  color: inherit;
+  opacity: 0.8;
+}
+
+.mission-widget .mission-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.mission-widget .mission-action-btn {
+  flex: 1;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  background-color: #007bff;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.mission-widget .mission-action-btn:hover {
+  background-color: #0069d9;
+}
+
+/* Weather Widget */
+.weather-widget .weather-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.weather-widget .weather-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.weather-widget .weather-temp {
+  font-size: 36px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.weather-widget .weather-desc {
+  font-size: 16px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.weather-widget .weather-details {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  width: 100%;
+}
+
+.weather-widget .weather-detail {
+  text-align: center;
+}
+
+.weather-widget .detail-value {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.weather-widget .detail-label {
+  font-size: 12px;
+  color: #6c757d;
+}
