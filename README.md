@@ -198,7 +198,3 @@ In simple terms:
 - ✅ You can include this code in projects using different licenses
 - ✅ No warranty is provided, and the authors have no liability for damages
 
-## 👏 Acknowledgments
-
-- OpenWebUI team for their excellent platform and integration support
-- All contributors to the project
