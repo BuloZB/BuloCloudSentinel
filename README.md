@@ -15,6 +15,7 @@ Bulo.Cloud Sentinel is an open-source surveillance platform with React/Tailwind 
 - **🔄 API Integration**: Extensible API for third-party services
 - **🚁 Drone Swarm System**: Advanced multi-drone coordination and mission planning
 - **👁️ Vision System**: Crowd density and vehicle analysis from aerial footage
+- **🔒 Security Module**: Comprehensive security features and vulnerability protection
 
 ## 🧩 Addons
 
@@ -123,6 +124,20 @@ The Vision System microservice provides advanced computer vision capabilities fo
 - **🗺️ Spatial Mapping**: Map detections to geographic coordinates
 - **⚡ Real-time Processing**: Process video streams in real-time with minimal latency
 
+### 🔒 Security Module
+
+The Security Module provides comprehensive security features for the Bulo.Cloud Sentinel platform:
+
+- **🔐 Advanced Authentication**: JWT, OAuth2, and multi-factor authentication
+- **🔑 Role-Based Access Control**: Fine-grained permission management
+- **🔒 Data Encryption**: End-to-end encryption for sensitive data
+- **🔍 Security Monitoring**: Real-time monitoring and alerting for security events
+- **🔎 Vulnerability Scanning**: Automated scanning for known vulnerabilities
+- **📝 Audit Logging**: Comprehensive logging of security-relevant events
+- **🚫 Rate Limiting**: Protection against brute force and DoS attacks
+- **🔗 Secure Communications**: TLS/SSL implementation for all communications
+- **🔓 Input Validation**: Protection against injection attacks
+
 ## 🛠️ Development
 
 ### Project Structure
@@ -149,6 +164,7 @@ bulo-cloud-sentinel/
 ├── drone_swarm_system/   # Drone Swarm System microservice
 ├── vision_system/        # Vision System for crowd and vehicle analysis
 ├── ai_analytics/         # Advanced AI and Analytics module
+├── security/             # Security Module for comprehensive protection
 └── docs/                 # Documentation
 ```
 
