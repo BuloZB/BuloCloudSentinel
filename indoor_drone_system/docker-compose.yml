@@ -1,0 +1,129 @@
+version: '3'
+
+services:
+  indoor-drone-api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    ports:
+      - "8050:8050"
+    volumes:
+      - ./api:/app
+    environment:
+      - SENTINEL_API_URL=http://bulocloud-sentinel-api:8000
+      - SENTINEL_API_TOKEN=${SENTINEL_API_TOKEN:-}
+      - ROS_MASTER_URI=http://ros-master:11311
+    depends_on:
+      - ros-master
+      - slam-service
+      - path-planning
+      - sensor-fusion
+    networks:
+      - sentinel-network
+      - ros-network
+
+  ros-master:
+    image: ros:humble
+    command: ros2 run rclpy_examples ros2-master
+    ports:
+      - "11311:11311"
+    networks:
+      - ros-network
+
+  slam-service:
+    build:
+      context: ./slam
+      dockerfile: Dockerfile
+    volumes:
+      - ./slam:/app
+      - ./data:/data
+    environment:
+      - ROS_MASTER_URI=http://ros-master:11311
+      - LIDAR_TYPE=livox_mid360
+      - CAMERA_TYPE=realsense_d455
+    depends_on:
+      - ros-master
+    networks:
+      - ros-network
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  path-planning:
+    build:
+      context: ./planning
+      dockerfile: Dockerfile
+    volumes:
+      - ./planning:/app
+      - ./data:/data
+    environment:
+      - ROS_MASTER_URI=http://ros-master:11311
+    depends_on:
+      - ros-master
+      - slam-service
+    networks:
+      - ros-network
+
+  sensor-fusion:
+    build:
+      context: ./fusion
+      dockerfile: Dockerfile
+    volumes:
+      - ./fusion:/app
+      - ./data:/data
+    environment:
+      - ROS_MASTER_URI=http://ros-master:11311
+    depends_on:
+      - ros-master
+    networks:
+      - ros-network
+
+  simulation:
+    build:
+      context: ./simulation
+      dockerfile: Dockerfile
+    ports:
+      - "8060:8060"  # Web interface for simulation
+    volumes:
+      - ./simulation:/app
+      - ./data:/data
+    environment:
+      - ROS_MASTER_URI=http://ros-master:11311
+    depends_on:
+      - ros-master
+    networks:
+      - ros-network
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  mavros-bridge:
+    build:
+      context: ./mavros
+      dockerfile: Dockerfile
+    volumes:
+      - ./mavros:/app
+    environment:
+      - ROS_MASTER_URI=http://ros-master:11311
+      - FCU_URL=/dev/ttyACM0:57600
+      - FCU_SYS_ID=1
+    depends_on:
+      - ros-master
+    networks:
+      - ros-network
+    devices:
+      - /dev/ttyACM0:/dev/ttyACM0
+
+networks:
+  sentinel-network:
+    external: true
+  ros-network:
+    driver: bridge

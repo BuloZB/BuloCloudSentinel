@@ -1,0 +1,13 @@
+numpy>=1.23.0
+opencv-python>=4.7.0
+open3d>=0.17.0
+scipy>=1.10.0
+matplotlib>=3.7.0
+pyyaml>=6.0
+rclpy>=0.18.0
+torch>=2.0.0
+torchvision>=0.15.0
+scikit-learn>=1.2.0
+pyquaternion>=0.9.9
+transforms3d>=0.4.1
+pangolin>=0.6
