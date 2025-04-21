@@ -1,0 +1,137 @@
+.waypoint-mission-panel {
+  margin-top: 20px;
+}
+
+.waypoint-mission-panel h3 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 1.2rem;
+}
+
+.waypoint-mission-panel h4 {
+  margin-top: 20px;
+  margin-bottom: 12px;
+  font-size: 1.1rem;
+}
+
+.waypoint-mission-panel h5 {
+  margin-top: 16px;
+  margin-bottom: 8px;
+  font-size: 1rem;
+}
+
+.toggle-advanced {
+  margin-top: 16px;
+  width: 100%;
+}
+
+.advanced-settings {
+  margin-top: 16px;
+  padding: 12px;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+  border: 1px solid #eee;
+}
+
+.no-waypoints,
+.no-actions {
+  font-style: italic;
+  color: #777;
+  margin: 8px 0;
+}
+
+.waypoint-list {
+  margin-top: 12px;
+}
+
+.waypoint-item {
+  margin-bottom: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.waypoint-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background-color: #f5f5f5;
+  cursor: pointer;
+}
+
+.waypoint-title {
+  display: flex;
+  align-items: center;
+}
+
+.waypoint-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background-color: #3498db;
+  color: white;
+  border-radius: 50%;
+  margin-right: 8px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.waypoint-coords {
+  font-size: 0.8rem;
+  color: #555;
+}
+
+.waypoint-actions {
+  display: flex;
+  align-items: center;
+}
+
+.expand-icon {
+  margin-left: 8px;
+  font-size: 0.8rem;
+  transition: transform 0.2s;
+}
+
+.expand-icon.expanded {
+  transform: rotate(180deg);
+}
+
+.waypoint-details {
+  padding: 12px;
+  background-color: white;
+  border-top: 1px solid #eee;
+}
+
+.loiter-time {
+  margin-top: 8px;
+  margin-left: 24px;
+}
+
+.camera-actions-list {
+  margin-bottom: 12px;
+}
+
+.camera-action-item {
+  padding: 12px;
+  margin-bottom: 8px;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+  border: 1px solid #eee;
+}
+
+.btn-small {
+  padding: 4px 8px;
+  font-size: 0.8rem;
+}
+
+.btn-danger {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.btn-danger:hover {
+  background-color: #c0392b;
+}

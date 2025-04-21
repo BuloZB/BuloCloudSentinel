@@ -1,0 +1,68 @@
+.mission-type-selector {
+  margin-bottom: 20px;
+}
+
+.mission-type-selector h2 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 1.5rem;
+}
+
+.mission-types {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mission-type-card {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  background-color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+}
+
+.mission-type-card:hover {
+  background-color: #f0f9ff;
+}
+
+.mission-type-card.selected {
+  border-color: #3498db;
+  background-color: #e9f7fe;
+}
+
+.mission-type-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+  background-color: #f5f5f5;
+  border-radius: 50%;
+}
+
+.mission-type-icon img {
+  width: 24px;
+  height: 24px;
+}
+
+.mission-type-info {
+  flex: 1;
+}
+
+.mission-type-info h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.mission-type-info p {
+  margin: 4px 0 0;
+  font-size: 0.8rem;
+  color: #666;
+  line-height: 1.2;
+}

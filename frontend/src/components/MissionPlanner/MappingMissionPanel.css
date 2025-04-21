@@ -1,0 +1,79 @@
+.mapping-mission-panel {
+  margin-top: 20px;
+}
+
+.mapping-mission-panel h3 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 1.2rem;
+}
+
+.boundary-instructions {
+  padding: 16px;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  border: 1px dashed #ccc;
+  margin-bottom: 16px;
+}
+
+.boundary-instructions p {
+  margin: 0 0 8px;
+  font-size: 0.9rem;
+}
+
+.boundary-instructions p:last-child {
+  margin-bottom: 0;
+  font-weight: 500;
+}
+
+.gimbal-presets,
+.angle-presets {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.preset-btn {
+  padding: 4px 8px;
+  font-size: 0.8rem;
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.preset-btn.active {
+  background-color: #3498db;
+  color: white;
+  border-color: #2980b9;
+}
+
+.range-slider {
+  margin-top: 8px;
+}
+
+.range-slider input {
+  width: 100%;
+}
+
+.checkbox-group {
+  display: flex;
+  align-items: center;
+}
+
+.checkbox-group input[type="checkbox"] {
+  margin-right: 8px;
+}
+
+.toggle-advanced {
+  margin-top: 16px;
+  width: 100%;
+}
+
+.advanced-settings {
+  margin-top: 16px;
+  padding: 12px;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+  border: 1px solid #eee;
+}
