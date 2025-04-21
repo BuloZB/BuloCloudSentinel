@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import DOMPurify from 'dompurify';
+import { sanitizeHtml, sanitizeString } from '../../utils/security';
 import './Widget.css';
 
 const DroneStatusWidget = ({ id, title, settings, onRemove }) => {
@@ -21,11 +21,11 @@ const DroneStatusWidget = ({ id, title, settings, onRemove }) => {
         // Sanitize drone data
         const sanitizedDrones = data.map(drone => ({
           ...drone,
-          name: DOMPurify.sanitize(drone.name),
-          type: DOMPurify.sanitize(drone.type),
-          status: DOMPurify.sanitize(drone.status),
-          mission: drone.mission ? DOMPurify.sanitize(drone.mission) : null,
-          location: drone.location ? DOMPurify.sanitize(drone.location) : null
+          name: sanitizeString(drone.name),
+          type: sanitizeString(drone.type),
+          status: sanitizeString(drone.status),
+          mission: drone.mission ? sanitizeString(drone.mission) : null,
+          location: drone.location ? drone.location : null // Location is an object, sanitize individual fields if needed
         }));
 
         setDrones(sanitizedDrones);
@@ -76,7 +76,7 @@ const DroneStatusWidget = ({ id, title, settings, onRemove }) => {
   return (
     <div className="widget drone-status-widget">
       <div className="widget-header">
-        <h3 className="widget-title">{DOMPurify.sanitize(title)}</h3>
+        <h3 className="widget-title">{sanitizeString(title)}</h3>
         {onRemove && (
           <button className="widget-remove-btn" onClick={onRemove}>
             &times;
