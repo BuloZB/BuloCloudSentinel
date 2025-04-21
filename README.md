@@ -1,90 +1,231 @@
+<div align="center">
+
 # 🛡️ Bulo.Cloud Sentinel
+
+**Advanced Open-Source Surveillance Platform**
+
+<img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT">
+<img src="https://img.shields.io/badge/Status-Development-yellow.svg" alt="Status: Development">
+<img src="https://img.shields.io/badge/Platform-Cross--platform-green.svg" alt="Platform: Cross-platform">
+
+</div>
 
 > ⚠️ **IMPORTANT**: This is a development framework and not intended for production use without proper security review and customization.
 
+<div align="center">
+<table>
+<tr>
+<td width="50%">
+
+## 🚀 Core Features
+
+- **🔐 Authentication & Authorization**  
+  Secure user management with role-based access control
+
+- **📊 Dashboard**  
+  Real-time monitoring and analytics
+
+- **🗺️ Geospatial Tracking**  
+  GPS integration and mapping capabilities
+
+- **🤖 AI Integration**  
+  Computer vision and anomaly detection
+
+</td>
+<td width="50%">
+
+## 🔄 Advanced Capabilities
+
+- **🔔 Alerting System**  
+  Customizable notifications and alerts
+
+- **📱 Mobile Support**  
+  Responsive design for field operations
+
+- **🔄 API Integration**  
+  Extensible API for third-party services
+
+- **🌐 Cross-Platform**  
+  Works on various operating systems
+
+</td>
+</tr>
+</table>
+</div>
+
 Bulo.Cloud Sentinel is an open-source surveillance platform with React/Tailwind frontend, FastAPI backend, and PostgreSQL database.
 
-## 🚀 Features
+---
 
-- **🔐 Authentication & Authorization**: Secure user management with role-based access control
-- **📊 Dashboard**: Real-time monitoring and analytics
-- **🗺️ Geospatial Tracking**: GPS integration and mapping capabilities
-- **🤖 AI Integration**: Computer vision and anomaly detection
-- **🔔 Alerting System**: Customizable notifications and alerts
-- **📱 Mobile Support**: Responsive design for field operations
-- **🔄 API Integration**: Extensible API for third-party services
+<div align="center">
 
-## 🧩 Addons
+# 🚁 SentinelWeb
 
-### 🚁 SentinelWeb
+**Modular Web Interface for Drone Management**
+
+</div>
 
 SentinelWeb is a modular, extensible web interface addon for BuloCloudSentinel, providing a user-friendly dashboard for drone management and surveillance operations. It is built on top of OpenWebUI's architecture but specifically tailored for drone operations.
 
-#### ✨ Key Features
+<div align="center">
+<table>
+<tr>
+<td width="33%">
 
-- **🔐 User Authentication and Management**:
-  - Role-based access control (RBAC) with admin, operator, and observer roles
-  - Integration with BuloCloudSentinel's JWT authentication system
-  - User profile management and preferences
+### 🔐 User Management
 
-- **📊 Dashboard**:
-  - Real-time overview of drone status, mission progress, and system health
-  - Customizable widgets for telemetry data (battery levels, GPS coordinates, altitude)
-  - System-wide notifications and alerts
+- Role-based access control
+- JWT authentication system
+- User profile management
+- Customizable preferences
 
-- **📍 Mission Management**:
-  - Interface for planning, simulating, and executing drone missions
-  - Waypoint navigation and mission file import/export (KML/GPX formats)
-  - Mission templates and saved configurations
+</td>
+<td width="33%">
 
-- **📹 Live Video and Telemetry**:
-  - Streaming and display of live video feeds from drones using RTMP
-  - Real-time visualization of telemetry data (speed, altitude, battery status)
-  - Historical telemetry data analysis and playback
+### 📊 Dashboard
 
-- **🤖 AI Integration**:
-  - Interface to configure and monitor AI-powered anomaly detection
-  - Support for uploading and managing AI models for drone tasks
-  - Visual analytics and insights from AI processing
+- Real-time drone status
+- Mission progress tracking
+- System health monitoring
+- Customizable widgets
 
-- **🔗 Extensibility**:
-  - Plugin system for adding custom tools and features
-  - Well-documented APIs for third-party integrations
-  - Custom widget development
+</td>
+<td width="33%">
 
-- **📲 Offline Operation**:
-  - Ability to operate without internet connection
-  - Local caching of essential data
-  - Synchronization when connection is restored
+### 📍 Mission Management
 
-#### 🔄 OpenWebUI Integration
+- Planning & simulation
+- Waypoint navigation
+- KML/GPX import/export
+- Mission templates
 
-The latest version of SentinelWeb directly integrates with OpenWebUI, providing all the features of OpenWebUI plus drone-specific functionality. This integration allows for:
+</td>
+</tr>
+<tr>
+<td width="33%">
+
+### 📹 Live Video & Telemetry
+
+- RTMP video streaming
+- Real-time telemetry data
+- Historical data analysis
+- Performance metrics
+
+</td>
+<td width="33%">
+
+### 🤖 AI Integration
+
+- Anomaly detection
+- AI model management
+- Visual analytics
+- Predictive insights
+
+</td>
+<td width="33%">
+
+### 🔗 Extensibility
+
+- Plugin system
+- Third-party API integration
+- Custom widget development
+- Modular architecture
+
+</td>
+</tr>
+</table>
+</div>
+
+### 📲 Offline Operation
+- Ability to operate without internet connection
+- Local caching of essential data
+- Synchronization when connection is restored
+
+---
+
+<div align="center">
+
+## 🔄 OpenWebUI Integration
+
+</div>
+
+The latest version of SentinelWeb directly integrates with OpenWebUI, providing all the features of OpenWebUI plus drone-specific functionality.
+
+<div align="center">
+<table>
+<tr>
+<td width="50%">
+
+### Integration Benefits
 
 - 📱 Using OpenWebUI's powerful interface components
 - 🔄 Maintaining compatibility with OpenWebUI updates
 - 🔗 Adding drone-specific adapters and endpoints
 - 👍 Seamless user experience across both platforms
 
-#### 🏗️ Architecture
+</td>
+<td width="50%">
 
-SentinelWeb is built as a standalone addon that integrates with BuloCloudSentinel's existing microservices:
+### Architecture
 
-- **Backend**: FastAPI-based service that connects to BuloCloudSentinel's APIs
-- **Frontend**: React-based SPA with responsive design and PWA capabilities
-- **Database**: PostgreSQL for persistent storage, Redis for caching
-- **Integration**: WebSockets for real-time data, REST APIs for CRUD operations
+- **Backend**: FastAPI-based service
+- **Frontend**: React-based SPA with responsive design
+- **Database**: PostgreSQL for storage, Redis for caching
+- **Integration**: WebSockets and REST APIs
 
-### 🧠 Sentinel AI
+</td>
+</tr>
+</table>
+</div>
 
-Sentinel AI provides advanced artificial intelligence capabilities for the Bulo.Cloud Sentinel platform, including:
+---
 
-- **👁️ Computer Vision**: Object detection, tracking, and classification
-- **🔍 Anomaly Detection**: Identifying unusual patterns and behaviors
-- **📊 Predictive Analytics**: Forecasting trends and potential issues
-- **🗣️ Natural Language Processing**: Command interpretation and reporting
+<div align="center">
+
+# 🧠 Sentinel AI
+
+**Advanced Intelligence for Surveillance**
+
+</div>
+
+Sentinel AI provides advanced artificial intelligence capabilities for the Bulo.Cloud Sentinel platform.
+
+<div align="center">
+<table>
+<tr>
+<td width="50%">
+
+### Core AI Capabilities
+
+- **👁️ Computer Vision**  
+  Object detection, tracking, and classification
+
+- **🔍 Anomaly Detection**  
+  Identifying unusual patterns and behaviors
+
+</td>
+<td width="50%">
+
+### Advanced Analytics
+
+- **📊 Predictive Analytics**  
+  Forecasting trends and potential issues
+
+- **🗣️ Natural Language Processing**  
+  Command interpretation and reporting
+
+</td>
+</tr>
+</table>
+</div>
+
+---
+
+<div align="center">
 
 ## 🛠️ Development
+
+</div>
 
 ### Project Structure
 
@@ -118,18 +259,41 @@ bulo-cloud-sentinel/
 4. Push to the branch: `git push origin feature/my-feature`
 5. Submit a pull request
 
+---
+
+<div align="center">
+
 ## 📄 License
+
+</div>
 
 This project is licensed under the MIT License, a permissive free software license that allows anyone to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the software.
 
-In simple terms:
+<div align="center">
+<table>
+<tr>
+<td>
+
+### MIT License Permissions
+
 - ✅ You can use this code for commercial purposes
 - ✅ You can modify the code and create derivative works
 - ✅ You can distribute the original or modified code
 - ✅ You can include this code in projects using different licenses
 - ✅ No warranty is provided, and the authors have no liability for damages
 
+</td>
+</tr>
+</table>
+</div>
+
+---
+
+<div align="center">
+
 ## 👏 Acknowledgments
 
 - OpenWebUI team for their excellent platform and integration support
 - All contributors to the project
+
+</div>
