@@ -1,129 +1,59 @@
-[![CI](https://github.com/BuloZB/BuloCloudSentinel/actions/workflows/ci.yml/badge.svg)](https://github.com/BuloZB/BuloCloudSentinel/actions/workflows/ci.yml) [![Docker](https://img.shields.io/docker/cloud/build/bulozbd/bulo-cloud-sentinel)](https://hub.docker.com/r/bulozbd/bulo-cloud-sentinel) [![License](https://img.shields.io/github/license/BuloZB/BuloCloudSentinel)]()
+# Bulo.Cloud Sentinel Tactical Use Module Documentation
 
-# 📖 Bulo.Cloud Sentinel Documentation
+## Overview
 
-## 💡 Introduction
-Bulo.Cloud Sentinel is an enterprise-grade video surveillance and situational awareness platform combining real-time video streaming, AI analytics, and secure drone/IoT control in a modular, containerized architecture.
+This document provides detailed information about the newly integrated Tactical Use Module within Bulo.Cloud Sentinel. The module enhances the platform with advanced capabilities inspired by Anduril's Lattice Mesh system.
 
-## 📚 Core Modules
+## Modules
 
-### 🎥 Incident Timeline & Smart Playback
-- **Backend**: FastAPI events API (`/incident-timeline`)
-- **Frontend**: React + Tailwind UI (`IncidentTimeline.js`)
-- **Storage**: PostgreSQL + OpenSearch for full-text search
+### 1. Sensor Fusion Engine
+- Ingests and processes data from diverse sensors such as cameras, radars, and LIDAR.
+- Implements scalable data fusion algorithms to create a coherent operational picture.
+- Provides real-time APIs for fused data retrieval.
 
-### 🚁 Drone Command & Telemetry Hub
-- **Backend**: FastAPI MAVLink telemetry & command service (`/drone-hub`)
-- **Frontend**: React map & telemetry UI (`DroneCommandHub.js`)
-- **Streaming**: GStreamer WebRTC/RTSP relay
+### 2. Decentralized Mesh Networking
+- Enables peer-to-peer communication among nodes using a mesh networking protocol.
+- Ensures secure and resilient data transmission.
+- Supports dynamic network topology adjustments.
 
-### 🤖 AI Model Management & Training Panel
-- **Backend**: FastAPI model CRUD (`/ai-model-management`)
-- **Storage**: MinIO object storage
-- **Training**: Scheduled Celery jobs for YOLO/TensorFlow models
+### 3. Autonomous Mission Planning
+- Tools for creating and managing autonomous missions for unmanned systems.
+- AI algorithms for decision-making and adaptive mission execution.
+- Simulation capabilities for mission rehearsal and validation.
 
-### 📋 Device Inventory & Health Status
-- **Backend**: FastAPI catalog & health checks (`/device-inventory`)
-- **Alerts**: Novu email/SMS notifications for offline devices
+### 4. Command and Control Interface
+- User-friendly React dashboard for monitoring and controlling operations.
+- Features real-time alerts, mission status updates, and system health indicators.
+- Compatible with various devices and platforms.
 
-### 🔒 Access Audit Log & Session Inspector
-- **Backend**: FastAPI audit endpoints (`/audit-log`)
-- **Export**: CSV/JSON, OpenSearch indexing
-- **Security**: Keycloak RBAC for admin access
+### 5. Security and Access Control
+- Robust authentication and authorization mechanisms using JWT and Keycloak.
+- Data integrity and confidentiality across all communications.
+- Audit logging of all mission planning and execution activities.
 
-### 🧠 AI Integrations Microservice
-- **Location**: `bulo-sentinel-ai/`
-- **Pattern**: Adapter interface (`AIAdapter`)
-- **Adapters**: ChatGPT, Claude, Gemini, DALL·E, Whisper
-- **Endpoints**:
-  - `POST /ai/chat` 💬
-  - `POST /ai/vision/analyze` 🖼️
-  - `POST /ai/audio/transcribe` 🎙️
-  - `GET /ai/status` 📊
-- **Audit Log**: `ai_audit_log.json`
-- **Monitoring**: `/monitoring/metrics` via Prometheus
-- **Docs**: OpenAPI spec at `bulo-sentinel-ai/openapi.yaml`
+## Deployment
 
-## ☸️ Deployment & Orchestration
-- **Docker Compose** (`docker-compose.yml`):
-  - `backend` (8000)  
-  - `ai_detection` (8001)  
-  - `ai_integrations` (8002)  
-  - `frontend` (3000)  
-  - `rtmp_server` (1935/8080)  
-  - `db`, `redis`, `minio`  
-- **Commands**:
-  ```bash
-  docker-compose up -d
-  ```
+- Modular Dockerfiles and Kubernetes manifests are provided for all new services.
+- Use `docker-compose.yml` for local development and testing.
+- Helm charts are in preparation for production deployment.
 
-## ⚙️ Configuration
-- Environment variables via `.env`:
-  ```bash
-  # AI Integrations
-  CHATGPT_API_KEY=…
-  CLAUDE_API_KEY=…
-  GEMINI_API_KEY=…
-  DALLE_API_KEY=…
-  WHISPER_API_KEY=…
-  AI_AUDIT_LOG_FILE=/data/ai_audit_log.json
-  ```
+## API Documentation
 
-## 🗂️ Documentation & Wiki
-- **API Docs**: `/docs` on each FastAPI service  
-- **Wiki**: https://github.com/BuloZB/BuloCloudSentinel/wiki
+- OpenAPI documentation is available for all new endpoints.
+- Refer to the `backend/api` directory for API implementations.
 
-## 📅 Changelog Highlights
-- 🆕 Added AI integrations microservice with modular adapters  
-- 🔄 Implemented audit logging, Prometheus metrics, and OpenAPI docs  
-- ⚙️ Integrated new services into `docker-compose.yml`  
-- 📚 Updated README and Documentation with badges and icons
+## User Guides and Tutorials
 
----
-_All naming, logs, UI labels, and code structures use “Bulo.Cloud Sentinel” branding._
-
-## 📝 User Guides & Tutorials
-
-### Mission Planner
-- How to create, edit, and manage missions
-- Importing and exporting KML/KMZ mission files
-- Using the 2D map and 3D mission preview
-- Real-time mission control and manual overrides
-
-### Drone Command Hub
-- Sending commands and monitoring telemetry
-- Switching between manual and automated flight modes
-
-### AI Integrations
-- Using AI tools for alert summarization and analysis
-- Configuring API keys and audit logging
-
-## 📦 Deployment Manifests
-
-- Dockerfiles for all services are in their respective directories
-- `docker-compose.yml` includes all core and AI microservices
-- Kubernetes manifests (to be added) will support scalable deployments
+- User guides for mission planning, mesh networking, and sensor fusion are under development.
+- Tutorials will be added to assist operators in utilizing the Tactical Use Module effectively.
 
 ---
 
-## 📝 User Guides & Tutorials
+# Change Log
 
-### Mission Planner
-- How to create, edit, and manage missions
-- Importing and exporting KML/KMZ mission files
-- Using the 2D map and 3D mission preview
-- Real-time mission control and manual overrides
-
-### Drone Command Hub
-- Sending commands and monitoring telemetry
-- Switching between manual and automated flight modes
-
-### AI Integrations
-- Using AI tools for alert summarization and analysis
-- Configuring API keys and audit logging
-
-## 📦 Deployment Manifests
-
-- Dockerfiles for all services are in their respective directories
-- `docker-compose.yml` includes all core and AI microservices
-- Kubernetes manifests (to be added) will support scalable deployments
+- Added Sensor Fusion Engine with backend APIs.
+- Implemented Decentralized Mesh Networking module.
+- Integrated Autonomous Mission Planning with simulation.
+- Developed Command and Control React dashboard.
+- Enhanced security with JWT and RBAC.
+- Updated deployment configurations for microservices.

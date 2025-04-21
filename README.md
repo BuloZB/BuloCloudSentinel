@@ -4,12 +4,12 @@ Bulo.Cloud Sentinel is an open-source modular surveillance and drone management 
 
 ## ✨ Features
 
-- 🛰️ Advanced Drone Mission Planning with waypoint support, mission simulation, and import/export (KML/GPX).
-- 🤖 AI-Powered Anomaly Detection for real-time video and telemetry analysis.
-- 🔐 Role-Based Access Control (RBAC) integrated with JWT and Keycloak.
-- 📊 Comprehensive Admin Dashboard displaying system health, drone status, and audit logs.
-- 🧭 Microservices architecture for telemetry, video, and mission handling.
-- 🐳 Docker and Kubernetes deployment support.
+- 🛰️ **Advanced Drone Mission Planning** with waypoint support, mission simulation, and import/export (KML/GPX).
+- 🤖 **AI-Powered Anomaly Detection** for real-time video and telemetry analysis.
+- 🔐 **Role-Based Access Control (RBAC)** integrated with JWT and Keycloak.
+- 📊 **Comprehensive Admin Dashboard** displaying system health, drone status, and audit logs.
+- 🧭 **Microservices Architecture** for telemetry, video, and mission handling.
+- 🐳 **Docker and Kubernetes Deployment Support**.
 
 ## 🛠️ Getting Started
 
