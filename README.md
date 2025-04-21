@@ -148,6 +148,11 @@ The Security Module provides comprehensive security features for the Bulo.Cloud 
 - **🚫 Rate Limiting**: Protection against brute force and DoS attacks
 - **🔗 Secure Communications**: TLS/SSL implementation for all communications
 - **🔓 Input Validation**: Protection against injection attacks
+- **🛡️ XSS Protection**: Frontend security utilities to prevent cross-site scripting
+- **🔒 CSRF Protection**: Double Submit Cookie pattern to prevent cross-site request forgery
+- **📊 Security Headers**: Comprehensive security headers including Content Security Policy
+- **🔍 File Validation**: Secure file upload validation to prevent malicious file uploads
+- **🔐 SQL Injection Protection**: Database security utilities to prevent SQL injection
 
 ## 🛠️ Development
 
@@ -178,6 +183,19 @@ bulo-cloud-sentinel/
 ├── security/             # Security Module for comprehensive protection
 └── docs/                 # Documentation
 ```
+
+### CI/CD Workflows
+
+Bulo.Cloud Sentinel uses GitHub Actions for continuous integration and deployment:
+
+- **🛡️ Security Scanning**: Daily security scans using various tools (Safety, Bandit, npm audit, OWASP Dependency-Check, Trivy)
+- **💪 Testing**: Comprehensive test suite for all components (backend, frontend, anti-jamming service, vision system)
+- **🔍 Linting**: Code quality checks using Flake8, Black, isort, mypy, ESLint, and Prettier
+- **📦 Docker Builds**: Automated Docker image builds for all components
+- **🔄 Dependency Updates**: Regular checks for dependency updates
+- **💾 Database Migrations**: Automated database migration checks
+
+All workflows run daily at midnight to ensure the codebase remains secure and up-to-date.
 
 ### Contributing
 
