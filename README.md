@@ -19,6 +19,17 @@ Bulo.Cloud Sentinel is an open-source surveillance platform with React/Tailwind 
 
 ## 🧩 Addons
 
+### 🛡️ Anti-Jamming Service
+
+The Anti-Jamming Service provides GNSS anti-jamming, RF jamming detection, and resilient communication capabilities for the Bulo.Cloud Sentinel platform:
+
+- **📡 GNSS Anti-Jamming**: Uses a multi-antenna GNSS array connected to a KrakenSDR module to mitigate jamming signals
+- **🔍 RF Jamming Detection**: Uses KrakenSDR's GNU Radio blocks for Direction of Arrival (DoA) estimation
+- **🔄 Frequency-Hopping**: Implements FHSS communication for resilient links between drones and ground stations
+- **🧪 Jamming Simulation**: Uses HackRF One for testing jamming scenarios in various frequency bands
+- **🔒 Secure Architecture**: Follows SOLID principles with proper abstractions and dependency injection
+- **🔐 Security Features**: Implements HTTPS/TLS, HashiCorp Vault for secrets, and input sanitization
+
 ### 🚁 SentinelWeb
 
 SentinelWeb is a modular, extensible web interface addon for BuloCloudSentinel, providing a user-friendly dashboard for drone management and surveillance operations. It is built on top of OpenWebUI's architecture but specifically tailored for drone operations.
