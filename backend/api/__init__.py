@@ -14,7 +14,8 @@ from backend.api.sensor_fusion import router as sensor_fusion_router
 from backend.api.mesh_networking import router as mesh_networking_router
 from backend.mission_planning.autonomous import router as autonomous_mission_router
 from backend.api.anduril_lattice import router as anduril_lattice_router, initialize_adapter
-from backend.api.fleet_management import router as fleet_management_router, initialize_service
+from backend.api.fleet_management import router as fleet_management_router, initialize_service as init_fleet_service
+from backend.api.geofencing import router as geofencing_router, initialize_service as init_geofencing_service
 
 router = APIRouter()
 
@@ -34,3 +35,4 @@ router.include_router(mesh_networking_router, prefix="/mesh")
 router.include_router(anduril_lattice_router)
 router.include_router(autonomous_mission_router, prefix="/autonomous-missions")
 router.include_router(fleet_management_router)
+router.include_router(geofencing_router)
