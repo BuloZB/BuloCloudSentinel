@@ -1,0 +1,27 @@
+[33mcommit 5740a0b7e860a92957dc7ab546fa6b7d8b25e25a[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m
+Author: Bulo <BuloZB@users.noreply.github.com>
+Date:   Mon Apr 21 12:54:47 2025 +0200
+
+    Add power management functionality with battery monitoring and energy prediction
+
+A	backend/weather/models.py
+
+[33mcommit 2aab63137225506638ba6869af4af2fb3b9f2561[m
+Author: Bulo <BuloZB@users.noreply.github.com>
+Date:   Mon Apr 21 12:54:15 2025 +0200
+
+    Add power management functionality with battery monitoring and energy prediction
+
+M	README.md
+M	backend/api/__init__.py
+A	backend/api/power_management.py
+M	backend/main.py
+A	backend/power_management/__init__.py
+A	backend/power_management/battery_service.py
+A	backend/power_management/energy_prediction.py
+A	backend/power_management/models.py
+A	backend/tests/test_power_management.py
+A	frontend/src/components/PowerManagement/BatteryMonitorPanel.css
+A	frontend/src/components/PowerManagement/BatteryMonitorPanel.js
+A	frontend/src/components/PowerManagement/EnergyPredictionPanel.css
+A	frontend/src/components/PowerManagement/EnergyPredictionPanel.js
