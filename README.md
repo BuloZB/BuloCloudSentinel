@@ -11,6 +11,10 @@ Bulo.Cloud Sentinel is an open-source modular surveillance and drone management 
 - 🧭 **Microservices Architecture** for telemetry, video, and mission handling.
 - 🐳 **Docker and Kubernetes Deployment Support**.
 
+## 📈 Contribution Heatmap
+
+![Contribution Heatmap](https://github.com/BuloZB/BuloCloudSentinel/graphs/contributors-data.svg)
+
 ## 🛠️ Getting Started
 
 ### Prerequisites
