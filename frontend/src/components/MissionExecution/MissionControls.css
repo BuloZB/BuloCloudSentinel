@@ -1,0 +1,200 @@
+.mission-controls {
+  padding: 12px;
+  overflow-y: auto;
+  height: 100%;
+}
+
+.control-section {
+  margin-bottom: 16px;
+  background-color: white;
+  border-radius: 4px;
+  padding: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.control-section h4 {
+  margin: 0 0 8px 0;
+  font-size: 1rem;
+  color: #333;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 4px;
+}
+
+.control-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.control-btn {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  color: white;
+  transition: background-color 0.2s;
+}
+
+.control-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.control-btn.pause {
+  background-color: #f39c12;
+}
+
+.control-btn.pause:hover:not(:disabled) {
+  background-color: #e67e22;
+}
+
+.control-btn.resume {
+  background-color: #2ecc71;
+}
+
+.control-btn.resume:hover:not(:disabled) {
+  background-color: #27ae60;
+}
+
+.control-btn.abort {
+  background-color: #e74c3c;
+}
+
+.control-btn.abort:hover:not(:disabled) {
+  background-color: #c0392b;
+}
+
+.control-btn.return-home {
+  background-color: #3498db;
+}
+
+.control-btn.return-home:hover:not(:disabled) {
+  background-color: #2980b9;
+}
+
+.control-btn.skip {
+  background-color: #9b59b6;
+}
+
+.control-btn.skip:hover:not(:disabled) {
+  background-color: #8e44ad;
+}
+
+.control-btn.photo {
+  background-color: #1abc9c;
+}
+
+.control-btn.photo:hover:not(:disabled) {
+  background-color: #16a085;
+}
+
+.control-btn.record-start {
+  background-color: #e74c3c;
+}
+
+.control-btn.record-start:hover:not(:disabled) {
+  background-color: #c0392b;
+}
+
+.control-btn.record-stop {
+  background-color: #7f8c8d;
+}
+
+.control-btn.record-stop:hover:not(:disabled) {
+  background-color: #95a5a6;
+}
+
+.control-btn.apply {
+  background-color: #3498db;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.control-btn.apply:hover:not(:disabled) {
+  background-color: #2980b9;
+}
+
+.toggle-advanced {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 16px;
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.toggle-advanced:hover {
+  background-color: #e9e9e9;
+}
+
+.slider-control {
+  margin-top: 12px;
+}
+
+.slider-control label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+
+.slider-with-buttons {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.slider-with-buttons input {
+  flex: 1;
+  margin: 0 8px;
+}
+
+.slider-btn {
+  width: 28px;
+  height: 28px;
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.slider-btn:hover:not(:disabled) {
+  background-color: #e9e9e9;
+}
+
+.slider-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.preset-buttons {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.preset-btn {
+  flex: 1;
+  padding: 6px 4px;
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+.preset-btn:hover:not(:disabled) {
+  background-color: #e9e9e9;
+}
+
+.preset-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

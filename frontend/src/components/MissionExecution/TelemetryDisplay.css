@@ -1,0 +1,81 @@
+.telemetry-display {
+  padding: 12px;
+  overflow-y: auto;
+  height: 100%;
+}
+
+.telemetry-waiting {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #777;
+  font-style: italic;
+}
+
+.telemetry-timestamp {
+  font-size: 0.8rem;
+  color: #777;
+  margin-bottom: 12px;
+  text-align: right;
+}
+
+.telemetry-section {
+  margin-bottom: 16px;
+  background-color: white;
+  border-radius: 4px;
+  padding: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.telemetry-section h4 {
+  margin: 0 0 8px 0;
+  font-size: 1rem;
+  color: #333;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 4px;
+}
+
+.telemetry-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 16px;
+}
+
+.telemetry-label {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.telemetry-value {
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: right;
+}
+
+.battery-display {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.battery-bar-container {
+  flex: 1;
+  height: 12px;
+  background-color: #f0f0f0;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-right: 8px;
+}
+
+.battery-bar-fill {
+  height: 100%;
+  transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.battery-text {
+  font-size: 0.9rem;
+  font-weight: 600;
+  min-width: 40px;
+  text-align: right;
+}

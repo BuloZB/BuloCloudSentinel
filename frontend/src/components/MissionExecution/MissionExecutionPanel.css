@@ -1,0 +1,231 @@
+.mission-execution-panel {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 64px); /* Adjust based on your header height */
+  overflow: hidden;
+}
+
+.mission-execution-header {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #ddd;
+  height: 60px;
+}
+
+.mission-execution-header h2 {
+  margin: 0;
+  font-size: 1.4rem;
+  flex: 1;
+}
+
+.mission-status {
+  display: flex;
+  align-items: center;
+  margin-right: 20px;
+}
+
+.status-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.status-text {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.mission-progress {
+  display: flex;
+  flex-direction: column;
+  margin-right: 20px;
+  width: 200px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background-color: #e0e0e0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  font-size: 0.8rem;
+  margin-top: 4px;
+  text-align: center;
+}
+
+.mission-time {
+  margin-right: 20px;
+}
+
+.time-label {
+  font-size: 0.8rem;
+  margin-right: 4px;
+}
+
+.time-value {
+  font-weight: 600;
+  font-family: monospace;
+}
+
+.connection-status {
+  margin-left: auto;
+}
+
+.connection-indicator {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.connection-indicator.connected {
+  background-color: #2ecc71;
+}
+
+.connection-indicator.disconnected {
+  background-color: #e74c3c;
+}
+
+.connection-indicator.error {
+  background-color: #e74c3c;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+.mission-execution-content {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.mission-map-container {
+  flex: 1;
+  position: relative;
+}
+
+.map-controls {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+}
+
+.map-control-btn {
+  width: 36px;
+  height: 36px;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.map-control-btn:hover {
+  background-color: #f5f5f5;
+}
+
+.map-control-btn.active {
+  background-color: #3498db;
+  color: white;
+  border-color: #2980b9;
+}
+
+.mission-panels {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid #ddd;
+  background-color: #f9f9f9;
+}
+
+.telemetry-panel,
+.controls-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-bottom: 1px solid #ddd;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  background-color: #f0f0f0;
+  border-bottom: 1px solid #ddd;
+}
+
+.panel-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  flex: 1;
+}
+
+.panel-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #777;
+}
+
+.panel-toggle:hover {
+  color: #333;
+}
+
+.panel-toggles {
+  padding: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.panel-show-btn {
+  padding: 6px 12px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.panel-show-btn:hover {
+  background-color: #2980b9;
+}
+
+.loading,
+.error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-size: 1.2rem;
+  color: #666;
+}
+
+.error {
+  color: #e74c3c;
+}
