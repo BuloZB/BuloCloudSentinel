@@ -1,0 +1,35 @@
+services:
+  ollama:
+    volumes:
+      - ollama:/root/.ollama
+    container_name: ollama
+    pull_policy: always
+    tty: true
+    restart: unless-stopped
+    image: ollama/ollama:${OLLAMA_DOCKER_TAG-latest}
+
+  sentinel-web:
+    build:
+      context: .
+      args:
+        OLLAMA_BASE_URL: '/ollama'
+      dockerfile: Dockerfile
+    image: ghcr.io/sentinel-web/sentinel-web:${WEBUI_DOCKER_TAG-main}
+    container_name: sentinel-web
+    volumes:
+      - sentinel-web:/app/backend/data
+    depends_on:
+      - ollama
+    ports:
+      - ${sentinel_web_PORT-3000}:8080
+    environment:
+      - 'OLLAMA_BASE_URL=http://ollama:11434'
+      - 'WEBUI_SECRET_KEY='
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    restart: unless-stopped
+
+volumes:
+  ollama: {}
+  sentinel-web: {}
+

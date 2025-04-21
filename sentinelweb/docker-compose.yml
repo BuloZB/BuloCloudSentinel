@@ -1,26 +1,32 @@
 version: '3.8'
 
 services:
-  # Backend API service
-  backend:
+  # SentinelWeb service
+  sentinelweb:
     build:
-      context: ./backend
+      context: .
       dockerfile: Dockerfile
-    container_name: sentinelweb-backend
+    container_name: sentinelweb
     restart: unless-stopped
     ports:
-      - "8000:8000"
+      - "3000:3000"
     environment:
-      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@db:5432/sentinelweb
-      - REDIS_URL=redis://redis:6379/0
-      - JWT_SECRET=${JWT_SECRET:-supersecretkey}
-      - SENTINEL_API_URL=${SENTINEL_API_URL:-http://bulocloud-sentinel-api:8000}
-      - SENTINEL_API_TOKEN=${SENTINEL_API_TOKEN}
-      - CORS_ORIGINS=http://localhost:3000,http://frontend:3000
+      - HOST=0.0.0.0
+      - PORT=3000
+      - POSTGRES_USER=\
+      - POSTGRES_PASSWORD=\
+      - POSTGRES_DB=\
+      - POSTGRES_HOST=\
+      - POSTGRES_PORT=\
+      - REDIS_HOST=\
+      - REDIS_PORT=\
+      - REDIS_PASSWORD=\
+      - BULOCLOUD_API_URL=\
+      - BULOCLOUD_API_KEY=\
+      - DRONECORE_URL=\
+      - RTMP_SERVER=\
     volumes:
-      - ./backend:/app
-      - ./uploads:/app/uploads
-      - ./plugins:/app/plugins
+      - ./data:/app/backend/data
     depends_on:
       - db
       - redis
@@ -28,39 +34,19 @@ services:
       - sentinelweb-network
       - bulocloud-network
 
-  # Frontend service
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    container_name: sentinelweb-frontend
-    restart: unless-stopped
-    ports:
-      - "3000:3000"
-    environment:
-      - REACT_APP_API_URL=http://localhost:8000
-      - REACT_APP_WS_URL=ws://localhost:8000
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
-    depends_on:
-      - backend
-    networks:
-      - sentinelweb-network
-
-  # PostgreSQL database
+  # PostgreSQL Database
   db:
-    image: postgres:14-alpine
+    image: postgres:15-alpine
     container_name: sentinelweb-db
     restart: unless-stopped
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=sentinelweb
+      - POSTGRES_USER=\
+      - POSTGRES_PASSWORD=\
+      - POSTGRES_DB=\
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "5433:5432"  # Use different port to avoid conflicts
     networks:
       - sentinelweb-network
 
@@ -70,30 +56,18 @@ services:
     container_name: sentinelweb-redis
     restart: unless-stopped
     ports:
-      - "6379:6379"
+      - "6380:6379"  # Use different port to avoid conflicts
     volumes:
-      - redis-data:/data
-    networks:
-      - sentinelweb-network
-
-  # Adminer for database management (optional)
-  adminer:
-    image: adminer
-    container_name: sentinelweb-adminer
-    restart: unless-stopped
-    ports:
-      - "8080:8080"
-    depends_on:
-      - db
+      - redis_data:/data
     networks:
       - sentinelweb-network
 
 volumes:
-  postgres-data:
-  redis-data:
+  postgres_data:
+  redis_data:
 
 networks:
   sentinelweb-network:
     driver: bridge
   bulocloud-network:
-    external: true
+    external: true  # Connect to existing BuloCloudSentinel network
