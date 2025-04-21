@@ -84,6 +84,17 @@ Sentinel AI provides advanced artificial intelligence capabilities for the Bulo.
 - **📊 Predictive Analytics**: Forecasting trends and potential issues
 - **🗣️ Natural Language Processing**: Command interpretation and reporting
 
+### 🏢 Indoor Drone System
+
+The Indoor Drone System provides advanced capabilities for operating drones in GPS-denied environments, inspired by the SU17 Smart Indoor Drone:
+
+- **📡 LiDAR Positioning**: Mid-360 3D LiDAR sensor with FAST-LIO algorithm for precise indoor positioning
+- **📷 Visual SLAM**: Quad-camera visual SLAM module for accurate positioning and mapping
+- **🧭 Autonomous Navigation**: EGO-Swarm path planning algorithm for complex indoor environments
+- **🎯 Target Recognition**: Advanced computer vision for object detection and tracking
+- **🗺️ 3D Mapping**: Real-time 3D environment reconstruction and mapping
+- **🔄 Sensor Fusion**: Tight integration of LiDAR, visual, and inertial data for robust positioning
+
 ## 🛠️ Development
 
 ### Project Structure
