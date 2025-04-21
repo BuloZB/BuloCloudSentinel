@@ -1,0 +1,62 @@
+name: Dependency Updates
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Run daily at midnight
+  workflow_dispatch:  # Allow manual triggering
+
+jobs:
+  python-dependency-updates:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pip-tools
+
+      - name: Check for Python dependency updates
+        run: |
+          pip-compile --upgrade requirements-secure.txt || true
+          pip-compile --upgrade backend/requirements.txt || true
+          pip-compile --upgrade anti_jamming_service/requirements.txt || true
+          pip-compile --upgrade vision_system/requirements.txt || true
+
+  javascript-dependency-updates:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Check for JavaScript dependency updates
+        run: |
+          cd frontend
+          npm outdated || true
+
+  notification:
+    needs: [python-dependency-updates, javascript-dependency-updates]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Send notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_CHANNEL: ci-alerts
+          SLACK_COLOR: ${{ job.status }}
+          SLACK_ICON: https://github.com/rtCamp.png?size=48
+          SLACK_MESSAGE: 'Dependency updates check completed'
+          SLACK_TITLE: Dependency Updates Results
+          SLACK_USERNAME: GitHub Actions
