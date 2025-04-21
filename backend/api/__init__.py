@@ -13,6 +13,7 @@ from backend.api.health import router as health_router
 from backend.api.sensor_fusion import router as sensor_fusion_router
 from backend.api.mesh_networking import router as mesh_networking_router
 from backend.mission_planning.autonomous import router as autonomous_mission_router
+from backend.api.anduril_lattice import router as anduril_lattice_router, initialize_adapter
 
 router = APIRouter()
 
@@ -29,3 +30,5 @@ router.include_router(mission_planner_router, prefix="/missions")
 router.include_router(health_router)
 router.include_router(sensor_fusion_router)
 router.include_router(mesh_networking_router, prefix="/mesh")
+router.include_router(anduril_lattice_router)
+router.include_router(autonomous_mission_router, prefix="/autonomous-missions")
