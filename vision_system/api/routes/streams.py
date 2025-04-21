@@ -4,9 +4,11 @@ Streams API routes for the Vision System.
 This module provides endpoints for managing video streams.
 """
 
-from fastapi import APIRouter, Depends, HTTPException, Request, BackgroundTasks
+from fastapi import APIRouter, Depends, HTTPException, Request, BackgroundTasks, Response
 from typing import List, Dict, Any, Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
+from datetime import datetime
+import re
 
 # Import local modules
 from services.stream_service import StreamService
@@ -28,6 +30,49 @@ class StreamSourceConfig(BaseModel):
     credentials: Optional[Dict[str, str]] = None
     parameters: Optional[Dict[str, Any]] = None
 
+    @validator('source_type')
+    def validate_source_type(cls, v):
+        allowed_types = ['rtsp', 'rtmp', 'http', 'file', 'drone', 'usb', 'ip_camera']
+        if v.lower() not in allowed_types:
+            raise ValueError(f"Source type must be one of: {', '.join(allowed_types)}")
+        return v.lower()
+
+    @validator('url')
+    def validate_url(cls, v, values):
+        source_type = values.get('source_type', '').lower()
+
+        # Validate URL based on source type
+        if source_type == 'rtsp':
+            if not v.startswith('rtsp://'):
+                raise ValueError("RTSP URL must start with 'rtsp://'")
+        elif source_type == 'rtmp':
+            if not v.startswith('rtmp://'):
+                raise ValueError("RTMP URL must start with 'rtmp://'")
+        elif source_type == 'http':
+            if not (v.startswith('http://') or v.startswith('https://')):
+                raise ValueError("HTTP URL must start with 'http://' or 'https://'")
+        elif source_type == 'file':
+            # Validate file path - basic validation to prevent path traversal
+            if '..' in v or '~' in v:
+                raise ValueError("Invalid file path")
+
+        # Sanitize URL to prevent command injection
+        if ';' in v or '&' in v or '|' in v or '`' in v:
+            raise ValueError("URL contains invalid characters")
+
+        return v
+
+    @validator('credentials')
+    def validate_credentials(cls, v):
+        if v is not None:
+            # Ensure sensitive fields are present but don't log their values
+            for key in v:
+                if key.lower() in ['password', 'token', 'secret', 'key']:
+                    # Just check that it exists, don't validate the actual value
+                    if not v[key] or len(v[key]) < 1:
+                        raise ValueError(f"{key} cannot be empty")
+        return v
+
 # Helper functions
 def get_stream_service(request: Request) -> StreamService:
     """Get the stream service from the app state."""
@@ -44,7 +89,9 @@ async def get_all_streams(
         streams = await stream_service.get_all_streams(status)
         return streams
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error getting streams: {str(e)}")
+        # Log the error but don't expose details to the client
+        print(f"Error getting streams: {str(e)}")
+        raise HTTPException(status_code=500, detail="An error occurred while retrieving streams")
 
 @router.get("/{stream_id}")
 async def get_stream(
@@ -60,7 +107,9 @@ async def get_stream(
     except HTTPException:
         raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error getting stream: {str(e)}")
+        # Log the error but don't expose details to the client
+        print(f"Error getting stream {stream_id}: {str(e)}")
+        raise HTTPException(status_code=500, detail="An error occurred while retrieving the stream")
 
 @router.post("/")
 async def create_stream(
@@ -69,10 +118,22 @@ async def create_stream(
 ):
     """Create a new stream."""
     try:
+        # Validate stream source URL
+        if hasattr(stream, 'source') and hasattr(stream.source, 'url'):
+            url = stream.source.url
+            # Basic validation to prevent command injection
+            if ';' in url or '&' in url or '|' in url or '`' in url:
+                raise HTTPException(status_code=400, detail="URL contains invalid characters")
+
         new_stream = await stream_service.create_stream(stream)
         return new_stream
+    except ValueError as e:
+        # Handle validation errors
+        raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error creating stream: {str(e)}")
+        # Log the error but don't expose details to the client
+        print(f"Error creating stream: {str(e)}")
+        raise HTTPException(status_code=500, detail="An error occurred while creating the stream")
 
 @router.put("/{stream_id}")
 async def update_stream(
@@ -119,10 +180,10 @@ async def start_stream(
         stream = await stream_service.get_stream(stream_id)
         if not stream:
             raise HTTPException(status_code=404, detail=f"Stream {stream_id} not found")
-        
+
         # Start stream in background
         background_tasks.add_task(stream_service.start_stream, stream_id)
-        
+
         return {"message": f"Stream {stream_id} starting"}
     except HTTPException:
         raise
@@ -141,10 +202,10 @@ async def stop_stream(
         stream = await stream_service.get_stream(stream_id)
         if not stream:
             raise HTTPException(status_code=404, detail=f"Stream {stream_id} not found")
-        
+
         # Stop stream in background
         background_tasks.add_task(stream_service.stop_stream, stream_id)
-        
+
         return {"message": f"Stream {stream_id} stopping"}
     except HTTPException:
         raise
@@ -177,7 +238,7 @@ async def get_stream_snapshot(
         snapshot = await stream_service.get_stream_snapshot(stream_id)
         if not snapshot:
             raise HTTPException(status_code=404, detail=f"Stream {stream_id} not found or not active")
-        
+
         # Return snapshot as image
         return Response(content=snapshot, media_type="image/jpeg")
     except HTTPException:
