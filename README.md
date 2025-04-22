@@ -177,29 +177,41 @@ The Security Module provides comprehensive security features for the Bulo.Cloud 
 
 ```
 bulo-cloud-sentinel/
+├── .github/              # GitHub workflows and templates
+├── addons/               # Platform addons
+├── ai_analytics/         # Advanced AI and Analytics module
+├── ai_detection/         # AI-based detection capabilities
+├── anti_jamming_service/  # GNSS anti-jamming and RF protection
 ├── backend/              # FastAPI backend service
 │   ├── api/              # API endpoints
 │   ├── core/             # Core functionality
 │   ├── db/               # Database models and connections
 │   ├── services/         # Business logic services
 │   └── main.py           # Application entry point
+├── docs/                 # Documentation
+├── dronecore/            # Core drone control libraries
+├── drone_show_service/   # Drone Show microservice for light shows
+│   ├── addons/           # Blender integration and other add-ons
+│   ├── api/              # API endpoints
+│   ├── core/             # Core functionality
+│   ├── kubernetes/        # Kubernetes deployment manifests
+│   ├── models/           # Data models
+│   ├── services/         # Business logic services
+│   └── utils/            # Utility functions
+├── drone_swarm_system/   # Drone Swarm System microservice
 ├── frontend/             # React frontend application
 │   ├── public/           # Static assets
-│   ├── src/              # Source code
-│   │   ├── components/   # Reusable UI components
-│   │   ├── pages/        # Page components
-│   │   ├── services/     # API service clients
-│   │   ├── store/        # State management
-│   │   └── App.js        # Main application component
-├── addons/               # Platform addons
-│   ├── sentinelweb/      # SentinelWeb addon
-│   └── sentinel-ai/      # Sentinel AI addon
-├── drone_swarm_system/   # Drone Swarm System microservice
-├── drone_show_service/   # Drone Show microservice for light shows
-├── vision_system/        # Vision System for crowd and vehicle analysis
-├── ai_analytics/         # Advanced AI and Analytics module
+│   └── src/              # Source code
+│       ├── components/   # Reusable UI components
+│       ├── pages/        # Page components
+│       ├── services/     # API service clients
+│       ├── store/        # State management
+│       └── App.js        # Main application component
+├── indoor_drone_system/  # Indoor drone navigation system
+├── rtmp_server/          # RTMP server for video streaming
 ├── security/             # Security Module for comprehensive protection
-└── docs/                 # Documentation
+├── sentinelweb/          # Web interface based on OpenWebUI
+└── vision_system/        # Vision System for crowd and vehicle analysis
 ```
 
 ### Contributing
