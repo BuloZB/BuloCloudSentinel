@@ -22,7 +22,7 @@ dronekit==2.9.2
 # Security
 cryptography==42.0.8
 hvac==1.2.1  # HashiCorp Vault client
-python-jose==3.3.0  # JWT
+python-jose==3.4.0  # JWT
 passlib==1.7.4  # Password hashing
 python-magic==0.4.27
 
