@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: drone-show-config
+  namespace: bulocloud-sentinel
+data:
+  MAX_DRONES: "200"
+  MIN_DRONE_SPACING: "2.0"
+  DEFAULT_TAKEOFF_ALTITUDE: "10.0"
+  DEFAULT_LANDING_ALTITUDE: "1.0"
+  TIME_SYNC_INTERVAL: "5"
+  TIME_SYNC_TOLERANCE: "0.1"
+  LED_UPDATE_RATE: "10"
+  SIMULATION_UPDATE_RATE: "30"

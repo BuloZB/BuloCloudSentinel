@@ -1,0 +1,21 @@
+apiVersion: v2
+name: drone-show
+description: A Helm chart for the Drone Show microservice
+type: application
+version: 0.1.0
+appVersion: 0.1.0
+maintainers:
+  - name: Bulo.Cloud Sentinel Team
+    email: info@bulocloud-sentinel.example.com
+keywords:
+  - drone
+  - show
+  - choreography
+  - led
+  - bulocloud
+  - sentinel
+home: https://github.com/BuloZB/BuloCloudSentinel
+sources:
+  - https://github.com/BuloZB/BuloCloudSentinel
+annotations:
+  category: Application

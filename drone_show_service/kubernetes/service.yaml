@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: drone-show-api
+  namespace: bulocloud-sentinel
+  labels:
+    app: drone-show-api
+spec:
+  selector:
+    app: drone-show-api
+  ports:
+  - port: 8000
+    targetPort: 8000
+    protocol: TCP
+    name: http
+  type: ClusterIP

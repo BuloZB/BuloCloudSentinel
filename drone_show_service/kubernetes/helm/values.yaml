@@ -1,0 +1,119 @@
+# Default values for drone-show.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: bulocloud/drone-show-service
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 8000
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/proxy-body-size: "100m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+  hosts:
+    - host: bulocloud-sentinel.example.com
+      paths:
+        - path: /api/drone-show(/|$)(.*)
+          pathType: Prefix
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 256Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# Database configuration
+database:
+  url: postgresql+asyncpg://postgres:postgres@db-drone-show.bulocloud-sentinel.svc.cluster.local:5432/drone_show
+
+# Redis configuration
+redis:
+  url: redis://redis-drone-show.bulocloud-sentinel.svc.cluster.local:6379/0
+
+# MinIO configuration
+minio:
+  url: minio-drone-show.bulocloud-sentinel.svc.cluster.local:9000
+  accessKey: minioadmin
+  secretKey: minioadmin
+  bucket: drone-show
+
+# Sentinel API configuration
+sentinel:
+  apiUrl: http://bulocloud-sentinel-api.bulocloud-sentinel.svc.cluster.local:8000
+  apiToken: ""
+
+# RTMP server configuration
+rtmp:
+  server: rtmp://rtmp-server.bulocloud-sentinel.svc.cluster.local:1935
+
+# Logging configuration
+logging:
+  level: INFO
+
+# Drone show configuration
+droneShow:
+  maxDrones: 200
+  minDroneSpacing: 2.0
+  defaultTakeoffAltitude: 10.0
+  defaultLandingAltitude: 1.0
+  timeSyncInterval: 5
+  timeSyncTolerance: 0.1
+  ledUpdateRate: 10
+  simulationUpdateRate: 30

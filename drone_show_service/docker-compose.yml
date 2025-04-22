@@ -1,0 +1,99 @@
+version: '3.8'
+
+services:
+  # API service
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: drone-show-api
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@db:5432/drone_show
+      - REDIS_URL=redis://redis:6379/0
+      - MINIO_URL=minio:9000
+      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_SECRET_KEY=minioadmin
+      - MINIO_BUCKET=drone-show
+      - SENTINEL_API_URL=http://bulocloud-sentinel-api:8000
+      - SENTINEL_API_TOKEN=${SENTINEL_API_TOKEN:-}
+      - RTMP_SERVER=rtmp://rtmp-server:1935
+      - LOG_LEVEL=INFO
+    volumes:
+      - ./:/app
+    depends_on:
+      - db
+      - redis
+      - minio
+    networks:
+      - drone-show-network
+      - bulocloud-network
+
+  # PostgreSQL database
+  db:
+    image: postgres:15-alpine
+    container_name: drone-show-db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=drone_show
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - drone-show-network
+
+  # Redis for caching and pub/sub
+  redis:
+    image: redis:7-alpine
+    container_name: drone-show-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - drone-show-network
+
+  # MinIO for object storage
+  minio:
+    image: minio/minio:latest
+    container_name: drone-show-minio
+    restart: unless-stopped
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+    networks:
+      - drone-show-network
+
+  # RTMP server for video streaming
+  rtmp-server:
+    image: tiangolo/nginx-rtmp:latest
+    container_name: drone-show-rtmp
+    restart: unless-stopped
+    ports:
+      - "1935:1935"  # RTMP
+      - "8080:80"    # HTTP
+    networks:
+      - drone-show-network
+
+volumes:
+  postgres_data:
+  redis_data:
+  minio_data:
+
+networks:
+  drone-show-network:
+    driver: bridge
+  bulocloud-network:
+    external: true  # Connect to existing BuloCloudSentinel network

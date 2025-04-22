@@ -1,0 +1,46 @@
+name: Security Scan
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'drone_show_service/**'
+  schedule:
+    - cron: '0 0 * * *'  # Run every day at midnight
+  workflow_dispatch:
+
+jobs:
+  security-scan:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        cd drone_show_service
+        python -m pip install --upgrade pip
+        pip install bandit safety
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    
+    - name: Scan with bandit
+      run: |
+        cd drone_show_service
+        bandit -r . -x ./tests
+    
+    - name: Scan dependencies with safety
+      run: |
+        cd drone_show_service
+        safety check
+    
+    - name: Run OWASP ZAP baseline scan
+      uses: zaproxy/action-baseline@v0.7.0
+      with:
+        target: 'https://bulocloud-sentinel.example.com/api/drone-show'
+        allow_issue_writing: false
+      if: false  # Disabled for now, enable when API is publicly accessible

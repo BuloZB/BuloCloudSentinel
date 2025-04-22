@@ -1,0 +1,33 @@
+name: Documentation Check
+
+on:
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'drone_show_service/docs/**'
+      - 'drone_show_service/**/*.py'
+  workflow_dispatch:
+
+jobs:
+  check-docs:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        cd drone_show_service
+        python -m pip install --upgrade pip
+        pip install mkdocs mkdocs-material mkdocstrings mkdocstrings-python
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    
+    - name: Check documentation build
+      run: |
+        cd drone_show_service
+        mkdocs build --strict

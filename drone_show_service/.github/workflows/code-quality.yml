@@ -1,0 +1,51 @@
+name: Code Quality
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'drone_show_service/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'drone_show_service/**'
+  workflow_dispatch:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        cd drone_show_service
+        python -m pip install --upgrade pip
+        pip install flake8 black isort mypy
+    
+    - name: Lint with flake8
+      run: |
+        cd drone_show_service
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+    
+    - name: Check formatting with black
+      run: |
+        cd drone_show_service
+        black --check .
+    
+    - name: Check imports with isort
+      run: |
+        cd drone_show_service
+        isort --check-only --profile black .
+    
+    - name: Type check with mypy
+      run: |
+        cd drone_show_service
+        mypy --ignore-missing-imports .

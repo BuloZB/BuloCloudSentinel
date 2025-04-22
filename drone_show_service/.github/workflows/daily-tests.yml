@@ -1,0 +1,98 @@
+name: Daily Tests
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Run every day at midnight
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: drone_show_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      
+      minio:
+        image: minio/minio
+        env:
+          MINIO_ROOT_USER: minioadmin
+          MINIO_ROOT_PASSWORD: minioadmin
+        ports:
+          - 9000:9000
+        options: >-
+          --health-cmd "curl -f http://localhost:9000/minio/health/live"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        volumes:
+          - /tmp/minio:/data
+        command: server /data
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        cd drone_show_service
+        python -m pip install --upgrade pip
+        pip install pytest pytest-asyncio pytest-cov httpx
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    
+    - name: Create MinIO bucket
+      run: |
+        pip install minio
+        python -c "from minio import Minio; client = Minio('localhost:9000', access_key='minioadmin', secret_key='minioadmin', secure=False); client.make_bucket('drone-show')"
+    
+    - name: Test with pytest
+      run: |
+        cd drone_show_service
+        pytest
+      env:
+        DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/drone_show_test
+        REDIS_URL: redis://localhost:6379/0
+        MINIO_URL: localhost:9000
+        MINIO_ACCESS_KEY: minioadmin
+        MINIO_SECRET_KEY: minioadmin
+        MINIO_BUCKET: drone-show
+        SENTINEL_API_URL: http://localhost:8000
+        SENTINEL_API_TOKEN: test-token
+        RTMP_SERVER: rtmp://localhost:1935
+    
+    - name: Upload test results
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-results
+        path: drone_show_service/htmlcov/
+      if: always()
+    
+    - name: Notify on failure
+      if: failure()
+      run: |
+        echo "Tests failed. Please check the logs for more information."

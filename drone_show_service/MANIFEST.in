@@ -1,0 +1,8 @@
+include LICENSE
+include README.md
+include requirements.txt
+include pytest.ini
+recursive-include drone_show_service/docs *
+recursive-include drone_show_service/addons *
+recursive-include drone_show_service/kubernetes *
+recursive-include drone_show_service/tests *

@@ -1,0 +1,40 @@
+name: Documentation
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'drone_show_service/docs/**'
+      - 'drone_show_service/**/*.py'
+  workflow_dispatch:
+
+jobs:
+  build-docs:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        cd drone_show_service
+        python -m pip install --upgrade pip
+        pip install mkdocs mkdocs-material mkdocstrings mkdocstrings-python
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    
+    - name: Build documentation
+      run: |
+        cd drone_show_service
+        mkdocs build
+    
+    - name: Deploy documentation
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./drone_show_service/site
+        destination_dir: drone-show

@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: drone-show-ingress
+  namespace: bulocloud-sentinel
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/proxy-body-size: "100m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: bulocloud-sentinel.example.com
+    http:
+      paths:
+      - path: /api/drone-show(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: drone-show-api
+            port:
+              number: 8000
