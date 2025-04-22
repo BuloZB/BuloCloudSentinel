@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: isr-service
+  namespace: bulo-sentinel
+  labels:
+    app: isr-service
+    component: tactical
+spec:
+  selector:
+    app: isr-service
+  ports:
+  - port: 80
+    targetPort: 8000
+    name: http
+  type: ClusterIP

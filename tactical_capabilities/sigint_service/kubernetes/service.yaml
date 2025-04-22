@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: sigint-service
+  namespace: bulo-sentinel
+  labels:
+    app: sigint-service
+    component: tactical
+spec:
+  selector:
+    app: sigint-service
+  ports:
+  - port: 80
+    targetPort: 8000
+    name: http
+  type: ClusterIP

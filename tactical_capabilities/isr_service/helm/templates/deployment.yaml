@@ -1,0 +1,174 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Release.Name }}
+    component: tactical
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+      release: {{ .Release.Name }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+        component: tactical
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: {{ .Release.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.service.targetPort }}
+          name: http
+        env:
+        - name: POSTGRES_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Release.Name }}-config
+              key: postgres_host
+        - name: POSTGRES_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Release.Name }}-config
+              key: postgres_port
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secrets
+              key: postgres_user
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secrets
+              key: postgres_password
+        - name: POSTGRES_DB
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Release.Name }}-config
+              key: postgres_db
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secrets
+              key: jwt_secret
+        - name: RABBITMQ_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Release.Name }}-config
+              key: rabbitmq_host
+        - name: RABBITMQ_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Release.Name }}-config
+              key: rabbitmq_port
+        - name: RABBITMQ_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secrets
+              key: rabbitmq_username
+        - name: RABBITMQ_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secrets
+              key: rabbitmq_password
+        - name: RABBITMQ_EXCHANGE
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Release.Name }}-config
+              key: rabbitmq_exchange
+        - name: REDIS_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Release.Name }}-config
+              key: redis_host
+        - name: REDIS_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Release.Name }}-config
+              key: redis_port
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secrets
+              key: redis_password
+        - name: CORS_ORIGINS
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Release.Name }}-config
+              key: cors_origins
+        - name: SENSOR_POLLING_INTERVAL
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Release.Name }}-config
+              key: sensor_polling_interval
+        - name: TARGET_TRACKING_CONFIDENCE_THRESHOLD
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Release.Name }}-config
+              key: target_tracking_confidence_threshold
+        - name: TARGET_TRACKING_MAX_AGE
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Release.Name }}-config
+              key: target_tracking_max_age
+        - name: DATA_FUSION_CONFIDENCE_THRESHOLD
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Release.Name }}-config
+              key: data_fusion_confidence_threshold
+        - name: RATE_LIMIT_REQUESTS
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Release.Name }}-config
+              key: rate_limit_requests
+        - name: RATE_LIMIT_WINDOW_SECONDS
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Release.Name }}-config
+              key: rate_limit_window_seconds
+        resources:
+          {{- toYaml .Values.resources | nindent 10 }}
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 10 }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - {{ .Release.Name }}
+              topologyKey: kubernetes.io/hostname

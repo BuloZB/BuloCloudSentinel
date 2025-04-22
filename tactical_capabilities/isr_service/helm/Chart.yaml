@@ -1,0 +1,6 @@
+apiVersion: v2
+name: isr-service
+description: Intelligence, Surveillance, and Reconnaissance service for Bulo.Cloud Sentinel
+type: application
+version: 0.1.0
+appVersion: 0.1.0

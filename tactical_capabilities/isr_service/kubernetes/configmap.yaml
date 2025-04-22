@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: isr-service-config
+  namespace: bulo-sentinel
+data:
+  postgres_host: "postgres"
+  postgres_port: "5432"
+  postgres_db: "isr_service"
+  rabbitmq_host: "rabbitmq"
+  rabbitmq_port: "5672"
+  rabbitmq_exchange: "bulo.sentinel.isr"
+  redis_host: "redis"
+  redis_port: "6379"
+  cors_origins: "http://localhost:3000,http://frontend:80"
+  sensor_polling_interval: "1.0"
+  target_tracking_confidence_threshold: "0.5"
+  target_tracking_max_age: "30"
+  data_fusion_confidence_threshold: "0.7"
+  rate_limit_requests: "100"
+  rate_limit_window_seconds: "60"

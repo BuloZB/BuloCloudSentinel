@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-config
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Release.Name }}
+    component: tactical
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  postgres_host: {{ .Values.config.postgres.host | quote }}
+  postgres_port: {{ .Values.config.postgres.port | quote }}
+  postgres_db: {{ .Values.config.postgres.db | quote }}
+  rabbitmq_host: {{ .Values.config.rabbitmq.host | quote }}
+  rabbitmq_port: {{ .Values.config.rabbitmq.port | quote }}
+  rabbitmq_exchange: {{ .Values.config.rabbitmq.exchange | quote }}
+  redis_host: {{ .Values.config.redis.host | quote }}
+  redis_port: {{ .Values.config.redis.port | quote }}
+  cors_origins: {{ .Values.config.cors.origins | quote }}
+  sensor_polling_interval: {{ .Values.config.sensor.pollingInterval | quote }}
+  target_tracking_confidence_threshold: {{ .Values.config.targetTracking.confidenceThreshold | quote }}
+  target_tracking_max_age: {{ .Values.config.targetTracking.maxAge | quote }}
+  data_fusion_confidence_threshold: {{ .Values.config.dataFusion.confidenceThreshold | quote }}
+  rate_limit_requests: {{ .Values.config.rateLimit.requests | quote }}
+  rate_limit_window_seconds: {{ .Values.config.rateLimit.windowSeconds | quote }}

@@ -1,0 +1,166 @@
+# Default values for sigint-service
+# This is a YAML-formatted file.
+
+replicaCount: 2
+
+image:
+  repository: bulo-sentinel/sigint-service
+  tag: latest
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8000
+
+resources:
+  requests:
+    cpu: 200m
+    memory: 512Mi
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+
+livenessProbe:
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+
+readinessProbe:
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  timeoutSeconds: 5
+
+securityContext:
+  allowPrivilegeEscalation: false
+  runAsNonRoot: true
+  runAsUser: 1000
+  capabilities:
+    drop:
+      - ALL
+
+podSecurityContext:
+  fsGroup: 1000
+
+config:
+  postgres:
+    host: postgres
+    port: 5432
+    db: sigint_service
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    exchange: bulo.sentinel.sigint
+  redis:
+    host: redis
+    port: 6379
+  minio:
+    endpoint: minio:9000
+    bucketName: sigint
+    secure: false
+  cors:
+    origins: http://localhost:3000,http://frontend:80
+  collector:
+    pollingInterval: 1.0
+  signalAnalysis:
+    confidenceThreshold: 0.5
+    maxDuration: 60
+  directionFinding:
+    minCollectors: 2
+    maxAge: 60
+  threatDetection:
+    confidenceThreshold: 0.7
+  rateLimit:
+    requests: 100
+    windowSeconds: 60
+  recording:
+    maxDuration: 300
+    maxSize: 100
+
+secrets:
+  postgres:
+    user: postgres
+    password: postgres
+  jwt:
+    secret: supersecretkey
+  rabbitmq:
+    username: guest
+    password: guest
+  redis:
+    password: ""
+  minio:
+    accessKey: minioadmin
+    secretKey: minioadmin
+
+networkPolicy:
+  enabled: true
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: api-gateway
+      ports:
+        - port: 8000
+          protocol: TCP
+    - from:
+        - podSelector:
+            matchLabels:
+              app: frontend
+      ports:
+        - port: 8000
+          protocol: TCP
+    - from:
+        - podSelector:
+            matchLabels:
+              app: isr-service
+      ports:
+        - port: 8000
+          protocol: TCP
+    - from:
+        - podSelector:
+            matchLabels:
+              app: electronic-warfare-service
+      ports:
+        - port: 8000
+          protocol: TCP
+  egress:
+    - to:
+        - podSelector:
+            matchLabels:
+              app: postgres
+      ports:
+        - port: 5432
+          protocol: TCP
+    - to:
+        - podSelector:
+            matchLabels:
+              app: rabbitmq
+      ports:
+        - port: 5672
+          protocol: TCP
+    - to:
+        - podSelector:
+            matchLabels:
+              app: redis
+      ports:
+        - port: 6379
+          protocol: TCP
+    - to:
+        - podSelector:
+            matchLabels:
+              app: minio
+      ports:
+        - port: 9000
+          protocol: TCP
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              name: kube-system
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - port: 53
+          protocol: UDP
+        - port: 53
+          protocol: TCP

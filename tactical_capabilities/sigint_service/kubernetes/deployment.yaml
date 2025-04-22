@@ -1,0 +1,169 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sigint-service
+  namespace: bulo-sentinel
+  labels:
+    app: sigint-service
+    component: tactical
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: sigint-service
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: sigint-service
+        component: tactical
+    spec:
+      containers:
+      - name: sigint-service
+        image: ${REGISTRY}/bulo-sentinel/sigint-service:${TAG}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+          name: http
+        env:
+        - name: POSTGRES_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: sigint-service-config
+              key: postgres_host
+        - name: POSTGRES_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: sigint-service-config
+              key: postgres_port
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: sigint-service-secrets
+              key: postgres_user
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: sigint-service-secrets
+              key: postgres_password
+        - name: POSTGRES_DB
+          valueFrom:
+            configMapKeyRef:
+              name: sigint-service-config
+              key: postgres_db
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: sigint-service-secrets
+              key: jwt_secret
+        - name: RABBITMQ_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: sigint-service-config
+              key: rabbitmq_host
+        - name: RABBITMQ_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: sigint-service-config
+              key: rabbitmq_port
+        - name: RABBITMQ_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: sigint-service-secrets
+              key: rabbitmq_username
+        - name: RABBITMQ_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: sigint-service-secrets
+              key: rabbitmq_password
+        - name: RABBITMQ_EXCHANGE
+          valueFrom:
+            configMapKeyRef:
+              name: sigint-service-config
+              key: rabbitmq_exchange
+        - name: REDIS_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: sigint-service-config
+              key: redis_host
+        - name: REDIS_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: sigint-service-config
+              key: redis_port
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: sigint-service-secrets
+              key: redis_password
+        - name: MINIO_ENDPOINT
+          valueFrom:
+            configMapKeyRef:
+              name: sigint-service-config
+              key: minio_endpoint
+        - name: MINIO_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: sigint-service-secrets
+              key: minio_access_key
+        - name: MINIO_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: sigint-service-secrets
+              key: minio_secret_key
+        - name: MINIO_BUCKET_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: sigint-service-config
+              key: minio_bucket_name
+        - name: MINIO_SECURE
+          valueFrom:
+            configMapKeyRef:
+              name: sigint-service-config
+              key: minio_secure
+        resources:
+          requests:
+            cpu: 200m
+            memory: 512Mi
+          limits:
+            cpu: 1000m
+            memory: 1Gi
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsNonRoot: true
+          runAsUser: 1000
+          capabilities:
+            drop:
+            - ALL
+      securityContext:
+        fsGroup: 1000
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - sigint-service
+              topologyKey: kubernetes.io/hostname
