@@ -59,26 +59,26 @@ app.include_router(analytics.router, prefix="/api/analytics", tags=["analytics"]
 async def startup_event():
     """Initialize services on startup."""
     logger.info("Starting AI Analytics module")
-    
+
     # Initialize video streams
     await app.state.video_manager.initialize()
-    
+
     # Initialize event publisher
     await app.state.event_publisher.initialize()
-    
+
     logger.info("AI Analytics module started successfully")
 
 @app.on_event("shutdown")
 async def shutdown_event():
     """Clean up resources on shutdown."""
     logger.info("Shutting down AI Analytics module")
-    
+
     # Close video streams
     await app.state.video_manager.shutdown()
-    
+
     # Close event publisher
     await app.state.event_publisher.shutdown()
-    
+
     logger.info("AI Analytics module shut down successfully")
 
 @app.get("/health")
@@ -88,4 +88,6 @@ async def health_check():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=8060, reload=True)
+    # Using 127.0.0.1 instead of 0.0.0.0 for security - only bind to localhost
+    # Use 0.0.0.0 only in development environments where external access is needed
+    uvicorn.run("main:app", host="127.0.0.1", port=8060, reload=True)

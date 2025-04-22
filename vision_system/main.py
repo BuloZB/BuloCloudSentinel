@@ -81,28 +81,28 @@ app.include_router(visualization.router, prefix="/api/visualization", tags=["vis
 async def startup_event():
     """Initialize services on startup."""
     logger.info("Starting Vision System")
-    
+
     # Initialize storage service
     await app.state.storage_service.initialize()
-    
+
     # Initialize stream service
     await app.state.stream_service.initialize()
-    
+
     # Initialize analysis service
     await app.state.analysis_service.initialize()
-    
+
     logger.info("Vision System started successfully")
 
 @app.on_event("shutdown")
 async def shutdown_event():
     """Clean up resources on shutdown."""
     logger.info("Shutting down Vision System")
-    
+
     # Shutdown services
     await app.state.analysis_service.shutdown()
     await app.state.stream_service.shutdown()
     await app.state.storage_service.shutdown()
-    
+
     logger.info("Vision System shut down successfully")
 
 @app.get("/health")
@@ -112,4 +112,6 @@ async def health_check():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=8080, reload=True)
+    # Using 127.0.0.1 instead of 0.0.0.0 for security - only bind to localhost
+    # Use 0.0.0.0 only in development environments where external access is needed
+    uvicorn.run("main:app", host="127.0.0.1", port=8080, reload=True)

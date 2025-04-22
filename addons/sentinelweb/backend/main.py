@@ -28,26 +28,26 @@ logger = logging.getLogger(__name__)
 async def lifespan(app: FastAPI):
     # Startup: Initialize services and connections
     logger.info("Starting SentinelWeb backend service")
-    
+
     # Create database tables if they don't exist
     await create_db_and_tables()
-    
+
     # Initialize connection to BuloCloudSentinel
     sentinel_client = SentinelClient(
         base_url=settings.SENTINEL_API_URL,
         token=settings.SENTINEL_API_TOKEN
     )
     app.state.sentinel_client = sentinel_client
-    
+
     # Check connection to BuloCloudSentinel
     try:
         health = await sentinel_client.check_health()
         logger.info(f"Connected to BuloCloudSentinel: {health}")
     except Exception as e:
         logger.warning(f"Could not connect to BuloCloudSentinel: {str(e)}")
-    
+
     yield
-    
+
     # Shutdown: Clean up resources
     logger.info("Shutting down SentinelWeb backend service")
 
@@ -92,4 +92,6 @@ async def protected_route(current_user = Depends(get_current_user)):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    # Using 127.0.0.1 instead of 0.0.0.0 for security - only bind to localhost
+    # Use 0.0.0.0 only in development environments where external access is needed
+    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)

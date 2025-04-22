@@ -67,32 +67,34 @@ async def get_dashboard_layouts(
 ) -> Any:
     """
     Get all dashboard layouts for the current user.
-    
+
     Args:
         current_user: Current authenticated user
         db: Database session
-        
+
     Returns:
         List of dashboard layouts
     """
-    # Get user ID from database
+    # Get user ID from database - Using parameterized query to prevent SQL injection
     user_result = await db.execute(
-        f"SELECT id FROM users WHERE username = '{current_user.username}'"
+        "SELECT id FROM users WHERE username = :username",
+        {"username": current_user.username}
     )
     user_id = user_result.scalar_one_or_none()
-    
+
     if not user_id:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User not found"
         )
-    
-    # Get dashboard layouts
+
+    # Get dashboard layouts - Using parameterized query to prevent SQL injection
     result = await db.execute(
-        f"SELECT * FROM dashboard_layouts WHERE user_id = '{user_id}'"
+        "SELECT * FROM dashboard_layouts WHERE user_id = :user_id",
+        {"user_id": user_id}
     )
     layouts = result.fetchall()
-    
+
     return layouts
 
 @router.post("/layouts", response_model=DashboardLayoutResponse)
@@ -103,33 +105,35 @@ async def create_dashboard_layout(
 ) -> Any:
     """
     Create a new dashboard layout.
-    
+
     Args:
         layout: Dashboard layout data
         current_user: Current authenticated user
         db: Database session
-        
+
     Returns:
         Created dashboard layout
     """
-    # Get user ID from database
+    # Get user ID from database - Using parameterized query to prevent SQL injection
     user_result = await db.execute(
-        f"SELECT id FROM users WHERE username = '{current_user.username}'"
+        "SELECT id FROM users WHERE username = :username",
+        {"username": current_user.username}
     )
     user_id = user_result.scalar_one_or_none()
-    
+
     if not user_id:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User not found"
         )
-    
-    # If this layout is default, unset default for other layouts
+
+    # If this layout is default, unset default for other layouts - Using parameterized query to prevent SQL injection
     if layout.is_default:
         await db.execute(
-            f"UPDATE dashboard_layouts SET is_default = FALSE WHERE user_id = '{user_id}'"
+            "UPDATE dashboard_layouts SET is_default = FALSE WHERE user_id = :user_id",
+            {"user_id": user_id}
         )
-    
+
     # Create dashboard layout
     db_layout = DashboardLayout(
         user_id=user_id,
@@ -137,11 +141,11 @@ async def create_dashboard_layout(
         is_default=layout.is_default,
         layout_data=layout.layout_data.dict()
     )
-    
+
     db.add(db_layout)
     await db.commit()
     await db.refresh(db_layout)
-    
+
     return db_layout
 
 @router.get("/layouts/{layout_id}", response_model=DashboardLayoutResponse)
@@ -152,39 +156,41 @@ async def get_dashboard_layout(
 ) -> Any:
     """
     Get a dashboard layout by ID.
-    
+
     Args:
         layout_id: Dashboard layout ID
         current_user: Current authenticated user
         db: Database session
-        
+
     Returns:
         Dashboard layout
     """
-    # Get user ID from database
+    # Get user ID from database - Using parameterized query to prevent SQL injection
     user_result = await db.execute(
-        f"SELECT id FROM users WHERE username = '{current_user.username}'"
+        "SELECT id FROM users WHERE username = :username",
+        {"username": current_user.username}
     )
     user_id = user_result.scalar_one_or_none()
-    
+
     if not user_id:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User not found"
         )
-    
-    # Get dashboard layout
+
+    # Get dashboard layout - Using parameterized query to prevent SQL injection
     result = await db.execute(
-        f"SELECT * FROM dashboard_layouts WHERE id = '{layout_id}' AND user_id = '{user_id}'"
+        "SELECT * FROM dashboard_layouts WHERE id = :layout_id AND user_id = :user_id",
+        {"layout_id": layout_id, "user_id": user_id}
     )
     layout = result.fetchone()
-    
+
     if not layout:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Dashboard layout not found"
         )
-    
+
     return layout
 
 @router.put("/layouts/{layout_id}", response_model=DashboardLayoutResponse)
@@ -196,54 +202,57 @@ async def update_dashboard_layout(
 ) -> Any:
     """
     Update a dashboard layout.
-    
+
     Args:
         layout_id: Dashboard layout ID
         layout: Dashboard layout data
         current_user: Current authenticated user
         db: Database session
-        
+
     Returns:
         Updated dashboard layout
     """
-    # Get user ID from database
+    # Get user ID from database - Using parameterized query to prevent SQL injection
     user_result = await db.execute(
-        f"SELECT id FROM users WHERE username = '{current_user.username}'"
+        "SELECT id FROM users WHERE username = :username",
+        {"username": current_user.username}
     )
     user_id = user_result.scalar_one_or_none()
-    
+
     if not user_id:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User not found"
         )
-    
-    # Get dashboard layout
+
+    # Get dashboard layout - Using parameterized query to prevent SQL injection
     result = await db.execute(
-        f"SELECT * FROM dashboard_layouts WHERE id = '{layout_id}' AND user_id = '{user_id}'"
+        "SELECT * FROM dashboard_layouts WHERE id = :layout_id AND user_id = :user_id",
+        {"layout_id": layout_id, "user_id": user_id}
     )
     db_layout = result.fetchone()
-    
+
     if not db_layout:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Dashboard layout not found"
         )
-    
-    # If this layout is default, unset default for other layouts
+
+    # If this layout is default, unset default for other layouts - Using parameterized query to prevent SQL injection
     if layout.is_default:
         await db.execute(
-            f"UPDATE dashboard_layouts SET is_default = FALSE WHERE user_id = '{user_id}'"
+            "UPDATE dashboard_layouts SET is_default = FALSE WHERE user_id = :user_id",
+            {"user_id": user_id}
         )
-    
+
     # Update dashboard layout
     update_data = layout.dict(exclude_unset=True)
     for key, value in update_data.items():
         setattr(db_layout, key, value)
-    
+
     await db.commit()
     await db.refresh(db_layout)
-    
+
     return db_layout
 
 @router.delete("/layouts/{layout_id}")
@@ -254,43 +263,45 @@ async def delete_dashboard_layout(
 ) -> Any:
     """
     Delete a dashboard layout.
-    
+
     Args:
         layout_id: Dashboard layout ID
         current_user: Current authenticated user
         db: Database session
-        
+
     Returns:
         Deletion confirmation
     """
-    # Get user ID from database
+    # Get user ID from database - Using parameterized query to prevent SQL injection
     user_result = await db.execute(
-        f"SELECT id FROM users WHERE username = '{current_user.username}'"
+        "SELECT id FROM users WHERE username = :username",
+        {"username": current_user.username}
     )
     user_id = user_result.scalar_one_or_none()
-    
+
     if not user_id:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User not found"
         )
-    
-    # Get dashboard layout
+
+    # Get dashboard layout - Using parameterized query to prevent SQL injection
     result = await db.execute(
-        f"SELECT * FROM dashboard_layouts WHERE id = '{layout_id}' AND user_id = '{user_id}'"
+        "SELECT * FROM dashboard_layouts WHERE id = :layout_id AND user_id = :user_id",
+        {"layout_id": layout_id, "user_id": user_id}
     )
     db_layout = result.fetchone()
-    
+
     if not db_layout:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Dashboard layout not found"
         )
-    
+
     # Delete dashboard layout
     await db.delete(db_layout)
     await db.commit()
-    
+
     return {"detail": "Dashboard layout deleted"}
 
 @router.get("/widgets", response_model=List[Widget])
@@ -300,16 +311,16 @@ async def get_available_widgets(
 ) -> Any:
     """
     Get all available widgets.
-    
+
     Args:
         current_user: Current authenticated user
         db: Database session
-        
+
     Returns:
         List of available widgets
     """
     # Get widgets
     result = await db.execute("SELECT * FROM widgets")
     widgets = result.fetchall()
-    
+
     return widgets
