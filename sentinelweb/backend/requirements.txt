@@ -1,10 +1,12 @@
 fastapi==0.115.7
 uvicorn[standard]==0.34.0
 pydantic==2.10.6
-python-multipart==0.0.20
+python-multipart==0.0.20  # Already updated to secure version
 
 python-socketio==5.13.0
-python-jose==3.4.0
+# Removing python-jose due to vulnerabilities CVE-2024-33664 and CVE-2024-33663
+# python-jose==3.4.0
+# Using PyJWT instead (see line 91)
 passlib[bcrypt]==1.7.4
 
 requests==2.32.3
@@ -52,7 +54,7 @@ playwright==1.49.1 # Caution: version must match docker-compose.playwright.yaml
 elasticsearch==8.17.1
 
 
-transformers
+transformers==4.48.0  # Pinned to fix vulnerability PVE-2025-74882
 sentence-transformers==3.3.1
 accelerate
 colbert-ai==0.2.21

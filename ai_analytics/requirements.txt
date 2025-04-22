@@ -1,7 +1,7 @@
-fastapi>=0.95.0
-uvicorn>=0.21.1
-pydantic>=2.0.0
-python-multipart>=0.0.6
+fastapi==0.115.7  # Pinned version for security
+uvicorn==0.34.0  # Pinned version for security
+pydantic==2.10.6  # Pinned version for security
+python-multipart==0.0.18  # Updated to fix CVE-2024-53981
 numpy>=1.24.0
 opencv-python>=4.7.0
 PyYAML>=6.0
@@ -21,3 +21,9 @@ torchvision>=0.15.1
 onnxruntime>=1.14.1
 pytesseract>=0.3.10
 Pillow>=9.5.0
+
+# Security
+cryptography==43.0.1  # Secure version
+pyopenssl==24.0.0  # Secure version
+pyjwt==2.10.1  # Secure JWT implementation
+passlib==1.7.4  # Password hashing

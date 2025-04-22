@@ -23,8 +23,10 @@ setup(
         "httpx>=0.24.0",
         "websockets>=11.0.2",
         "numpy>=1.24.3",
-        "python-multipart>=0.0.6",
-        "python-jose>=3.3.0",
+        "python-multipart>=0.0.18",  # Updated from 0.0.6 to fix CVE-2024-53981
+        # Replacing python-jose with PyJWT due to vulnerabilities CVE-2024-33664 and CVE-2024-33663
+        # "python-jose>=3.3.0",
+        "pyjwt>=2.10.1",
         "passlib>=1.7.4",
         "bcrypt>=4.0.1",
         "pymavlink>=2.4.37",

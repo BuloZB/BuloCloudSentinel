@@ -2,18 +2,19 @@ fastapi==0.115.7
 uvicorn[standard]==0.34.0
 pydantic==2.10.6
 sqlalchemy==2.0.38
-python-jose[cryptography]==3.3.0
+# Removing python-jose due to vulnerabilities CVE-2024-33664 and CVE-2024-33663
+# python-jose[cryptography]==3.3.0
 passlib[bcrypt]==1.7.4
 argon2-cffi==23.1.0
-python-multipart==0.0.9
-cryptography==42.0.8
+python-multipart==0.0.18  # Updated from 0.0.9 to fix CVE-2024-53981
+cryptography==43.0.1  # Updated from 42.0.8 to fix PVE-2024-73711
 pyopenssl==24.0.0
-certifi==2024.6.2
+certifi==2024.7.4  # Updated to latest version
 oauthlib==3.2.2
 pyotp==2.9.0
 qrcode==7.4.2
 slowapi==0.1.9
-pyjwt==2.8.0
+pyjwt==2.10.1  # Updated from 2.8.0 to fix vulnerabilities
 bandit==1.7.8
 safety==3.0.1
 pydantic-settings==2.2.1

@@ -4,12 +4,14 @@ pydantic==2.10.6
 sqlalchemy==2.0.38
 alembic==1.14.0
 psycopg2-binary==2.9.9
-python-multipart==0.0.9
+python-multipart==0.0.18  # Updated from 0.0.9 to fix CVE-2024-53981
 aiofiles==23.2.0
 numpy==1.26.4
 redis==5.0.3
 websockets==12.0
-python-jose[cryptography]==3.3.0
+# Replacing python-jose with PyJWT due to vulnerabilities CVE-2024-33664 and CVE-2024-33663
+# python-jose[cryptography]==3.3.0
+pyjwt==2.10.1  # Secure JWT implementation
 passlib[bcrypt]==1.7.4
 httpx==0.27.0
 geopy==2.4.1
@@ -22,6 +24,6 @@ APScheduler==3.10.4
 loguru==0.7.2
 python-dotenv==1.0.1
 paho-mqtt==2.2.1
-cryptography==42.0.8
+cryptography==43.0.1  # Updated from 42.0.8 to fix PVE-2024-73711
 pyopenssl==24.0.0
 python-magic==0.4.27

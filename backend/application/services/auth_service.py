@@ -1,6 +1,8 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Optional
-from jose import jwt
+# Replacing jose with PyJWT for security (CVE-2024-33664, CVE-2024-33663)
+# from jose import jwt
+import jwt
 from passlib.context import CryptContext
 from backend.domain.repositories.user_repository import IUserRepository
 from backend.domain.entities.user import User
@@ -28,7 +30,7 @@ class AuthService:
 
     def create_access_token(self, data: dict, expires_delta: Optional[timedelta] = None) -> str:
         to_encode = data.copy()
-        expire = datetime.utcnow() + (expires_delta or timedelta(minutes=settings.jwt_expiration_minutes))
+        expire = datetime.now(timezone.utc) + (expires_delta or timedelta(minutes=settings.jwt_expiration_minutes))
         to_encode.update({"exp": expire})
         encoded_jwt = jwt.encode(to_encode, settings.jwt_secret, algorithm=settings.jwt_algorithm)
         return encoded_jwt

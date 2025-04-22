@@ -1,6 +1,9 @@
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
-from jose import JWTError, jwt
+# Replacing jose with PyJWT for security (CVE-2024-33664, CVE-2024-33663)
+# from jose import JWTError, jwt
+import jwt
+from jwt.exceptions import PyJWTError as JWTError
 from typing import Optional
 from pydantic import BaseModel
 from backend.infrastructure.config.config import settings

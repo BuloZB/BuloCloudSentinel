@@ -20,9 +20,11 @@ gnss-sdr-python==0.1.0
 dronekit==2.9.2
 
 # Security
-cryptography==42.0.8
+cryptography==43.0.1  # Updated from 42.0.8 to fix PVE-2024-73711
 hvac==1.2.1  # HashiCorp Vault client
-python-jose==3.4.0  # JWT
+# Replacing python-jose with PyJWT due to vulnerabilities CVE-2024-33664 and CVE-2024-33663
+# python-jose==3.4.0  # JWT
+pyjwt==2.10.1  # Secure JWT implementation
 passlib==1.7.4  # Password hashing
 python-magic==0.4.27
 
