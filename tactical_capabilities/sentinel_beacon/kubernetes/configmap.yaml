@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sentinel-beacon-config
+  namespace: bulo-sentinel
+data:
+  postgres_host: "postgres"
+  postgres_port: "5432"
+  postgres_db: "sentinel_beacon"
+  rabbitmq_host: "rabbitmq"
+  rabbitmq_port: "5672"
+  rabbitmq_exchange: "bulo.sentinel.beacon"
+  cors_origins: "http://localhost:3000,http://frontend:80"
+  
+  # Meshtastic settings
+  meshtastic_device: "/dev/ttyUSB0"
+  meshtastic_region: "US"
+  meshtastic_modem_config: "LongFast"
+  meshtastic_tx_power: "20"
+  meshtastic_node_name: "SentinelBeacon"
+  meshtastic_position_broadcast_secs: "30"
+  meshtastic_bluetooth_enabled: "true"
+  meshtastic_channel_name: "SentinelNet"
+  
+  # Drone interface settings
+  drone_interface_type: "mavlink"
+  drone_interface_port: "/dev/ttyACM0"
+  drone_interface_baudrate: "57600"
+  drone_interface_system_id: "1"
+  drone_interface_component_id: "1"
+  
+  # Beacon settings
+  beacon_mode: "autonomous"
+  beacon_altitude: "50.0"
+  beacon_hover_time: "1800"
+  beacon_return_home_battery: "30"
+  beacon_max_distance: "500.0"
+  beacon_movement_pattern: "hover"
+  
+  # Position settings
+  position_broadcast_interval: "5"
+  
+  # Security settings
+  rate_limit_requests: "100"
+  rate_limit_window_seconds: "60"

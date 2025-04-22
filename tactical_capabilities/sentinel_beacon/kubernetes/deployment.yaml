@@ -1,0 +1,170 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sentinel-beacon
+  namespace: bulo-sentinel
+  labels:
+    app: sentinel-beacon
+    component: tactical
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sentinel-beacon
+  strategy:
+    type: Recreate  # We need to ensure only one instance runs at a time
+  template:
+    metadata:
+      labels:
+        app: sentinel-beacon
+        component: tactical
+    spec:
+      containers:
+      - name: sentinel-beacon
+        image: ${REGISTRY}/bulo-sentinel/sentinel-beacon:${TAG}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+          name: http
+        env:
+        - name: POSTGRES_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: sentinel-beacon-config
+              key: postgres_host
+        - name: POSTGRES_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: sentinel-beacon-config
+              key: postgres_port
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: sentinel-beacon-secrets
+              key: postgres_user
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: sentinel-beacon-secrets
+              key: postgres_password
+        - name: POSTGRES_DB
+          valueFrom:
+            configMapKeyRef:
+              name: sentinel-beacon-config
+              key: postgres_db
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: sentinel-beacon-secrets
+              key: jwt_secret
+        - name: RABBITMQ_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: sentinel-beacon-config
+              key: rabbitmq_host
+        - name: RABBITMQ_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: sentinel-beacon-config
+              key: rabbitmq_port
+        - name: RABBITMQ_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: sentinel-beacon-secrets
+              key: rabbitmq_username
+        - name: RABBITMQ_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: sentinel-beacon-secrets
+              key: rabbitmq_password
+        - name: RABBITMQ_EXCHANGE
+          valueFrom:
+            configMapKeyRef:
+              name: sentinel-beacon-config
+              key: rabbitmq_exchange
+        - name: MESHTASTIC_DEVICE
+          valueFrom:
+            configMapKeyRef:
+              name: sentinel-beacon-config
+              key: meshtastic_device
+        - name: MESHTASTIC_REGION
+          valueFrom:
+            configMapKeyRef:
+              name: sentinel-beacon-config
+              key: meshtastic_region
+        - name: MESHTASTIC_NODE_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: sentinel-beacon-config
+              key: meshtastic_node_name
+        - name: MESHTASTIC_CHANNEL_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: sentinel-beacon-config
+              key: meshtastic_channel_name
+        - name: MESHTASTIC_CHANNEL_PSK
+          valueFrom:
+            secretKeyRef:
+              name: sentinel-beacon-secrets
+              key: meshtastic_channel_psk
+              optional: true
+        - name: DRONE_INTERFACE_TYPE
+          valueFrom:
+            configMapKeyRef:
+              name: sentinel-beacon-config
+              key: drone_interface_type
+        - name: DRONE_INTERFACE_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: sentinel-beacon-config
+              key: drone_interface_port
+        - name: BEACON_MODE
+          valueFrom:
+            configMapKeyRef:
+              name: sentinel-beacon-config
+              key: beacon_mode
+        - name: BEACON_ALTITUDE
+          valueFrom:
+            configMapKeyRef:
+              name: sentinel-beacon-config
+              key: beacon_altitude
+        - name: BEACON_MOVEMENT_PATTERN
+          valueFrom:
+            configMapKeyRef:
+              name: sentinel-beacon-config
+              key: beacon_movement_pattern
+        resources:
+          requests:
+            cpu: 200m
+            memory: 256Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+        volumeMounts:
+        - name: meshtastic-device
+          mountPath: /dev/ttyUSB0
+        - name: drone-device
+          mountPath: /dev/ttyACM0
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
+      volumes:
+      - name: meshtastic-device
+        hostPath:
+          path: /dev/ttyUSB0
+      - name: drone-device
+        hostPath:
+          path: /dev/ttyACM0
+      securityContext:
+        fsGroup: 1000
