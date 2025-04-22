@@ -211,6 +211,11 @@ bulo-cloud-sentinel/
 ├── rtmp_server/          # RTMP server for video streaming
 ├── security/             # Security Module for comprehensive protection
 ├── sentinelweb/          # Web interface based on OpenWebUI
+├── tactical_capabilities/ # Tactical capabilities modules
+│   ├── ew_service/       # Electronic Warfare service
+│   ├── isr_service/      # Intelligence, Surveillance, and Reconnaissance service
+│   ├── sentinel_beacon/  # Meshtastic-based mesh communication for drones
+│   └── sigint_service/   # Signal Intelligence service
 └── vision_system/        # Vision System for crowd and vehicle analysis
 ```
 
