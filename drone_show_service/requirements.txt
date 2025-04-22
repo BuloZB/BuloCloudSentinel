@@ -1,14 +1,16 @@
-fastapi>=0.95.0
-uvicorn>=0.21.1
-pydantic>=1.10.7
-sqlalchemy>=2.0.9
-asyncpg>=0.27.0
-aioboto3>=11.2.0
-httpx>=0.24.0
-websockets>=11.0.2
-numpy>=1.24.3
-python-multipart>=0.0.6
-python-jose>=3.3.0
-passlib>=1.7.4
-bcrypt>=4.0.1
-pymavlink>=2.4.37
+# Pinned versions for security
+fastapi==0.95.2
+uvicorn==0.22.0
+pydantic==1.10.8
+sqlalchemy==2.0.15
+asyncpg==0.27.0
+aioboto3==11.2.0
+httpx==0.24.1
+websockets==11.0.3
+numpy==1.24.3
+# Security-sensitive packages with pinned versions
+python-multipart==0.0.6
+python-jose==3.3.0
+passlib==1.7.4
+bcrypt==4.0.1
+pymavlink==2.4.37

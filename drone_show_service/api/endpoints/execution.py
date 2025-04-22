@@ -31,13 +31,13 @@ async def execute_choreography(
 ):
     """
     Execute a choreography.
-    
+
     Args:
         settings: Execution settings
         choreography_id: Choreography ID
         db: Database session
         execution_service: Execution service
-        
+
     Returns:
         Execution response
     """
@@ -65,12 +65,12 @@ async def get_execution(
 ):
     """
     Get an execution by ID.
-    
+
     Args:
         execution_id: Execution ID
         db: Database session
         execution_service: Execution service
-        
+
     Returns:
         Execution
     """
@@ -103,7 +103,7 @@ async def get_executions(
 ):
     """
     Get all executions.
-    
+
     Args:
         choreography_id: Filter by choreography ID
         status: Filter by status
@@ -111,7 +111,7 @@ async def get_executions(
         limit: Maximum number of records to return
         db: Database session
         execution_service: Execution service
-        
+
     Returns:
         List of executions
     """
@@ -133,12 +133,12 @@ async def pause_execution(
 ):
     """
     Pause an execution.
-    
+
     Args:
         execution_id: Execution ID
         db: Database session
         execution_service: Execution service
-        
+
     Returns:
         Updated execution
     """
@@ -168,12 +168,12 @@ async def resume_execution(
 ):
     """
     Resume a paused execution.
-    
+
     Args:
         execution_id: Execution ID
         db: Database session
         execution_service: Execution service
-        
+
     Returns:
         Updated execution
     """
@@ -203,12 +203,12 @@ async def abort_execution(
 ):
     """
     Abort an execution.
-    
+
     Args:
         execution_id: Execution ID
         db: Database session
         execution_service: Execution service
-        
+
     Returns:
         Updated execution
     """
@@ -241,7 +241,7 @@ async def get_execution_logs(
 ):
     """
     Get logs for an execution.
-    
+
     Args:
         execution_id: Execution ID
         level: Filter by log level
@@ -249,7 +249,7 @@ async def get_execution_logs(
         limit: Maximum number of records to return
         db: Database session
         logging_service: Logging service
-        
+
     Returns:
         List of log entries
     """
@@ -271,12 +271,12 @@ async def export_execution_logs(
 ):
     """
     Export logs for an execution.
-    
+
     Args:
         execution_id: Execution ID
         db: Database session
         logging_service: Logging service
-        
+
     Returns:
         URL to exported logs
     """
@@ -307,7 +307,7 @@ async def execution_websocket(
 ):
     """
     WebSocket endpoint for streaming execution data.
-    
+
     Args:
         websocket: WebSocket connection
         execution_id: Execution ID
@@ -317,39 +317,39 @@ async def execution_websocket(
     try:
         # Accept connection
         await websocket.accept()
-        
+
         # Get execution
         execution = await execution_service.get_execution(db, execution_id)
         if not execution:
             await websocket.close(code=1000, reason=f"Execution {execution_id} not found")
             return
-        
+
         # Send initial data
         await websocket.send_json({
             "type": "init",
             "data": execution.dict(),
         })
-        
+
         # Stream updates
         while True:
             # Get latest execution
             execution = await execution_service.get_execution(db, execution_id)
             if not execution:
                 break
-            
+
             # Send update
             await websocket.send_json({
                 "type": "update",
                 "data": execution.dict(),
             })
-            
+
             # Check if execution is completed, aborted, or failed
             if execution.status in ["completed", "aborted", "failed"]:
                 break
-            
+
             # Wait for next update
             await asyncio.sleep(1.0)
-        
+
         # Send end message
         await websocket.send_json({
             "type": "end",
@@ -364,5 +364,5 @@ async def execution_websocket(
         logger.error(f"Error in execution WebSocket {execution_id}: {str(e)}")
         try:
             await websocket.close(code=1011, reason=str(e))
-        except:
-            pass
+        except Exception as close_error:
+            logger.error(f"Error closing WebSocket: {str(close_error)}")

@@ -29,13 +29,13 @@ async def simulate_choreography(
 ):
     """
     Simulate a choreography.
-    
+
     Args:
         settings: Simulation settings
         choreography_id: Choreography ID
         db: Database session
         simulation_service: Simulation service
-        
+
     Returns:
         Simulation response
     """
@@ -63,12 +63,12 @@ async def get_simulation(
 ):
     """
     Get a simulation by ID.
-    
+
     Args:
         simulation_id: Simulation ID
         db: Database session
         simulation_service: Simulation service
-        
+
     Returns:
         Simulation
     """
@@ -100,14 +100,14 @@ async def get_simulations(
 ):
     """
     Get all simulations.
-    
+
     Args:
         choreography_id: Filter by choreography ID
         skip: Number of records to skip
         limit: Maximum number of records to return
         db: Database session
         simulation_service: Simulation service
-        
+
     Returns:
         List of simulations
     """
@@ -129,7 +129,7 @@ async def delete_simulation(
 ):
     """
     Delete a simulation.
-    
+
     Args:
         simulation_id: Simulation ID
         db: Database session
@@ -161,7 +161,7 @@ async def simulation_websocket(
 ):
     """
     WebSocket endpoint for streaming simulation data.
-    
+
     Args:
         websocket: WebSocket connection
         simulation_id: Simulation ID
@@ -171,13 +171,13 @@ async def simulation_websocket(
     try:
         # Accept connection
         await websocket.accept()
-        
+
         # Get simulation
         simulation = await simulation_service.get_simulation(db, simulation_id)
         if not simulation:
             await websocket.close(code=1000, reason=f"Simulation {simulation_id} not found")
             return
-        
+
         # Send initial data
         await websocket.send_json({
             "type": "init",
@@ -188,7 +188,7 @@ async def simulation_websocket(
                 "duration": simulation.duration,
             }
         })
-        
+
         # Stream frames
         for frame in simulation.frames:
             # Check if client is still connected
@@ -198,15 +198,15 @@ async def simulation_websocket(
                     "type": "frame",
                     "data": frame.dict(),
                 })
-                
+
                 # Wait for client to acknowledge
                 data = await websocket.receive_text()
                 message = json.loads(data)
-                
+
                 # Check if client wants to pause, skip, or stop
                 if message.get("action") == "stop":
                     break
-                
+
                 # Sleep if client wants to pause
                 if message.get("action") == "pause":
                     while True:
@@ -219,7 +219,7 @@ async def simulation_websocket(
             except WebSocketDisconnect:
                 logger.info(f"Client disconnected from simulation {simulation_id}")
                 break
-        
+
         # Send end message
         await websocket.send_json({
             "type": "end",
@@ -234,5 +234,5 @@ async def simulation_websocket(
         logger.error(f"Error in simulation WebSocket {simulation_id}: {str(e)}")
         try:
             await websocket.close(code=1011, reason=str(e))
-        except:
-            pass
+        except Exception as close_error:
+            logger.error(f"Error closing WebSocket: {str(close_error)}")
