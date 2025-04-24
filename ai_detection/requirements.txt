@@ -4,7 +4,7 @@ pydantic==2.10.6  # Pinned version for security
 python-multipart==0.0.18  # Secure version
 
 # Security
-cryptography==43.0.1  # Secure version
+cryptography==44.0.1  # Updated to fix CVE-2024-12797
 pyopenssl==24.0.0  # Secure version
 pyjwt==2.10.1  # Secure JWT implementation
 passlib==1.7.4  # Password hashing
