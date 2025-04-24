@@ -215,7 +215,8 @@ bulo-cloud-sentinel/
 │   ├── ew_service/       # Electronic Warfare service
 │   ├── isr_service/      # Intelligence, Surveillance, and Reconnaissance service
 │   ├── sentinel_beacon/  # Meshtastic-based mesh communication for drones
-│   └── sigint_service/   # Signal Intelligence service
+│   ├── sigint_service/   # Signal Intelligence service
+│   └── tacs/             # Target Acquisition and Coordination System
 └── vision_system/        # Vision System for crowd and vehicle analysis
 ```
 
