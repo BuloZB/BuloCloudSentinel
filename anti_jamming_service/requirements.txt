@@ -1,8 +1,8 @@
 # FastAPI and web server
 fastapi==0.115.7
 uvicorn==0.34.0
-starlette==0.37.2
-pydantic==2.10.6
+starlette==0.40.0
+pydantic==2.11.3
 
 # Hardware interfaces
 pyrtlsdr==0.2.93
@@ -20,7 +20,7 @@ gnss-sdr-python==0.1.0
 dronekit==2.9.2
 
 # Security
-cryptography==43.0.1  # Updated from 42.0.8 to fix PVE-2024-73711
+cryptography==44.0.1  # Updated from 42.0.8 to fix PVE-2024-73711
 hvac==1.2.1  # HashiCorp Vault client
 # Replacing python-jose with PyJWT due to vulnerabilities CVE-2024-33664 and CVE-2024-33663
 # python-jose==3.4.0  # JWT

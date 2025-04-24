@@ -1,9 +1,9 @@
 # FastAPI
 fastapi==0.115.7
 uvicorn==0.34.0
-pydantic==2.10.6
+pydantic==2.11.3
 email-validator==2.1.1
-python-multipart==0.0.18  # Updated from 0.0.9 to fix CVE-2024-53981
+python-multipart==0.0.20  # Updated from 0.0.9 to fix CVE-2024-53981
 
 # Database
 sqlalchemy==2.0.38
@@ -24,7 +24,7 @@ redis==5.0.3
 websockets==12.0
 
 # Security
-cryptography==43.0.1  # Updated from 42.0.8 to fix PVE-2024-73711
+cryptography==44.0.1  # Updated from 42.0.8 to fix PVE-2024-73711
 pyopenssl==24.0.0
 certifi==2024.7.4  # Pinned version
 python-magic==0.4.27
