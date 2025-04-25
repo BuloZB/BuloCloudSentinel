@@ -137,23 +137,30 @@ class AuthsTable:
                         user = Users.get_user_by_id(auth.id)
                         return user
                     else:
+                        log.warning(f"Invalid password for user: {email}")
                         return None
                 else:
+                    log.warning(f"User not found or inactive: {email}")
                     return None
-        except Exception:
+        except Exception as e:
+            log.error(f"Authentication error for {email}: {str(e)}")
             return None
 
     def authenticate_user_by_api_key(self, api_key: str) -> Optional[UserModel]:
-        log.info(f"authenticate_user_by_api_key: {api_key}")
+        log.info(f"authenticate_user_by_api_key: API key provided")
         # if no api_key, return None
         if not api_key:
+            log.warning("No API key provided")
             return None
 
         try:
             user = Users.get_user_by_api_key(api_key)
-            return user if user else None
-        except Exception:
-            return False
+            if not user:
+                log.warning("Invalid API key provided")
+            return user
+        except Exception as e:
+            log.error(f"Error authenticating with API key: {str(e)}")
+            return None
 
     def authenticate_user_by_trusted_header(self, email: str) -> Optional[UserModel]:
         log.info(f"authenticate_user_by_trusted_header: {email}")

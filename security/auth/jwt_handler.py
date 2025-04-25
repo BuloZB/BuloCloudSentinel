@@ -6,7 +6,7 @@ This module provides secure JWT token generation, validation, and management.
 
 import os
 import time
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Dict, Optional, Any, Union
 
 import jwt
@@ -54,37 +54,37 @@ def create_access_token(
 ) -> str:
     """
     Create a new JWT access token.
-    
+
     Args:
         subject: The subject of the token (usually user ID)
         roles: List of user roles
         permissions: List of user permissions
         additional_claims: Additional claims to include in the token
         expires_delta: Optional custom expiration time
-        
+
     Returns:
         JWT token string
     """
     if expires_delta is None:
         expires_delta = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    
-    expire = datetime.utcnow() + expires_delta
-    
+
+    expire = datetime.now(timezone.utc) + expires_delta
+
     # Create token payload
     payload = {
         "sub": str(subject),
         "exp": expire.timestamp(),
-        "iat": datetime.utcnow().timestamp(),
+        "iat": datetime.now(timezone.utc).timestamp(),
         "jti": os.urandom(16).hex(),  # Unique token ID
         "type": "access",
         "roles": roles,
         "permissions": permissions,
         **additional_claims
     }
-    
+
     # Create token
     token = jwt.encode(payload, JWT_SECRET_KEY, algorithm=JWT_ALGORITHM)
-    
+
     return token
 
 def create_refresh_token(
@@ -93,31 +93,31 @@ def create_refresh_token(
 ) -> str:
     """
     Create a new JWT refresh token.
-    
+
     Args:
         subject: The subject of the token (usually user ID)
         expires_delta: Optional custom expiration time
-        
+
     Returns:
         JWT token string
     """
     if expires_delta is None:
         expires_delta = timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
-    
-    expire = datetime.utcnow() + expires_delta
-    
+
+    expire = datetime.now(timezone.utc) + expires_delta
+
     # Create token payload
     payload = {
         "sub": str(subject),
         "exp": expire.timestamp(),
-        "iat": datetime.utcnow().timestamp(),
+        "iat": datetime.now(timezone.utc).timestamp(),
         "jti": os.urandom(16).hex(),  # Unique token ID
         "type": "refresh"
     }
-    
+
     # Create token
     token = jwt.encode(payload, JWT_SECRET_KEY, algorithm=JWT_ALGORITHM)
-    
+
     return token
 
 def create_token_response(
@@ -128,13 +128,13 @@ def create_token_response(
 ) -> Token:
     """
     Create a complete token response with access and refresh tokens.
-    
+
     Args:
         subject: The subject of the token (usually user ID)
         roles: List of user roles
         permissions: List of user permissions
         additional_claims: Additional claims to include in the token
-        
+
     Returns:
         Token response object
     """
@@ -144,9 +144,9 @@ def create_token_response(
         permissions=permissions,
         additional_claims=additional_claims
     )
-    
+
     refresh_token = create_refresh_token(subject=subject)
-    
+
     return Token(
         access_token=access_token,
         refresh_token=refresh_token,
@@ -157,20 +157,41 @@ def create_token_response(
 def decode_token(token: str) -> TokenData:
     """
     Decode and validate a JWT token.
-    
+
     Args:
         token: JWT token string
-        
+
     Returns:
         TokenData object
-        
+
     Raises:
         HTTPException: If token is invalid or expired
     """
     try:
-        # Decode token
-        payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=[JWT_ALGORITHM])
-        
+        # Decode token with full validation
+        # options parameter ensures all required claims are present and validated
+        payload = jwt.decode(
+            token,
+            JWT_SECRET_KEY,
+            algorithms=[JWT_ALGORITHM],
+            options={
+                "verify_signature": True,
+                "verify_exp": True,
+                "verify_iat": True,
+                "require": ["sub", "exp", "iat", "jti", "type"]
+            }
+        )
+
+        # Validate required fields
+        required_fields = ["sub", "exp", "iat", "jti", "type"]
+        for field in required_fields:
+            if field not in payload:
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail=f"Token missing required field: {field}",
+                    headers={"WWW-Authenticate": "Bearer"},
+                )
+
         # Extract token data
         token_data = TokenData(
             sub=payload["sub"],
@@ -182,18 +203,40 @@ def decode_token(token: str) -> TokenData:
             permissions=payload.get("permissions", []),
             additional_claims={k: v for k, v in payload.items() if k not in ["sub", "exp", "iat", "jti", "type", "roles", "permissions"]}
         )
-        
-        # Check if token is expired
+
+        # Check if token is expired (redundant with verify_exp, but kept for clarity)
         if token_data.exp < time.time():
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Token has expired",
                 headers={"WWW-Authenticate": "Bearer"},
             )
-        
+
+        # Check if token was issued in the future (clock skew)
+        if token_data.iat > time.time() + 30:  # Allow 30 seconds of clock skew
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Token issued in the future",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+
+        # Validate token type
+        if token_data.type not in ["access", "refresh"]:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid token type",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+
         return token_data
-    
-    except jwt.PyJWTError as e:
+
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token has expired",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    except jwt.InvalidTokenError as e:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail=f"Invalid token: {str(e)}",
@@ -203,13 +246,13 @@ def decode_token(token: str) -> TokenData:
 async def get_current_token_data(token: str = Depends(oauth2_scheme)) -> TokenData:
     """
     Get current token data from request.
-    
+
     Args:
         token: JWT token string from request
-        
+
     Returns:
         TokenData object
-        
+
     Raises:
         HTTPException: If token is invalid or expired
     """
@@ -218,10 +261,10 @@ async def get_current_token_data(token: str = Depends(oauth2_scheme)) -> TokenDa
 async def get_current_user_id(token_data: TokenData = Depends(get_current_token_data)) -> str:
     """
     Get current user ID from token data.
-    
+
     Args:
         token_data: Token data from request
-        
+
     Returns:
         User ID string
     """
@@ -230,10 +273,10 @@ async def get_current_user_id(token_data: TokenData = Depends(get_current_token_
 def has_role(required_role: str):
     """
     Dependency for checking if user has a specific role.
-    
+
     Args:
         required_role: Role to check for
-        
+
     Returns:
         Dependency function
     """
@@ -244,16 +287,16 @@ def has_role(required_role: str):
                 detail=f"Role '{required_role}' required",
             )
         return token_data
-    
+
     return check_role
 
 def has_permission(required_permission: str):
     """
     Dependency for checking if user has a specific permission.
-    
+
     Args:
         required_permission: Permission to check for
-        
+
     Returns:
         Dependency function
     """
@@ -264,5 +307,5 @@ def has_permission(required_permission: str):
                 detail=f"Permission '{required_permission}' required",
             )
         return token_data
-    
+
     return check_permission

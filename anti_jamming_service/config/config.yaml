@@ -1,9 +1,9 @@
 api:
-  host: "0.0.0.0"
-  port: 8080
-  ssl_cert: null
-  ssl_key: null
-  rate_limit: "60/minute"
+  host: "${API_HOST:-0.0.0.0}"
+  port: ${API_PORT:-8080}
+  ssl_cert: "${API_SSL_CERT:-}"
+  ssl_key: "${API_SSL_KEY:-}"
+  rate_limit: "${API_RATE_LIMIT:-60/minute}"
 
 hardware:
   kraken_sdr:
@@ -89,32 +89,32 @@ processing:
 
 security:
   vault:
-    enabled: false
-    url: "http://127.0.0.1:8200"
-    token: null
-    path: "secret/anti_jamming_service"
+    enabled: ${VAULT_ENABLED:-false}
+    url: "${VAULT_URL:-http://127.0.0.1:8200}"
+    token: "${VAULT_TOKEN:-}"
+    path: "${VAULT_PATH:-secret/anti_jamming_service}"
 
   tls:
-    enabled: false
-    cert_file: "certs/server.crt"
-    key_file: "certs/server.key"
-    ca_file: null
-    verify_client: false
+    enabled: ${TLS_ENABLED:-false}
+    cert_file: "${TLS_CERT_FILE:-certs/server.crt}"
+    key_file: "${TLS_KEY_FILE:-certs/server.key}"
+    ca_file: "${TLS_CA_FILE:-}"
+    verify_client: ${TLS_VERIFY_CLIENT:-false}
 
   rate_limiting:
-    enabled: true
-    default_limit: "60/minute"
-    auth_limit: "10/minute"
-    whitelist_ips: []
-    blacklist_ips: []
+    enabled: ${RATE_LIMITING_ENABLED:-true}
+    default_limit: "${RATE_LIMITING_DEFAULT:-60/minute}"
+    auth_limit: "${RATE_LIMITING_AUTH:-10/minute}"
+    whitelist_ips: ${RATE_LIMITING_WHITELIST:-[]}
+    blacklist_ips: ${RATE_LIMITING_BLACKLIST:-[]}
 
 rabbitmq:
   enabled: true
   host: "rabbitmq"
   port: 5672
   vhost: "/"
-  username: "bulo"
-  password: "sentinel"
+  username: "${RABBITMQ_USERNAME}"  # Set in environment variable
+  password: "${RABBITMQ_PASSWORD}"  # Set in environment variable
   exchange: "anti_jamming"
   exchange_type: "topic"
   routing_key: "jamming.alert"

@@ -1,12 +1,12 @@
 import json
 import os
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List, Dict, Any
 
 AUDIT_LOG_FILE = os.getenv("AI_AUDIT_LOG_FILE", "ai_audit_log.json")
 
 def log_audit_entry(entry: Dict[str, Any]) -> None:
-    entry['timestamp'] = datetime.utcnow().isoformat()
+    entry['timestamp'] = datetime.now(timezone.utc).isoformat()
     if os.path.exists(AUDIT_LOG_FILE):
         with open(AUDIT_LOG_FILE, "r+", encoding="utf-8") as f:
             try:

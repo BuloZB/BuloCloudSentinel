@@ -6,6 +6,7 @@ It initializes the FastAPI application, sets up middleware, and includes routers
 """
 
 import logging
+import os
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
@@ -96,11 +97,17 @@ from security.middleware.csp import ContentSecurityPolicyMiddleware, get_default
 from security.utils.secure_logging import setup_secure_logger
 from security.utils.encryption import EncryptionService
 
+# Import additional security middlewares
+from security.middleware.input_sanitization import InputSanitizationMiddleware
+from security.middleware.xss_protection import XSSProtectionMiddleware
+from security.middleware.sql_injection_protection import SQLInjectionProtectionMiddleware
+from security.middleware.path_traversal_protection import PathTraversalProtectionMiddleware
+
 # Add security headers middleware
 app.add_middleware(
     SecurityHeadersMiddleware,
-    content_security_policy="default-src 'self'; script-src 'self'; frame-ancestors 'none'",
-    permissions_policy="camera=(), microphone=(), geolocation=()"
+    content_security_policy="default-src 'self'; script-src 'self'; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'",
+    permissions_policy="camera=(), microphone=(), geolocation=(), payment=(), usb=(), screen-wake-lock=()"
 )
 
 # Add CSRF middleware for non-API routes
@@ -122,6 +129,39 @@ app.add_middleware(
 app.add_middleware(
     ContentSecurityPolicyMiddleware,
     policy=get_default_csp_policy()
+)
+
+# Add XSS protection middleware
+app.add_middleware(
+    XSSProtectionMiddleware,
+    mode="block",
+    exclude_paths=["/docs", "/redoc", "/openapi.json"]
+)
+
+# Add SQL injection protection middleware
+app.add_middleware(
+    SQLInjectionProtectionMiddleware,
+    exclude_paths=["/docs", "/redoc", "/openapi.json"],
+    exclude_content_types=["multipart/form-data"]
+)
+
+# Add path traversal protection middleware
+app.add_middleware(
+    PathTraversalProtectionMiddleware,
+    base_path=os.getcwd(),
+    exclude_paths=["/docs", "/redoc", "/openapi.json"]
+)
+
+# Add input sanitization middleware
+app.add_middleware(
+    InputSanitizationMiddleware,
+    exclude_paths=["/docs", "/redoc", "/openapi.json"],
+    exclude_content_types=["multipart/form-data"],
+    sanitize_type="html",
+    sanitize_query_params=True,
+    sanitize_path_params=True,
+    sanitize_form_data=True,
+    sanitize_json_body=True
 )
 
 # Set up secure logger

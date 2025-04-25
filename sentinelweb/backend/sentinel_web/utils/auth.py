@@ -8,10 +8,8 @@ import requests
 import os
 
 
-from datetime import datetime, timedelta
-import pytz
-from pytz import UTC
-from typing import Optional, Union, List, Dict
+from datetime import datetime, timedelta, timezone
+from typing import Optional, Union
 
 from sentinel_web.models.users import Users
 
@@ -119,7 +117,7 @@ def create_token(data: dict, expires_delta: Union[timedelta, None] = None) -> st
     payload = data.copy()
 
     if expires_delta:
-        expire = datetime.now(UTC) + expires_delta
+        expire = datetime.now(timezone.utc) + expires_delta
         payload.update({"exp": expire})
 
     encoded_jwt = jwt.encode(payload, SESSION_SECRET, algorithm=ALGORITHM)
@@ -128,9 +126,36 @@ def create_token(data: dict, expires_delta: Union[timedelta, None] = None) -> st
 
 def decode_token(token: str) -> Optional[dict]:
     try:
-        decoded = jwt.decode(token, SESSION_SECRET, algorithms=[ALGORITHM])
+        # Decode token with full validation
+        decoded = jwt.decode(
+            token,
+            SESSION_SECRET,
+            algorithms=[ALGORITHM],
+            options={
+                "verify_signature": True,
+                "verify_exp": True,
+                "verify_iat": True,
+                "require": ["id"]  # Require at least the user ID
+            }
+        )
+
+        # Check if token was issued in the future (clock skew)
+        if "iat" in decoded:
+            iat_timestamp = decoded["iat"]
+            if isinstance(iat_timestamp, datetime):
+                iat_timestamp = iat_timestamp.timestamp()
+            if iat_timestamp > datetime.now(timezone.utc).timestamp() + 30:  # Allow 30 seconds of clock skew
+                return None
+
         return decoded
+    except jwt.ExpiredSignatureError:
+        # Token has expired
+        return None
+    except jwt.InvalidTokenError:
+        # Token is invalid
+        return None
     except Exception:
+        # Any other exception
         return None
 
 

@@ -3,7 +3,7 @@ Database models for the TACS module.
 """
 
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, List, Optional, Any
 from sqlalchemy import Column, String, Integer, Float, Boolean, DateTime, ForeignKey, JSON, Table
 from sqlalchemy.dialects.postgresql import UUID, JSONB
@@ -46,13 +46,13 @@ class Target(Base):
     location = Column(JSONB, nullable=False)
     velocity = Column(JSONB)
     dimensions = Column(JSONB)
-    first_detected = Column(DateTime, nullable=False, default=datetime.utcnow)
-    last_updated = Column(DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow)
+    first_detected = Column(DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))
+    last_updated = Column(DateTime, nullable=False, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
     metadata = Column(JSONB, default={})
     priority = Column(Integer, default=1)
     status = Column(String, nullable=False, default="active")
-    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
-    updated_at = Column(DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))
+    updated_at = Column(DateTime, nullable=False, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
 
     # Relationships
     tracks = relationship("Track", back_populates="target", cascade="all, delete-orphan")
@@ -73,7 +73,7 @@ class TrackPoint(Base):
     heading = Column(Float)
     confidence = Column(Float, nullable=False)
     sensor_id = Column(UUID(as_uuid=True), ForeignKey("sensors.id"), nullable=False)
-    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+    created_at = Column(DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))
 
     # Relationships
     track = relationship("Track", back_populates="points")
@@ -90,8 +90,8 @@ class Track(Base):
     quality = Column(Float, nullable=False)
     status = Column(String, nullable=False, default="active")
     metadata = Column(JSONB, default={})
-    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
-    updated_at = Column(DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))
+    updated_at = Column(DateTime, nullable=False, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
 
     # Relationships
     target = relationship("Target", back_populates="tracks")
@@ -112,8 +112,8 @@ class Sensor(Base):
     accuracy = Column(Float)
     status = Column(String, nullable=False, default="online")
     metadata = Column(JSONB, default={})
-    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
-    updated_at = Column(DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))
+    updated_at = Column(DateTime, nullable=False, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
 
     # Relationships
     targets = relationship("Target", secondary=target_sensor_association, back_populates="sensors")
@@ -129,7 +129,7 @@ class SensorData(Base):
     data_type = Column(String, nullable=False)
     data_url = Column(String)
     metadata = Column(JSONB, default={})
-    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+    created_at = Column(DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))
 
     # Relationships
     sensor = relationship("Sensor", back_populates="sensor_data")
@@ -148,8 +148,8 @@ class CoordinationPlan(Base):
     priority = Column(Integer, default=1)
     status = Column(String, nullable=False, default="draft")
     metadata = Column(JSONB, default={})
-    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
-    updated_at = Column(DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))
+    updated_at = Column(DateTime, nullable=False, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
 
     # Relationships
     targets = relationship("Target", secondary=plan_target_association, back_populates="plans")
@@ -166,8 +166,8 @@ class FusionJob(Base):
     error_message = Column(String)
     priority = Column(Integer, default=1)
     metadata = Column(JSONB, default={})
-    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
-    updated_at = Column(DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))
+    updated_at = Column(DateTime, nullable=False, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
     completed_at = Column(DateTime)
 
     # Relationships
@@ -192,7 +192,7 @@ class FusionResult(Base):
     result_data = Column(JSONB, nullable=False)
     confidence = Column(Float, nullable=False)
     metadata = Column(JSONB, default={})
-    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+    created_at = Column(DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))
 
     # Relationships
     fusion_job = relationship("FusionJob")
@@ -203,18 +203,18 @@ class AnalyticsSnapshot(Base):
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     snapshot_type = Column(String, nullable=False)
-    timestamp = Column(DateTime, nullable=False, default=datetime.utcnow)
+    timestamp = Column(DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))
     time_period = Column(String, nullable=False)
     data = Column(JSONB, nullable=False)
     metadata = Column(JSONB, default={})
-    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+    created_at = Column(DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))
 
 class AuditLog(Base):
     """Audit log database model."""
     __tablename__ = "audit_logs"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    timestamp = Column(DateTime, nullable=False, default=datetime.utcnow)
+    timestamp = Column(DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))
     user_id = Column(UUID(as_uuid=True))
     action = Column(String, nullable=False)
     resource_type = Column(String, nullable=False)
@@ -222,4 +222,4 @@ class AuditLog(Base):
     details = Column(JSONB, default={})
     ip_address = Column(String)
     user_agent = Column(String)
-    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+    created_at = Column(DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))

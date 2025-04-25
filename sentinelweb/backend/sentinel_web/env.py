@@ -361,9 +361,12 @@ BYPASS_MODEL_ACCESS_CONTROL = (
 WEBUI_SECRET_KEY = os.environ.get(
     "WEBUI_SECRET_KEY",
     os.environ.get(
-        "WEBUI_JWT_SECRET_KEY", "t0p-s3cr3t"
+        "WEBUI_JWT_SECRET_KEY", None
     ),  # DEPRECATED: remove at next major version
 )
+
+if not WEBUI_SECRET_KEY:
+    raise ValueError("WEBUI_SECRET_KEY environment variable is required for security")
 
 WEBUI_SESSION_COOKIE_SAME_SITE = os.environ.get("WEBUI_SESSION_COOKIE_SAME_SITE", "lax")
 

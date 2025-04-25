@@ -2,7 +2,7 @@ from typing import List, Dict, Any, Optional, Tuple, Set
 import asyncio
 import numpy as np
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from backend.sensor_fusion.algorithms import SensorFusionAlgorithms, KalmanFilter
 
 class SensorType:
@@ -19,7 +19,7 @@ class SensorFusionEngine:
         self.sensor_data_buffers: Dict[str, List[Dict[str, Any]]] = {}
         self.fused_data: Dict[str, Any] = {}
         self.position_kalman = SensorFusionAlgorithms.create_position_velocity_kalman()
-        self.last_fusion_time = datetime.now()
+        self.last_fusion_time = datetime.now(timezone.utc)
         self.max_buffer_size = 100  # Limit buffer size to prevent memory issues
         self.registered_sensors: Set[str] = set()
         self.fusion_algorithms = {
@@ -54,7 +54,7 @@ class SensorFusionEngine:
 
         # Add timestamp if not present
         if "timestamp" not in data:
-            data["timestamp"] = datetime.now().isoformat()
+            data["timestamp"] = datetime.now(timezone.utc).isoformat()
 
         # Update sensor metadata
         if "sensors" in self.fused_data and sensor_id in self.fused_data["sensors"]:
@@ -76,7 +76,7 @@ class SensorFusionEngine:
     async def fuse_data(self) -> Dict[str, Any]:
         """Fuse all sensor data to create a coherent operational picture."""
         # Calculate time delta since last fusion
-        now = datetime.now()
+        now = datetime.now(timezone.utc)
         dt = (now - self.last_fusion_time).total_seconds()
         self.last_fusion_time = now
 
