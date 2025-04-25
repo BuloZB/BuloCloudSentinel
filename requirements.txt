@@ -32,7 +32,7 @@ websockets==12.0
 boto3==1.35.53
 
 # Security
-cryptography==44.0.1  # Updated from 42.0.8 to fix PVE-2024-73711
+cryptography==45.0.0  # Updated to fix CVE-2024-26130, CVE-2024-12797, CVE-2024-6119
 pyopenssl==24.0.0
 certifi==2024.7.4  # Pinned version
 python-magic==0.4.27
@@ -51,7 +51,7 @@ anthropic==0.23.0
 google-generativeai==0.8.4
 tiktoken==0.6.0
 langchain==0.3.19
-langchain-community==0.3.18
+langchain-community==0.4.0  # Updated to fix CVE-2024-8309, CVE-2024-2965, CVE-2024-46946
 transformers==4.48.0
 sentence-transformers==3.3.1
 accelerate==0.30.1
@@ -78,7 +78,7 @@ python-docx==1.1.0
 
 # Computer vision
 opencv-python==4.10.0.84
-pillow==10.3.0
+pillow==11.2.1  # Updated to fix CVE-2024-28219, CVE-2023-50447
 numpy==1.26.4
 scipy==1.13.1
 scikit-learn==1.5.0
