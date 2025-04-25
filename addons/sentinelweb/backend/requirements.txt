@@ -18,5 +18,5 @@ pykml==0.2.0
 gpxpy==1.5.0
 
 # Security
-cryptography==43.0.1  # Secure version
+cryptography==44.0.1  # Updated to fix CVE-2024-12797
 pyopenssl==24.0.0  # Secure version
