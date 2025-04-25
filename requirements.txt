@@ -2,7 +2,7 @@
 typer==0.9.0
 fastapi==0.115.7
 uvicorn[standard]==0.34.0
-pydantic==2.10.6
+pydantic==2.11.3
 email-validator==2.1.1
 python-multipart==0.0.18  # Updated from 0.0.9 to fix CVE-2024-53981
 asgiref==3.8.1
@@ -32,7 +32,7 @@ websockets==12.0
 boto3==1.35.53
 
 # Security
-cryptography==43.0.1  # Updated from 42.0.8 to fix PVE-2024-73711
+cryptography==44.0.1  # Updated from 42.0.8 to fix PVE-2024-73711
 pyopenssl==24.0.0
 certifi==2024.7.4  # Pinned version
 python-magic==0.4.27
@@ -52,7 +52,7 @@ google-generativeai==0.8.4
 tiktoken==0.6.0
 langchain==0.3.19
 langchain-community==0.3.18
-transformers==4.42.4
+transformers==4.48.0
 sentence-transformers==3.3.1
 accelerate==0.30.1
 colbert-ai==0.2.21

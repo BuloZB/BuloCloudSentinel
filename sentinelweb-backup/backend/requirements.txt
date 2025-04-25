@@ -5,10 +5,10 @@ sqlalchemy==2.0.38  # Updated from 2.0.12 for security
 asyncpg==0.29.0  # Updated from 0.27.0 for security
 httpx==0.27.0  # Updated from 0.24.0 for security
 # Replacing python-jose with PyJWT due to vulnerabilities CVE-2024-33664 and CVE-2024-33663
-# python-jose==3.3.0
+# python-jose==3.4.0
 pyjwt==2.10.1  # Secure JWT implementation
 passlib==1.7.4
-python-multipart==0.0.18  # Updated from 0.0.6 to fix CVE-2024-53981
+python-multipart==0.0.18  # Updated to fix CVE-2024-53981
 redis==5.0.3  # Updated from 4.5.4 for security
 websockets==12.0  # Updated from 11.0.3 for security
 python-dotenv==1.0.1  # Updated from 1.0.0 for security

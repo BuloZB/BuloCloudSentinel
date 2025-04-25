@@ -1,14 +1,14 @@
 fastapi==0.115.7
 uvicorn[standard]==0.34.0
-pydantic==2.10.6
+pydantic==2.11.3
 sqlalchemy==2.0.38
 alembic==1.14.0
 psycopg2-binary==2.9.9
-python-multipart==0.0.18  # Updated from 0.0.9 to fix CVE-2024-53981
+python-multipart==0.0.20  # Updated from 0.0.9 to fix CVE-2024-53981
 aiofiles==23.2.0
 numpy==1.26.4
 opencv-python==4.10.0.84
-torch==2.6.0
+torch==2.7.0
 torchvision==0.18.1
 matplotlib==3.9.0
 redis==5.0.3
@@ -22,5 +22,5 @@ pillow==10.3.0
 scikit-learn==1.5.0
 scipy==1.13.1
 python-magic==0.4.27
-cryptography==43.0.1  # Updated from 42.0.8 to fix PVE-2024-73711
+cryptography==44.0.1  # Updated from 42.0.8 to fix PVE-2024-73711
 pyopenssl==24.0.0

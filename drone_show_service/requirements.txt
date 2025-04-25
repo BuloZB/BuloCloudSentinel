@@ -2,7 +2,7 @@
 # Updated to address security vulnerabilities
 fastapi==0.110.0
 uvicorn==0.27.1
-pydantic==1.10.13
+pydantic==2.11.3
 sqlalchemy==2.0.28
 asyncpg==0.29.0
 aioboto3==12.3.0
