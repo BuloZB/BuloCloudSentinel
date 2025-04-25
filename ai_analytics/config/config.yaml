@@ -91,3 +91,41 @@ analytics:
         - xgboost
         - linear_regression
         - neural_network
+
+multimodal_detection:
+  confidence_threshold: 0.5
+  nms_threshold: 0.45
+  max_detection_fps: 10
+  enable_gpu: true
+  modalities:
+    - visual
+    - thermal
+    - depth
+  modality_weights:
+    visual: 1.0
+    thermal: 0.8
+    depth: 0.6
+  fusion:
+    type: hybrid  # feature, decision, or hybrid
+    method: weighted_average  # weighted_average, max, or bayesian
+    fusion_dim: 256
+    dropout: 0.3
+  visual_model:
+    path: models/multimodal/yolov8m.pt
+    size: m
+  thermal_model:
+    path: models/multimodal/thermal_yolov8m.pt
+    size: m
+  depth_model:
+    path: models/multimodal/depth_yolov8m.pt
+    size: m
+  class_names:
+    - person
+    - bicycle
+    - car
+    - motorcycle
+    - airplane
+    - bus
+    - train
+    - truck
+    - boat

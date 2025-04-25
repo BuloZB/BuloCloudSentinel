@@ -12,10 +12,20 @@ from fastapi import FastAPI, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 
 # Import local modules
-from api.routes import detection, recognition, behavior, analytics
+from api.routes import detection, recognition, behavior, analytics, multimodal
 from services.video_stream_manager import VideoStreamManager
 from services.event_publisher import EventPublisher
-from utils.config import load_config
+from services.multimodal_detection import MultimodalDetectionService
+from utils.config import load_config, get_config
+from api.dependencies import (
+    get_video_stream_manager,
+    get_event_publisher,
+    get_detection_service,
+    get_recognition_service,
+    get_behavior_service,
+    get_analytics_service,
+    get_multimodal_detection_service
+)
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
@@ -54,6 +64,7 @@ app.include_router(detection.router, prefix="/api/detection", tags=["detection"]
 app.include_router(recognition.router, prefix="/api/recognition", tags=["recognition"])
 app.include_router(behavior.router, prefix="/api/behavior", tags=["behavior"])
 app.include_router(analytics.router, prefix="/api/analytics", tags=["analytics"])
+app.include_router(multimodal.router, prefix="/api/multimodal", tags=["multimodal"])
 
 @app.on_event("startup")
 async def startup_event():

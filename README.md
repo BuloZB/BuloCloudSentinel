@@ -98,6 +98,10 @@ Sentinel AI provides advanced artificial intelligence capabilities for the Bulo.
 - **🔍 Anomaly Detection**: Identifying unusual patterns and behaviors
 - **📊 Predictive Analytics**: Forecasting trends and potential issues
 - **🗣️ Natural Language Processing**: Command interpretation and reporting
+- **🔀 Multimodal Detection**: Fusion of visual, thermal, and depth data for superior detection accuracy
+- **🌡️ Thermal Analysis**: Detection in low-light and adverse weather conditions
+- **📏 Depth Perception**: Accurate distance estimation and 3D object localization
+- **🔄 Sensor Fusion**: Advanced algorithms for integrating data from multiple sensors
 
 ### 🏢 Indoor Drone System
 
@@ -185,6 +189,14 @@ bulo-cloud-sentinel/
 ├── .github/              # GitHub workflows and templates
 ├── addons/               # Platform addons
 ├── ai_analytics/         # Advanced AI and Analytics module
+│   ├── models/           # AI model definitions
+│   │   ├── detection/    # Object detection models
+│   │   ├── recognition/  # Face and license plate recognition
+│   │   ├── multimodal/   # Multimodal detection models
+│   │   └── predictive/   # Predictive analytics models
+│   ├── api/              # API endpoints
+│   ├── services/         # Business logic services
+│   └── config/           # Configuration files
 ├── ai_detection/         # AI-based detection capabilities
 ├── anti_jamming_service/  # GNSS anti-jamming and RF protection
 ├── backend/              # FastAPI backend service
