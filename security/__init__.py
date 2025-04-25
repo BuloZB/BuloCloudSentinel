@@ -114,3 +114,32 @@ from .logging.error_handling import (
     exception_handler,
     async_exception_handler,
 )
+
+from .logging.security_logger import (
+    SecurityLogger,
+    SecurityEventType,
+    SecuritySeverity,
+    security_logger,
+)
+
+# Security monitoring
+from .monitoring.anomaly_detection import (
+    AnomalyType,
+    AnomalyDetector,
+    StatisticalAnomalyDetector,
+    RateAnomalyDetector,
+    PatternAnomalyDetector,
+    AnomalyDetectionManager,
+    anomaly_detection_manager,
+)
+
+# Security monitoring
+from .monitoring.anomaly_detection import (
+    AnomalyType,
+    AnomalyDetector,
+    StatisticalAnomalyDetector,
+    RateAnomalyDetector,
+    PatternAnomalyDetector,
+    AnomalyDetectionManager,
+    anomaly_detection_manager,
+)

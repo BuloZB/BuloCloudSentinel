@@ -225,6 +225,18 @@ bulo-cloud-sentinel/
 └── vision_system/        # Vision System for crowd and vehicle analysis
 ```
 
+### Security
+
+Bulo.Cloud Sentinel takes security seriously. We have implemented comprehensive security measures throughout the platform:
+
+- **🔐 Security Documentation**: Detailed security documentation is available in the [SECURITY.md](SECURITY.md) file and [security guidelines](docs/security_guidelines.md).
+- **🔒 Security Features**: The platform includes advanced security features such as multi-factor authentication, role-based access control, and data encryption.
+- **🔍 Security Scanning**: Automated security scanning is integrated into the CI/CD pipeline to detect vulnerabilities.
+- **🛡️ Vulnerability Reporting**: If you discover a security vulnerability, please follow the reporting process outlined in [SECURITY.md](SECURITY.md).
+- **📝 Security Updates**: Security updates are documented in [security_vulnerability_fixes.md](docs/security_vulnerability_fixes.md).
+
+For more information about security features, see the [Security Module](#-security-module) section.
+
 ### Contributing
 
 1. Fork the repository
@@ -232,6 +244,7 @@ bulo-cloud-sentinel/
 3. Commit your changes: `git commit -am 'Add new feature'`
 4. Push to the branch: `git push origin feature/my-feature`
 5. Submit a pull request
+6. Follow the [security guidelines](docs/security_guidelines.md) when contributing code
 
 ## 📄 License
 

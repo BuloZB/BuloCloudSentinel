@@ -18,15 +18,28 @@ from .error_handling import (
     async_exception_handler,
 )
 
+from .security_logger import (
+    SecurityLogger,
+    SecurityEventType,
+    SecuritySeverity,
+    security_logger,
+)
+
 __all__ = [
     # Secure logging
     "SecureLogger",
     "AuditLogger",
     "get_secure_logger",
     "get_audit_logger",
-    
+
     # Error handling
     "ErrorHandler",
     "exception_handler",
     "async_exception_handler",
+
+    # Security logging
+    "SecurityLogger",
+    "SecurityEventType",
+    "SecuritySeverity",
+    "security_logger",
 ]

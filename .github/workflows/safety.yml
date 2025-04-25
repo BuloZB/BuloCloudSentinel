@@ -1,0 +1,72 @@
+name: Safety Dependency Scan
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 0 * * *'  # Run daily at midnight
+
+jobs:
+  safety:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install safety
+          
+      - name: Run Safety check
+        run: |
+          safety check -r requirements-updated.txt --json > safety-results.json || true
+          
+      - name: Process Safety results
+        run: |
+          echo "# Safety Scan Results" > safety-report.md
+          echo "" >> safety-report.md
+          echo "## Vulnerabilities Found" >> safety-report.md
+          echo "" >> safety-report.md
+          
+          if [ -s safety-results.json ]; then
+            python -c "
+import json
+import sys
+
+with open('safety-results.json', 'r') as f:
+    data = json.load(f)
+
+if not data:
+    print('No vulnerabilities found.', file=open('safety-report.md', 'a'))
+    sys.exit(0)
+
+for vuln in data:
+    package = vuln.get('package_name', 'Unknown')
+    affected = vuln.get('affected_versions', 'Unknown')
+    fixed = vuln.get('fixed_versions', 'None')
+    advisory = vuln.get('advisory', 'No details available')
+    severity = vuln.get('severity', 'Unknown')
+    
+    with open('safety-report.md', 'a') as report:
+        print(f'### {package} ({severity} severity)', file=report)
+        print(f'- **Affected versions:** {affected}', file=report)
+        print(f'- **Fixed versions:** {fixed}', file=report)
+        print(f'- **Advisory:** {advisory}', file=report)
+        print('', file=report)
+            "
+          else
+            echo "No vulnerabilities found." >> safety-report.md
+          fi
+          
+      - name: Upload Safety report
+        uses: actions/upload-artifact@v4
+        with:
+          name: safety-report
+          path: safety-report.md

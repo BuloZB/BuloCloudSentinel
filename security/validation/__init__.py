@@ -37,6 +37,16 @@ from .html_validation import (
     validate_html_content,
 )
 
+from .advanced_validation import (
+    ValidationError,
+    InputValidator,
+    FormValidator,
+    RequestValidator,
+    input_validator,
+    form_validator,
+    request_validator,
+)
+
 __all__ = [
     # Input validation
     "validate_email",
@@ -52,7 +62,7 @@ __all__ = [
     "sanitize_html",
     "check_sql_injection",
     "validate_input",
-    
+
     # SQL validation
     "validate_sql_identifier",
     "safe_table_name",
@@ -60,10 +70,19 @@ __all__ = [
     "safe_order_direction",
     "build_safe_select_query",
     "execute_safe_query",
-    
+
     # HTML validation
     "strip_all_tags",
     "sanitize_html",
     "detect_xss",
     "validate_html_content",
+
+    # Advanced validation
+    "ValidationError",
+    "InputValidator",
+    "FormValidator",
+    "RequestValidator",
+    "input_validator",
+    "form_validator",
+    "request_validator",
 ]
