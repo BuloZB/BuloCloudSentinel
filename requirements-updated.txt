@@ -1,0 +1,88 @@
+# Core dependencies
+typer==0.9.0
+fastapi==0.115.7
+uvicorn[standard]==0.34.0
+pydantic==2.11.3
+email-validator==2.1.1
+python-multipart==0.0.18  # Updated from 0.0.9 to fix CVE-2024-53981
+asgiref==3.8.1
+
+# Database
+sqlalchemy==2.0.38
+alembic==1.14.0
+peewee==3.17.9
+peewee-migrate==1.12.2
+psycopg2-binary==2.9.9
+pgvector==0.4.0
+PyMySQL==1.1.1
+pymongo==4.7.1
+redis==5.0.3
+
+# Authentication
+# Replacing python-jose with PyJWT due to vulnerabilities CVE-2024-33664 and CVE-2024-33663
+# python-jose[cryptography]==3.3.0
+pyjwt==2.10.1
+passlib[bcrypt]==1.7.4
+bcrypt==4.3.0
+argon2-cffi==23.1.0
+
+# Networking
+httpx==0.27.0
+websockets==12.0
+boto3==1.35.53
+
+# Security
+cryptography==45.0.0  # Updated to fix CVE-2024-26130, CVE-2024-12797, CVE-2024-6119
+pyopenssl==24.0.0
+certifi==2024.7.4  # Pinned version
+python-magic==0.4.27
+
+# Utils
+python-dotenv==1.0.1
+aiofiles==23.2.0
+aiocache==0.12.2
+APScheduler==3.10.4
+loguru==0.7.2
+RestrictedPython==8.0
+
+# AI and ML
+openai==1.30.1
+anthropic==0.23.0
+google-generativeai==0.8.4
+tiktoken==0.6.0
+langchain==0.3.19
+langchain-community==0.4.0  # Updated to fix CVE-2024-8309, CVE-2024-2965, CVE-2024-46946
+transformers==4.48.0
+sentence-transformers==3.3.1
+accelerate==0.30.1
+colbert-ai==0.2.21
+einops==0.8.1
+
+# Vector databases
+chromadb==0.6.3
+pymilvus==2.5.0
+qdrant-client==1.12.0
+opensearch-py==2.8.0
+elasticsearch==8.17.1
+
+# Document processing
+fake-useragent==2.1.0
+playwright==1.49.1
+ftfy==6.2.3
+pypdf==4.3.1
+fpdf2==2.8.2
+pymdown-extensions==10.14.2
+docx2txt==0.8
+python-pptx==0.6.23
+python-docx==1.1.0
+
+# Computer vision
+opencv-python==4.10.0.84
+pillow==11.2.1  # Updated to fix CVE-2024-28219, CVE-2023-50447
+numpy==1.26.4
+scipy==1.13.1
+scikit-learn==1.5.0
+matplotlib==3.9.0
+
+# Testing
+pytest==8.0.2
