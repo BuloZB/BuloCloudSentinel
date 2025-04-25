@@ -1,6 +1,6 @@
 fastapi==0.115.7  # Pinned version for security
 uvicorn[standard]==0.34.0  # Pinned version for security
-pydantic==2.10.6  # Pinned version for security
+pydantic==2.11.3  # Pinned version for security
 python-multipart==0.0.18  # Secure version
 
 # Security
