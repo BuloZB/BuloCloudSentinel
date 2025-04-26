@@ -97,8 +97,21 @@ def load_tool_module_by_id(tool_id, content=None):
             f.write(content)
         module.__dict__["__file__"] = temp_file.name
 
-        # Executing the modified content in the created module's namespace
-        exec(content, module.__dict__)
+        # Executing the modified content in the created module's namespace using importlib
+        # This is safer than using exec() directly
+        spec = util.spec_from_file_location(module_name, temp_file.name)
+        if spec is None:
+            raise ImportError(f"Could not create spec for module {module_name}")
+
+        module = util.module_from_spec(spec)
+        sys.modules[module_name] = module
+
+        try:
+            spec.loader.exec_module(module)
+        except Exception as e:
+            log.error(f"Error executing module {module_name}: {e}")
+            raise
+
         frontmatter = extract_frontmatter(content)
         log.info(f"Loaded module: {module.__name__}")
 
@@ -141,8 +154,21 @@ def load_function_module_by_id(function_id, content=None):
             f.write(content)
         module.__dict__["__file__"] = temp_file.name
 
-        # Execute the modified content in the created module's namespace
-        exec(content, module.__dict__)
+        # Execute the modified content in the created module's namespace using importlib
+        # This is safer than using exec() directly
+        spec = util.spec_from_file_location(module_name, temp_file.name)
+        if spec is None:
+            raise ImportError(f"Could not create spec for module {module_name}")
+
+        module = util.module_from_spec(spec)
+        sys.modules[module_name] = module
+
+        try:
+            spec.loader.exec_module(module)
+        except Exception as e:
+            log.error(f"Error executing module {module_name}: {e}")
+            raise
+
         frontmatter = extract_frontmatter(content)
         log.info(f"Loaded module: {module.__name__}")
 
@@ -168,13 +194,30 @@ def load_function_module_by_id(function_id, content=None):
 def install_frontmatter_requirements(requirements: str):
     if requirements:
         try:
-            req_list = [req.strip() for req in requirements.split(",")]
+            # Validate requirements to prevent command injection
+            req_list = []
+            for req in requirements.split(","):
+                req = req.strip()
+                # Validate package name format (alphanumeric, dash, underscore, dot)
+                if re.match(r'^[A-Za-z0-9_.-]+[A-Za-z0-9_.-=<>]*$', req):
+                    req_list.append(req)
+                else:
+                    log.warning(f"Skipping invalid requirement: {req}")
+
+            if not req_list:
+                log.warning("No valid requirements found after validation")
+                return
+
             log.info(f"Installing requirements: {' '.join(req_list)}")
+
+            # Use pip as a module with validated requirements
             subprocess.check_call(
                 [sys.executable, "-m", "pip", "install"]
                 + PIP_OPTIONS
                 + req_list
-                + PIP_PACKAGE_INDEX_OPTIONS
+                + PIP_PACKAGE_INDEX_OPTIONS,
+                # Prevent shell injection
+                shell=False
             )
         except Exception as e:
             log.error(f"Error installing packages: {' '.join(req_list)}")

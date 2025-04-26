@@ -6,9 +6,9 @@ import asyncio
 import json
 import logging
 import os
-import random
 import re
 import time
+import itertools  # For deterministic round-robin load balancing
 from typing import Optional, Union
 from urllib.parse import urlparse
 import aiohttp
@@ -69,6 +69,30 @@ log.setLevel(SRC_LOG_LEVELS["OLLAMA"])
 # Utility functions
 #
 ##########################################
+
+# Create a round-robin cycle for load balancing
+_url_index_cycles = {}
+
+def get_next_url_index(model_id, available_indices):
+    """
+    Deterministic round-robin load balancing for model URLs.
+
+    Args:
+        model_id: The model identifier
+        available_indices: List of available URL indices for this model
+
+    Returns:
+        The next URL index to use
+    """
+    if not available_indices:
+        raise ValueError("No available URL indices")
+
+    # Create a new cycle if we don't have one for this model
+    if model_id not in _url_index_cycles:
+        _url_index_cycles[model_id] = itertools.cycle(available_indices)
+
+    # Get the next URL index from the cycle
+    return next(_url_index_cycles[model_id])
 
 
 async def send_get_request(url, key=None, user: UserModel = None):
@@ -796,7 +820,7 @@ async def show_model_info(
             detail=ERROR_MESSAGES.MODEL_NOT_FOUND(form_data.name),
         )
 
-    url_idx = random.choice(models[form_data.name]["urls"])
+    url_idx = get_next_url_index(form_data.name, models[form_data.name]["urls"])
 
     url = request.app.state.config.OLLAMA_BASE_URLS[url_idx]
     key = get_api_key(url_idx, url, request.app.state.config.OLLAMA_API_CONFIGS)

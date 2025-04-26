@@ -1,6 +1,6 @@
 import base64
 import os
-import random
+import secrets  # Use secrets module for cryptographic operations instead of random
 from pathlib import Path
 
 import typer
@@ -42,7 +42,8 @@ def serve(
         )
         if not KEY_FILE.exists():
             typer.echo(f"Generating a new secret key and saving it to {KEY_FILE}")
-            KEY_FILE.write_bytes(base64.b64encode(random.randbytes(12)))
+            # Use secrets module for cryptographically secure random bytes
+            KEY_FILE.write_bytes(base64.b64encode(secrets.token_bytes(32)))
         typer.echo(f"Loading WEBUI_SECRET_KEY from {KEY_FILE}")
         os.environ["WEBUI_SECRET_KEY"] = KEY_FILE.read_text()
 

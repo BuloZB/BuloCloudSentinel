@@ -21,14 +21,21 @@ def queue_prompt(prompt, client_id, base_url, api_key):
     p = {"prompt": prompt, "client_id": client_id}
     data = json.dumps(p).encode("utf-8")
     log.debug(f"queue_prompt data: {data}")
+
+    # Validate URL scheme to prevent SSRF attacks
+    parsed_url = urllib.parse.urlparse(base_url)
+    if parsed_url.scheme not in ['http', 'https']:
+        raise ValueError(f"Invalid URL scheme: {parsed_url.scheme}. Only http and https are allowed.")
+
     try:
         req = urllib.request.Request(
             f"{base_url}/prompt",
             data=data,
             headers={**default_headers, "Authorization": f"Bearer {api_key}"},
         )
-        response = urllib.request.urlopen(req).read()
-        return json.loads(response)
+        # Use a context manager for proper resource handling
+        with urllib.request.urlopen(req) as response:
+            return json.loads(response.read())
     except Exception as e:
         log.exception(f"Error while queuing prompt: {e}")
         raise e
@@ -38,6 +45,12 @@ def get_image(filename, subfolder, folder_type, base_url, api_key):
     log.info("get_image")
     data = {"filename": filename, "subfolder": subfolder, "type": folder_type}
     url_values = urllib.parse.urlencode(data)
+
+    # Validate URL scheme to prevent SSRF attacks
+    parsed_url = urllib.parse.urlparse(base_url)
+    if parsed_url.scheme not in ['http', 'https']:
+        raise ValueError(f"Invalid URL scheme: {parsed_url.scheme}. Only http and https are allowed.")
+
     req = urllib.request.Request(
         f"{base_url}/view?{url_values}",
         headers={**default_headers, "Authorization": f"Bearer {api_key}"},
@@ -55,6 +68,11 @@ def get_image_url(filename, subfolder, folder_type, base_url):
 
 def get_history(prompt_id, base_url, api_key):
     log.info("get_history")
+
+    # Validate URL scheme to prevent SSRF attacks
+    parsed_url = urllib.parse.urlparse(base_url)
+    if parsed_url.scheme not in ['http', 'https']:
+        raise ValueError(f"Invalid URL scheme: {parsed_url.scheme}. Only http and https are allowed.")
 
     req = urllib.request.Request(
         f"{base_url}/history/{prompt_id}",
@@ -79,15 +97,15 @@ def get_images(ws, prompt, client_id, base_url, api_key):
             continue  # previews are binary data
 
     history = get_history(prompt_id, base_url, api_key)[prompt_id]
-    for o in history["outputs"]:
-        for node_id in history["outputs"]:
-            node_output = history["outputs"][node_id]
-            if "images" in node_output:
-                for image in node_output["images"]:
-                    url = get_image_url(
-                        image["filename"], image["subfolder"], image["type"], base_url
-                    )
-                    output_images.append({"url": url})
+    # Process all node outputs directly without the unused outer loop
+    for node_id in history["outputs"]:
+        node_output = history["outputs"][node_id]
+        if "images" in node_output:
+            for image in node_output["images"]:
+                url = get_image_url(
+                    image["filename"], image["subfolder"], image["type"], base_url
+                )
+                output_images.append({"url": url})
     return {"data": output_images}
 
 
