@@ -11,6 +11,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from drone_show_service.api.endpoints import shows, simulation, execution
 from drone_show_service.core.config import settings
+from security.api.security_headers import add_security_headers
+from security.api.rate_limiting import add_rate_limiting
 from drone_show_service.services.choreography_service import ChoreographyService
 from drone_show_service.services.simulation_service import SimulationService
 from drone_show_service.services.execution_service import ExecutionService
@@ -32,13 +34,13 @@ logger = logging.getLogger(__name__)
 async def lifespan(app: FastAPI):
     """
     Lifespan context manager for the FastAPI application.
-    
+
     This function is called when the application starts and stops.
     It initializes and cleans up resources.
     """
     # Initialize services
     logger.info("Initializing services...")
-    
+
     # Create services
     choreography_service = ChoreographyService()
     simulation_service = SimulationService()
@@ -50,7 +52,7 @@ async def lifespan(app: FastAPI):
         api_url=settings.SENTINEL_API_URL,
         api_token=settings.SENTINEL_API_TOKEN,
     )
-    
+
     # Create execution service with dependencies
     execution_service = ExecutionService(
         choreography_service=choreography_service,
@@ -60,7 +62,7 @@ async def lifespan(app: FastAPI):
         logging_service=logging_service,
         sentinel_integration=sentinel_integration,
     )
-    
+
     # Store services in app state
     app.state.choreography_service = choreography_service
     app.state.simulation_service = simulation_service
@@ -70,11 +72,11 @@ async def lifespan(app: FastAPI):
     app.state.telemetry_service = telemetry_service
     app.state.logging_service = logging_service
     app.state.sentinel_integration = sentinel_integration
-    
+
     logger.info("Services initialized")
-    
+
     yield
-    
+
     # Cleanup resources
     logger.info("Cleaning up resources...")
     await execution_service.shutdown()
@@ -96,6 +98,16 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+)
+
+# Add security headers middleware
+add_security_headers(app)
+
+# Add rate limiting middleware for sensitive endpoints
+add_rate_limiting(
+    app,
+    rate_limit=settings.RATE_LIMIT,
+    paths=["/shows", "/execution"],
 )
 
 # Include routers

@@ -21,7 +21,7 @@ dronekit==2.9.2
 
 # Security
 cryptography==44.0.1  # Updated from 42.0.8 to fix PVE-2024-73711
-hvac==1.2.1  # HashiCorp Vault client
+hvac==2.3.0  # Updated from 1.2.1 to fix CVE-2024-34069 and CVE-2024-37568
 # Replacing python-jose with PyJWT due to vulnerabilities CVE-2024-33664 and CVE-2024-33663
 # python-jose==3.4.0  # JWT
 pyjwt==2.10.1  # Secure JWT implementation

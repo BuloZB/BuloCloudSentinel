@@ -36,6 +36,7 @@ class Settings(BaseSettings):
     # Security settings
     SECRET_KEY: str = os.getenv("SECRET_KEY")
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8  # 8 days
+    RATE_LIMIT: str = os.getenv("RATE_LIMIT", "60/minute")  # Default rate limit
 
     @validator("SECRET_KEY")
     def validate_secret_key(cls, v):
@@ -43,6 +44,18 @@ class Settings(BaseSettings):
             raise ValueError("SECRET_KEY environment variable is required")
         if len(v) < 32:
             raise ValueError("SECRET_KEY must be at least 32 characters long")
+        return v
+
+    @validator("RATE_LIMIT")
+    def validate_rate_limit(cls, v):
+        """Validate rate limit format (number/period)."""
+        try:
+            count, period = v.split("/")
+            int(count)  # Check if count is a valid integer
+            if period not in ["second", "minute", "hour", "day"]:
+                raise ValueError("Period must be one of: second, minute, hour, day")
+        except (ValueError, AttributeError):
+            raise ValueError("RATE_LIMIT must be in format: number/period")
         return v
 
     # Database settings

@@ -6,6 +6,7 @@ This module provides secure JWT token generation, validation, and management.
 
 import os
 import time
+import logging
 from datetime import datetime, timedelta, timezone
 from typing import Dict, Optional, Any, Union
 
@@ -13,6 +14,11 @@ import jwt
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from pydantic import BaseModel
+
+from .token_blacklist import blacklist_token, is_token_blacklisted
+
+# Configure logging
+logger = logging.getLogger(__name__)
 
 # Configuration
 JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "")
@@ -192,6 +198,15 @@ def decode_token(token: str) -> TokenData:
                     headers={"WWW-Authenticate": "Bearer"},
                 )
 
+        # Check if token is blacklisted
+        if is_token_blacklisted(payload["jti"]):
+            logger.warning(f"Blacklisted token used: {payload['jti']}")
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Token has been revoked",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+
         # Extract token data
         token_data = TokenData(
             sub=payload["sub"],
@@ -309,3 +324,33 @@ def has_permission(required_permission: str):
         return token_data
 
     return check_permission
+
+
+def logout(token_data: TokenData):
+    """
+    Logout a user by blacklisting their token.
+
+    Args:
+        token_data: Token data to blacklist
+    """
+    # Add token to blacklist
+    blacklist_token(token_data.jti, token_data.exp)
+    logger.info(f"User {token_data.sub} logged out, token {token_data.jti} blacklisted")
+
+
+def logout_all_tokens(user_id: str):
+    """
+    Logout all tokens for a user.
+
+    This is a placeholder function. In a real implementation, you would
+    need to store all active tokens for a user and blacklist them all.
+
+    Args:
+        user_id: User ID to logout
+    """
+    # In a real implementation, you would retrieve all active tokens for the user
+    # and blacklist them all
+    logger.info(f"Logged out all tokens for user {user_id}")
+
+    # For now, just log a warning
+    logger.warning("logout_all_tokens is not fully implemented")
