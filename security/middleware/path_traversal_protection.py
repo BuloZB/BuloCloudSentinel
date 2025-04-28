@@ -6,13 +6,18 @@ This middleware adds path traversal protection to HTTP requests.
 
 import os
 import re
-from typing import Callable, Dict, List, Optional, Set
+from typing import Callable, Dict, List, Optional, Set, Any
 
 from fastapi import FastAPI, Request, Response
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import JSONResponse
 
 from security.utils.input_sanitizer import is_path_traversal
+from security.utils.input_sanitizer import is_command_injection, is_sql_injection
+from security.logging.secure_logging import get_secure_logger
+
+# Configure secure logger
+logger = get_secure_logger("path_traversal_protection")
 
 class PathTraversalProtectionMiddleware(BaseHTTPMiddleware):
     """
@@ -41,7 +46,10 @@ class PathTraversalProtectionMiddleware(BaseHTTPMiddleware):
     
     async def dispatch(self, request: Request, call_next: Callable) -> Response:
         """
-        Process the request and add path traversal protection.
+        Process the request and add comprehensive path parameter validation.
+        
+        This middleware checks for path traversal, command injection, and SQL injection
+        in path parameters and query parameters.
         
         Args:
             request: The HTTP request
@@ -50,26 +58,140 @@ class PathTraversalProtectionMiddleware(BaseHTTPMiddleware):
         Returns:
             The HTTP response
         """
-        # Skip path traversal protection for excluded paths
+        # Skip protection for excluded paths
         path = request.url.path
         if any(path.startswith(excluded) for excluded in self.exclude_paths):
             return await call_next(request)
         
-        # Check query parameters for path traversal
+        client_ip = request.client.host if request.client else "unknown"
+        
+        # Check query parameters for various injection attacks
         for key, value in request.query_params.items():
-            if "path" in key.lower() and is_path_traversal(value):
+            # Skip empty values
+            if not value:
+                continue
+                
+            # Check for path traversal
+            if is_path_traversal(value):
+                logger.warning(
+                    f"Path traversal detected in query parameter",
+                    {
+                        "client_ip": client_ip,
+                        "path": request.url.path,
+                        "parameter": key,
+                        "value": value
+                    }
+                )
                 return JSONResponse(
                     status_code=400,
-                    content={"detail": f"Path traversal detected in query parameter: {key}"}
+                    content={"detail": f"Invalid characters detected in query parameter: {key}"}
+                )
+            
+            # Check for command injection
+            if is_command_injection(value):
+                logger.warning(
+                    f"Command injection detected in query parameter",
+                    {
+                        "client_ip": client_ip,
+                        "path": request.url.path,
+                        "parameter": key,
+                        "value": value
+                    }
+                )
+                return JSONResponse(
+                    status_code=400,
+                    content={"detail": f"Invalid characters detected in query parameter: {key}"}
+                )
+            
+            # Check for SQL injection
+            if is_sql_injection(value):
+                logger.warning(
+                    f"SQL injection detected in query parameter",
+                    {
+                        "client_ip": client_ip,
+                        "path": request.url.path,
+                        "parameter": key,
+                        "value": value
+                    }
+                )
+                return JSONResponse(
+                    status_code=400,
+                    content={"detail": f"Invalid characters detected in query parameter: {key}"}
                 )
         
-        # Check path parameters for path traversal
+        # Check path parameters for various injection attacks
         for key, value in request.path_params.items():
-            if "path" in key.lower() and is_path_traversal(str(value)):
+            # Convert to string if not already
+            str_value = str(value)
+            
+            # Skip empty values
+            if not str_value:
+                continue
+                
+            # Check for path traversal
+            if is_path_traversal(str_value):
+                logger.warning(
+                    f"Path traversal detected in path parameter",
+                    {
+                        "client_ip": client_ip,
+                        "path": request.url.path,
+                        "parameter": key,
+                        "value": str_value
+                    }
+                )
                 return JSONResponse(
                     status_code=400,
-                    content={"detail": f"Path traversal detected in path parameter: {key}"}
+                    content={"detail": f"Invalid characters detected in path parameter: {key}"}
                 )
+            
+            # Check for command injection
+            if is_command_injection(str_value):
+                logger.warning(
+                    f"Command injection detected in path parameter",
+                    {
+                        "client_ip": client_ip,
+                        "path": request.url.path,
+                        "parameter": key,
+                        "value": str_value
+                    }
+                )
+                return JSONResponse(
+                    status_code=400,
+                    content={"detail": f"Invalid characters detected in path parameter: {key}"}
+                )
+            
+            # Check for SQL injection
+            if is_sql_injection(str_value):
+                logger.warning(
+                    f"SQL injection detected in path parameter",
+                    {
+                        "client_ip": client_ip,
+                        "path": request.url.path,
+                        "parameter": key,
+                        "value": str_value
+                    }
+                )
+                return JSONResponse(
+                    status_code=400,
+                    content={"detail": f"Invalid characters detected in path parameter: {key}"}
+                )
+            
+            # Additional validation for file paths
+            if "path" in key.lower() or "file" in key.lower() or "dir" in key.lower():
+                if not self._is_safe_path(str_value):
+                    logger.warning(
+                        f"Unsafe path detected in path parameter",
+                        {
+                            "client_ip": client_ip,
+                            "path": request.url.path,
+                            "parameter": key,
+                            "value": str_value
+                        }
+                    )
+                    return JSONResponse(
+                        status_code=400,
+                        content={"detail": f"Invalid path in parameter: {key}"}
+                    )
         
         # Process the request
         response = await call_next(request)

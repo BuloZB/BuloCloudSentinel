@@ -338,19 +338,23 @@ def logout(token_data: TokenData):
     logger.info(f"User {token_data.sub} logged out, token {token_data.jti} blacklisted")
 
 
-def logout_all_tokens(user_id: str):
+def logout_all_tokens(user_id: str) -> int:
     """
     Logout all tokens for a user.
-
-    This is a placeholder function. In a real implementation, you would
-    need to store all active tokens for a user and blacklist them all.
-
+    
+    This function blacklists all active tokens for a user.
+    
     Args:
         user_id: User ID to logout
+        
+    Returns:
+        Number of tokens blacklisted
     """
-    # In a real implementation, you would retrieve all active tokens for the user
-    # and blacklist them all
-    logger.info(f"Logged out all tokens for user {user_id}")
-
-    # For now, just log a warning
-    logger.warning("logout_all_tokens is not fully implemented")
+    from .token_blacklist import blacklist_all_user_tokens
+    
+    # Blacklist all tokens for the user
+    count = blacklist_all_user_tokens(user_id)
+    
+    logger.info(f"Logged out all tokens for user {user_id} ({count} tokens)")
+    
+    return count

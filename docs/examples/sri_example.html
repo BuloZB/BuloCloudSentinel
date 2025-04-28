@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SRI Example</title>
+    
+    <!-- CSS with SRI -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" 
+          integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" 
+          crossorigin="anonymous">
+    
+    <!-- Custom CSS with SRI -->
+    <link rel="stylesheet" href="/static/css/styles.css" 
+          integrity="sha384-oqVuAfXRKap7fdgcCY5uykM6+R9GqQ8K/uxy9rx7HNQlGYl1kPzQho1wx4JwY8wC" 
+          crossorigin="anonymous">
+</head>
+<body>
+    <div class="container">
+        <h1>Subresource Integrity Example</h1>
+        <p>This page demonstrates how to use Subresource Integrity (SRI) to ensure that resources loaded from external sources have not been tampered with.</p>
+        
+        <div class="alert alert-info">
+            <h2>How SRI Works</h2>
+            <ol>
+                <li>Generate a cryptographic hash of the resource (SHA-384 recommended)</li>
+                <li>Add the hash to the integrity attribute of the resource tag</li>
+                <li>Add the crossorigin="anonymous" attribute to the resource tag</li>
+                <li>The browser will verify the hash before executing the resource</li>
+            </ol>
+        </div>
+        
+        <div class="alert alert-warning">
+            <h2>When to Use SRI</h2>
+            <ul>
+                <li>When loading resources from CDNs</li>
+                <li>When loading resources from third-party sources</li>
+                <li>When you want to ensure that resources have not been tampered with</li>
+            </ul>
+        </div>
+    </div>
+    
+    <!-- JavaScript with SRI -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" 
+            integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" 
+            crossorigin="anonymous"></script>
+    
+    <!-- Custom JavaScript with SRI -->
+    <script src="/static/js/app.js" 
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" 
+            crossorigin="anonymous"></script>
+    
+    <!-- Example of how to generate SRI hashes using our utility -->
+    <script>
+        // This is just for demonstration purposes
+        // In a real application, you would generate these hashes during the build process
+        
+        /*
+        // Server-side code (Python)
+        from security.utils.sri_helper import generate_sri_hash
+        
+        with open('static/js/app.js', 'rb') as f:
+            content = f.read()
+            sri_hash = generate_sri_hash(content)
+            print(f"SRI Hash: {sri_hash}")
+        */
+    </script>
+</body>
+</html>

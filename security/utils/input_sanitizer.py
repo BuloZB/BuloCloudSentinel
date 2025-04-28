@@ -175,6 +175,9 @@ def is_sql_injection(value: str) -> bool:
     """
     Check if a string contains potential SQL injection.
     
+    This function uses more precise patterns to reduce false positives
+    while still detecting common SQL injection attempts.
+    
     Args:
         value: The input string to check
         
@@ -184,23 +187,76 @@ def is_sql_injection(value: str) -> bool:
     if not isinstance(value, str):
         return False
     
-    # Common SQL injection patterns
+    # Skip empty strings
+    if not value.strip():
+        return False
+    
+    # More precise SQL injection patterns
     patterns = [
-        r'(\s|^)(SELECT|INSERT|UPDATE|DELETE|DROP|ALTER|CREATE|TRUNCATE)(\s|$)',
-        r'(\s|^)(UNION|JOIN|AND|OR)(\s|$)',
-        r'--',
-        r';',
-        r'/\*.*\*/',
-        r'1=1',
-        r'1\s*=\s*1',
-        r'\'.*\'',
-        r'".*"'
+        # SQL comments that might be used to truncate queries
+        r'--\s+',  # SQL comment with space after
+        r'#\s*$',   # MySQL comment at end of line
+        
+        # Typical SQL injection with quotes and comments
+        r'[\'"]\s*(\)|;)\s*(--|#|/\*)',
+        
+        # UNION-based SQL injection
+        r'(\s|^)UNION(\s+ALL)?\s+SELECT\b',
+        
+        # Batched SQL statements with semicolons
+        r';\s*(SELECT|INSERT|UPDATE|DELETE|DROP|ALTER|CREATE|TRUNCATE)\b',
+        
+        # Common SQL injection test patterns
+        r'[\'"]?\s*(OR|AND)\s+[\'"]?\d+[\'"]?\s*=\s*[\'"]?\d+[\'"]?',  # OR 1=1
+        r'[\'"]?\s*(OR|AND)\s+[\'"]?[a-zA-Z0-9_]+[\'"]?\s*=\s*[\'"]?[a-zA-Z0-9_]+[\'"]?', # OR a=a
+        
+        # Typical function-based SQL injection
+        r'(SLEEP|BENCHMARK|WAITFOR\s+DELAY|PG_SLEEP)\s*\(',
+        
+        # SQL injection with string concatenation
+        r'[\'"][^\'")]*(\|\||%2B|&|%26|%7C){2}[^\'")]*[\'"]',
+        
+        # Time-based blind SQL injection
+        r'(SLEEP|BENCHMARK|WAITFOR\s+DELAY|PG_SLEEP)\s*\(\s*\d+\s*\)',
+        
+        # SQL injection with LIKE operator
+        r'(LIKE\s+[\'"]%.*?[\'"])',
+        
+        # SQL injection with system commands
+        r'(EXEC\s+xp_cmdshell|LOAD_FILE|INTO\s+OUTFILE|INTO\s+DUMPFILE)',
+        
+        # SQL injection with multi-line comments
+        r'/\*.*?\*/',
+        
+        # SQL injection with conditional statements
+        r'(CASE\s+WHEN\s+.*?\s+THEN\s+.*?\s+ELSE\s+.*?\s+END)',
     ]
     
     # Check each pattern
     for pattern in patterns:
         if re.search(pattern, value, re.IGNORECASE):
             return True
+    
+    # Check for suspicious combinations of SQL keywords and syntax
+    sql_keywords = [
+        'SELECT', 'INSERT', 'UPDATE', 'DELETE', 'DROP', 'ALTER', 'CREATE', 'TRUNCATE',
+        'UNION', 'JOIN', 'WHERE', 'HAVING', 'GROUP BY', 'ORDER BY'
+    ]
+    
+    # Only flag as SQL injection if SQL keywords are combined with SQL syntax
+    sql_syntax = [';', '--', '/*', '*/', '=', '<', '>', '(', ')', '\'', '"']
+    
+    has_keyword = any(re.search(r'\b' + keyword + r'\b', value, re.IGNORECASE) for keyword in sql_keywords)
+    has_syntax = any(syntax in value for syntax in sql_syntax)
+    
+    # Only consider it SQL injection if both keyword and syntax are present
+    if has_keyword and has_syntax:
+        # Additional check to reduce false positives
+        # Don't flag if it's just a simple word with SQL keyword as substring
+        # For example, "SELECT" in "SELECTED" or "SELECTION"
+        for keyword in sql_keywords:
+            if re.search(r'\b' + keyword + r'\b', value, re.IGNORECASE):
+                return True
     
     return False
 

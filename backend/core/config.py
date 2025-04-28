@@ -24,9 +24,18 @@ class Settings(BaseSettings):
             raise ValueError("JWT_SECRET must be at least 32 characters long")
         return v
 
-    # CORS settings
+    # Host and CORS settings
+    ALLOWED_HOSTS: List[str] = ["localhost", "127.0.0.1", "app.bulocloud-sentinel.com"]
     CORS_ORIGINS: List[str] = ["http://localhost:3000", "https://app.bulocloud-sentinel.com"]
     CORS_ALLOW_CREDENTIALS: bool = True
+
+    @validator("ALLOWED_HOSTS", pre=True)
+    def assemble_allowed_hosts(cls, v: Union[str, List[str]]) -> List[str]:
+        if isinstance(v, str) and not v.startswith("["):
+            return [i.strip() for i in v.split(",")]
+        elif isinstance(v, (list, str)):
+            return v
+        raise ValueError(v)
 
     @validator("CORS_ORIGINS", pre=True)
     def assemble_cors_origins(cls, v: Union[str, List[str]]) -> List[str]:

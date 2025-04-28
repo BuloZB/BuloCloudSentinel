@@ -48,7 +48,8 @@ class ErrorHandler:
         logger: Optional[SecureLogger] = None,
         error_messages: Optional[Dict[int, str]] = None,
         include_exception_details: bool = False,
-        log_all_errors: bool = True
+        log_all_errors: bool = True,
+        environment: str = "production"
     ):
         """
         Initialize the error handler.
@@ -59,11 +60,23 @@ class ErrorHandler:
             error_messages: Custom error messages
             include_exception_details: Whether to include exception details in responses
             log_all_errors: Whether to log all errors
+            environment: Current environment (development, testing, production)
         """
         self.app = app
         self.logger = logger or get_secure_logger("error_handler")
         self.error_messages = error_messages or DEFAULT_ERROR_MESSAGES
-        self.include_exception_details = include_exception_details
+        
+        # Only include exception details in non-production environments
+        self.environment = environment.lower()
+        if self.environment == "production" and include_exception_details:
+            self.logger.warning(
+                "Exception details disabled in production environment",
+                {"include_exception_details": False}
+            )
+            self.include_exception_details = False
+        else:
+            self.include_exception_details = include_exception_details
+            
         self.log_all_errors = log_all_errors
         
         # Register exception handlers if app is provided
@@ -195,14 +208,20 @@ class ErrorHandler:
         Returns:
             JSON response with error details
         """
-        # Log the error
+        # Generate a unique error reference ID
+        import uuid
+        error_id = str(uuid.uuid4())
+        
+        # Log the error with the reference ID
         self.logger.error(
-            f"Unhandled exception: {type(exc).__name__}",
+            f"Unhandled exception: {type(exc).__name__} [Error ID: {error_id}]",
             {
+                "error_id": error_id,
                 "path": request.url.path,
                 "method": request.method,
                 "client": request.client.host if request.client else None,
                 "exception": str(exc),
+                "exception_type": type(exc).__name__,
                 "traceback": traceback.format_exc()
             },
             exc_info=True
@@ -212,11 +231,12 @@ class ErrorHandler:
         error_response = {
             "status": "error",
             "code": status.HTTP_500_INTERNAL_SERVER_ERROR,
-            "message": self.error_messages.get(500, "Internal server error")
+            "message": self.error_messages.get(500, "Internal server error"),
+            "error_id": error_id  # Include the error ID in the response
         }
         
-        # Include exception details if configured
-        if self.include_exception_details:
+        # Include exception details only in non-production environments
+        if self.include_exception_details and self.environment != "production":
             error_response["detail"] = str(exc)
             error_response["exception_type"] = type(exc).__name__
         

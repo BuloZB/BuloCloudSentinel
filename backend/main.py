@@ -19,6 +19,7 @@ from backend.api.router import api_router
 from backend.core.auth import get_current_user
 from backend.services.sentinel_client import SentinelClient
 from backend.db.session import create_db_and_tables, get_db_session
+from security.api.router import router as security_router
 
 # Configure logging
 logging.basicConfig(
@@ -73,18 +74,34 @@ app.add_middleware(
     expose_headers=["X-Total-Count", "Content-Disposition"]
 )
 
-# Add trusted host middleware
+# Add trusted host middleware with proper host validation
+# Get allowed hosts from settings or environment
+allowed_hosts = settings.ALLOWED_HOSTS if hasattr(settings, 'ALLOWED_HOSTS') else []
+
+# Ensure we have secure defaults
+if not allowed_hosts:
+    # In development, allow localhost
+    if os.getenv("ENVIRONMENT", "production").lower() == "development":
+        allowed_hosts = ["localhost", "127.0.0.1"]
+    else:
+        # In production, require explicit host configuration
+        raise ValueError("ALLOWED_HOSTS must be configured in production environment")
+
 app.add_middleware(
-    TrustedHostMiddleware, allowed_hosts=["*"]  # In production, specify actual hostnames
+    TrustedHostMiddleware, allowed_hosts=allowed_hosts
 )
 
 # Add session middleware with secure settings
+# Generate a separate session secret key that's different from JWT secret
+import secrets
+session_secret = secrets.token_hex(32)
 app.add_middleware(
     SessionMiddleware,
-    secret_key=settings.JWT_SECRET,
+    secret_key=session_secret,  # Use a separate secret for sessions
     max_age=settings.JWT_EXPIRATION_MINUTES * 60,
     https_only=True,
-    same_site="lax"
+    same_site="strict",  # Increased security from "lax" to "strict"
+    secure=True  # Explicitly set secure flag
 )
 
 # Add compression middleware
@@ -93,6 +110,7 @@ app.add_middleware(GZipMiddleware, minimum_size=1000)
 # Import security modules
 from security.middleware.security_middleware import SecurityHeadersMiddleware, RateLimitingMiddleware
 from security.middleware.csrf import CSRFMiddleware
+from security.middleware.api_csrf import APICsrfMiddleware
 from security.middleware.csp import ContentSecurityPolicyMiddleware, get_default_csp_policy
 from security.utils.secure_logging import setup_secure_logger
 from security.utils.encryption import EncryptionService
@@ -117,6 +135,16 @@ app.add_middleware(
     exclude_paths=["/api/", "/docs", "/redoc", "/openapi.json"]
 )
 
+# Add API CSRF middleware specifically for API routes
+app.add_middleware(
+    APICsrfMiddleware,
+    secret_key=settings.JWT_SECRET,
+    include_paths=["/api/"],
+    exclude_paths=["/api/auth/login", "/api/auth/refresh", "/docs", "/redoc", "/openapi.json"],
+    required_headers=["X-Requested-With", "Content-Type"],
+    token_expiry=3600  # 1 hour
+)
+
 # Add rate limiting middleware
 app.add_middleware(
     RateLimitingMiddleware,
@@ -125,10 +153,15 @@ app.add_middleware(
     exclude_paths=["/docs", "/redoc", "/openapi.json"]
 )
 
-# Add CSP middleware
+# Add CSP middleware with reporting
+csp_policy = get_default_csp_policy()
+csp_policy["report-to"] = "csp-endpoint"
+
 app.add_middleware(
     ContentSecurityPolicyMiddleware,
-    policy=get_default_csp_policy()
+    policy=csp_policy,
+    report_uri="/api/security/csp-report",
+    report_only=False  # Set to True during testing to monitor without blocking
 )
 
 # Add XSS protection middleware
@@ -172,8 +205,9 @@ app.state.logger = logger
 encryption_service = EncryptionService(master_key=settings.JWT_SECRET)
 app.state.encryption_service = encryption_service
 
-# Include API router
+# Include API routers
 app.include_router(api_router, prefix="/api")
+app.include_router(security_router, prefix="/api")
 
 # Root endpoint
 @app.get("/")
