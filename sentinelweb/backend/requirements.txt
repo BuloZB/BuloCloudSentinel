@@ -54,7 +54,7 @@ playwright==1.49.1 # Caution: version must match docker-compose.playwright.yaml
 elasticsearch==8.17.1
 
 
-transformers==4.48.0  # Pinned to fix vulnerability PVE-2025-74882
+transformers==4.50.0  # Pinned to fix vulnerability PVE-2025-74882
 sentence-transformers==3.3.1
 accelerate
 colbert-ai==0.2.21
