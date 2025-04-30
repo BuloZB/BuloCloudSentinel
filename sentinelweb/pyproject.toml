@@ -13,7 +13,7 @@ dependencies = [
 
     "python-socketio==5.13.0",
     # "python-jose==3.4.0",  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663
-    "pyjwt==2.10.1",  # Secure JWT implementation
+    "pyjwt==2.10.2",  # Updated to latest version to fix CVE-2024-53861  # Secure JWT implementation
     "passlib[bcrypt]==1.7.4",
 
     "requests==2.32.3",
@@ -95,7 +95,7 @@ dependencies = [
 
     "faster-whisper==1.1.1",
 
-    "PyJWT[crypto]==2.10.1",
+    "PyJWT[crypto]==2.10.2",  # Updated to latest version to fix CVE-2024-53861
     "authlib==1.4.1",
 
     "black==25.1.0",
