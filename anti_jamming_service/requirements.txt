@@ -20,7 +20,7 @@ gnss-sdr-python==0.1.0
 dronekit==2.9.2
 
 # Security
-cryptography==45.0.0  # Updated from 44.0.1 to fix CVE-2024-26130, CVE-2024-12797, CVE-2024-6119
+cryptography==46.0.0  # Updated to latest version to fix CVE-2024-26130, CVE-2024-12797, CVE-2024-6119
 hvac==2.3.0  # Updated from 1.2.1 to fix CVE-2024-34069 and CVE-2024-37568
 # Replacing python-jose with PyJWT due to vulnerabilities CVE-2024-33664 and CVE-2024-33663
 # python-jose==3.4.0  # JWT
