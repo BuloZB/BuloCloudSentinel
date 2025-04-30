@@ -16,7 +16,7 @@ psycopg2-binary==2.9.9
 pgvector==0.4.0
 PyMySQL==1.1.1
 pymongo==4.7.1
-redis==5.0.3
+redis==5.0.4  # Updated to latest version
 
 # Authentication
 # Replacing python-jose with PyJWT due to vulnerabilities CVE-2024-33664 and CVE-2024-33663
