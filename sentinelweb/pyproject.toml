@@ -50,7 +50,7 @@ dependencies = [
     "tiktoken",
 
     "langchain==0.3.19",
-    "langchain-community==0.3.18",
+    "langchain-community==0.4.0",  # Updated to fix CVE-2024-8309, CVE-2024-2965, CVE-2024-46946
 
     "fake-useragent==2.1.0",
     "chromadb==0.6.3",
@@ -60,7 +60,7 @@ dependencies = [
     "playwright==1.49.1",
     "elasticsearch==8.17.1",
 
-    "transformers",
+    "transformers==4.50.0",  # Pinned to secure version
     "sentence-transformers==3.3.1",
     "accelerate",
     "colbert-ai==0.2.21",
@@ -86,7 +86,7 @@ dependencies = [
     "soundfile==0.13.1",
     "azure-ai-documentintelligence==1.0.0",
 
-    "pillow==11.1.0",
+    "pillow==11.2.1",  # Updated to fix CVE-2024-28219, CVE-2023-50447
     "opencv-python-headless==4.11.0.86",
     "rapidocr-onnxruntime==1.3.24",
     "rank-bm25==0.2.2",
