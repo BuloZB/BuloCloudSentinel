@@ -1,7 +1,7 @@
 # FastAPI and web server
 fastapi==0.115.7
 uvicorn==0.34.0
-starlette==0.40.0
+starlette==0.41.3  # Updated to fix CVE-2024-47874
 pydantic==2.11.4  # Updated to latest version
 
 # Hardware interfaces
