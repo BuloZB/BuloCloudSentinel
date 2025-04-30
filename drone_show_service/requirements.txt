@@ -10,7 +10,7 @@ httpx==0.27.0
 websockets==12.0.0
 numpy==1.26.4
 # Security-sensitive packages with pinned versions
-python-multipart==0.0.20  # Updated from 0.0.18 to fix CVE-2024-53981
+python-multipart==0.0.21  # Updated to latest version to fix CVE-2024-53981
 # Note: python-jose has vulnerabilities but no newer version is available
 # Consider replacing with another JWT library in production
 # For now, we'll use PyJWT as a more secure alternative
