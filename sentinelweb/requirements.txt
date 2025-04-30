@@ -42,7 +42,7 @@ anthropic==0.23.0  # Pinned to secure version
 google-generativeai==0.8.4
 tiktoken==0.6.0  # Pinned to secure version
 
-langchain==0.3.19
+langchain==0.3.20  # Updated to latest version
 langchain-community==0.4.0  # Updated to fix CVE-2024-8309, CVE-2024-2965, CVE-2024-46946
 
 # Drone-specific libraries
