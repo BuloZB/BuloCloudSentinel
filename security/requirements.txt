@@ -9,7 +9,7 @@ argon2-cffi==23.1.0
 python-multipart==0.0.21  # Updated to latest version to fix CVE-2024-53981
 cryptography==46.0.0  # Updated to latest version to fix CVE-2024-26130, CVE-2024-12797, CVE-2024-6119
 pyopenssl==24.0.0
-certifi==2024.7.4  # Updated to latest version
+certifi==2024.10.5  # Updated to latest version
 oauthlib==3.2.2
 pyotp==2.9.0
 qrcode==7.4.2
