@@ -14,7 +14,7 @@ python-multipart==0.0.20  # Updated to latest version to fix CVE-2024-53981
 # Note: python-jose has vulnerabilities but no newer version is available
 # Consider replacing with another JWT library in production
 # For now, we'll use PyJWT as a more secure alternative
-pyjwt==2.10.2  # Updated to latest version to fix CVE-2024-53861
+pyjwt==2.10.1  # Downgraded to fix CVE-2024-53861
 # python-jose==3.3.0  # Commented out due to security vulnerabilities
 passlib==1.7.4
 bcrypt==4.1.2

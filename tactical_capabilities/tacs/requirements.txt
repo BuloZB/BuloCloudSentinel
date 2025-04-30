@@ -7,7 +7,7 @@ psycopg2-binary==2.9.9
 alembic==1.13.1
 # Replacing python-jose with PyJWT due to vulnerabilities CVE-2024-33664 and CVE-2024-33663
 # python-jose==3.4.0
-pyjwt==2.10.2  # Updated to latest version to fix CVE-2024-53861
+pyjwt==2.10.1  # Downgraded to fix CVE-2024-53861
 passlib==1.7.4
 python-multipart==0.0.20  # Updated to latest version to fix CVE-2024-53981
 aiofiles==23.2.1

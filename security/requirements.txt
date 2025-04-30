@@ -14,7 +14,7 @@ oauthlib==3.2.2
 pyotp==2.9.0
 qrcode==7.4.2
 slowapi==0.1.9
-pyjwt==2.10.2  # Updated to latest version  # Updated from 2.8.0 to fix vulnerabilities
+pyjwt==2.10.1  # Downgraded to fix CVE-2024-53861
 bandit==1.7.8
 safety==3.0.1
 pydantic-settings==2.2.1

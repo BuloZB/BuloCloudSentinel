@@ -21,7 +21,7 @@ redis==5.0.4  # Updated to latest version
 # Authentication
 # Replacing python-jose with PyJWT due to vulnerabilities CVE-2024-33664 and CVE-2024-33663
 # python-jose[cryptography]==3.3.0
-pyjwt==2.10.2  # Updated to latest version
+pyjwt==2.10.1  # Downgraded to fix CVE-2024-53861
 passlib[bcrypt]==1.7.4
 bcrypt==4.3.0
 argon2-cffi==23.1.0
