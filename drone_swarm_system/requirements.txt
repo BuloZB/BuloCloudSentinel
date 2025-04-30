@@ -24,6 +24,6 @@ APScheduler==3.10.4
 loguru==0.7.2
 python-dotenv==1.0.1
 paho-mqtt==2.2.1
-cryptography==44.0.1  # Updated from 42.0.8 to fix PVE-2024-73711
+cryptography==45.0.0  # Updated from 44.0.1 to fix CVE-2024-26130, CVE-2024-12797, CVE-2024-6119
 pyopenssl==24.0.0
 python-magic==0.4.27

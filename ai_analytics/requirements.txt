@@ -23,7 +23,7 @@ pytesseract>=0.3.10
 Pillow>=10.3.0  # Updated to fix CVE-2024-28219
 
 # Security
-cryptography==44.0.1  # Updated to fix CVE-2024-12797
+cryptography==45.0.0  # Updated from 44.0.1 to fix CVE-2024-26130, CVE-2024-12797, CVE-2024-6119
 pyopenssl==24.0.0  # Secure version
 pyjwt==2.10.1  # Secure JWT implementation
 passlib==1.7.4  # Password hashing
