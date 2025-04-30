@@ -9,7 +9,7 @@ open3d>=0.17.0
 scipy==1.13.1
 matplotlib==3.9.0
 websockets==12.0
-python-multipart==0.0.18  # Downgraded from 0.0.21 to fix CVE-2024-53981
+python-multipart==0.0.20  # Updated to latest version to fix CVE-2024-53981
 PyYAML>=6.0
 pytest>=7.3.1
 cryptography==45.0.0  # Updated from 44.0.1 to fix CVE-2024-26130, CVE-2024-12797, CVE-2024-6119

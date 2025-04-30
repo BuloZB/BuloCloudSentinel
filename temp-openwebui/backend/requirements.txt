@@ -1,7 +1,7 @@
 fastapi==0.115.12  # Updated to latest version
 uvicorn[standard]==0.34.0
 pydantic==2.11.4  # Updated to latest version
-python-multipart==0.0.18  # Downgraded from 0.0.21 to fix CVE-2024-53981
+python-multipart==0.0.20  # Updated to latest version to fix CVE-2024-53981
 
 python-socketio==5.13.0
 # python-jose==3.4.0 is already updated to the latest version, but we'll use PyJWT instead (see line 91)

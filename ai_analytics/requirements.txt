@@ -1,7 +1,7 @@
 fastapi==0.115.12  # Updated to latest version
 uvicorn==0.34.0  # Pinned version for security
 pydantic==2.11.3  # Pinned version for security
-python-multipart==0.0.18  # Downgraded from 0.0.21 to fix CVE-2024-53981
+python-multipart==0.0.20  # Updated to latest version to fix CVE-2024-53981
 numpy>=1.24.0
 opencv-python>=4.7.0
 PyYAML>=6.0
