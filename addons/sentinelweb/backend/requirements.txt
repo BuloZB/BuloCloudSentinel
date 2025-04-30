@@ -1,4 +1,4 @@
-fastapi==0.115.7  # Updated from 0.95.1 for security
+fastapi==0.115.12  # Updated to latest version
 uvicorn==0.34.0  # Updated from 0.22.0 for security
 pydantic==2.10.6  # Updated from 1.10.7 for security
 sqlalchemy==2.0.38  # Updated from 2.0.12 for security

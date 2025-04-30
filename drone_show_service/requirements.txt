@@ -1,6 +1,6 @@
 # Pinned versions for security
 # Updated to address security vulnerabilities
-fastapi==0.110.0
+fastapi==0.115.12  # Updated to latest version
 uvicorn==0.27.1
 pydantic==2.11.3
 sqlalchemy==2.0.28
