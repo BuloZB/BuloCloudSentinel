@@ -31,7 +31,7 @@ python-magic==0.4.27
 
 # Utils
 python-dotenv==1.0.1
-aiofiles==23.2.0
+aiofiles==23.2.1  # Updated to latest version
 pykml==0.2.0
 gpxpy==1.5.0
 

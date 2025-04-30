@@ -39,7 +39,7 @@ python-magic==0.4.27
 
 # Utils
 python-dotenv==1.0.1
-aiofiles==23.2.0
+aiofiles==23.2.1  # Updated to latest version
 aiocache==0.12.2
 APScheduler==3.10.4
 loguru==0.7.2
