@@ -1,6 +1,6 @@
 fastapi==0.115.7
 uvicorn[standard]==0.34.0
-pydantic==2.11.3
+pydantic==2.11.4  # Updated to latest version
 sqlalchemy==2.0.38
 # Removing python-jose due to vulnerabilities CVE-2024-33664 and CVE-2024-33663
 # python-jose[cryptography]==3.3.0

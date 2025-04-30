@@ -1,6 +1,6 @@
 fastapi==0.110.0
 uvicorn==0.27.1
-pydantic==2.11.3
+pydantic==2.11.4  # Updated to latest version
 sqlalchemy==2.0.27
 asyncpg==0.29.0
 # Replacing python-jose with PyJWT due to vulnerabilities CVE-2024-33664 and CVE-2024-33663
