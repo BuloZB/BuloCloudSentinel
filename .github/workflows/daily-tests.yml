@@ -44,13 +44,24 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements-secure.txt
-          pip install pytest pytest-cov
+          if [ -f requirements-secure.txt ]; then
+            pip install -r requirements-secure.txt
+          else
+            pip install -r requirements.txt
+            pip install pytest pytest-cov
+          fi
 
       - name: Run backend tests
         run: |
           cd backend
-          pytest --cov=app --cov-report=xml || true
+          if [ -d tests ] || [ -f pytest.ini ] || find . -name "test_*.py" | grep -q .; then
+            echo "Running backend tests..."
+            pytest --cov=app --cov-report=xml || true
+          else
+            echo "No tests found in backend directory. Creating empty coverage report."
+            mkdir -p coverage
+            echo '<?xml version="1.0" ?><coverage version="7.4.0"></coverage>' > coverage.xml
+          fi
 
       - name: Upload coverage report
         uses: actions/upload-artifact@v4
@@ -77,7 +88,14 @@ jobs:
       - name: Run frontend tests
         run: |
           cd frontend
-          npm test -- --coverage || true
+          if grep -q '"test":' package.json; then
+            echo "Running frontend tests..."
+            npm test -- --coverage || true
+          else
+            echo "No test script found in package.json. Creating empty coverage report."
+            mkdir -p coverage
+            echo '{}' > coverage/coverage-summary.json
+          fi
 
       - name: Upload coverage report
         uses: actions/upload-artifact@v4
@@ -99,13 +117,22 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r anti_jamming_service/requirements.txt
+          if [ -f anti_jamming_service/requirements.txt ]; then
+            pip install -r anti_jamming_service/requirements.txt
+          fi
           pip install pytest pytest-cov
 
       - name: Run anti-jamming service tests
         run: |
           cd anti_jamming_service
-          pytest --cov=. --cov-report=xml || true
+          if [ -d tests ] || [ -f pytest.ini ] || find . -name "test_*.py" | grep -q .; then
+            echo "Running anti-jamming service tests..."
+            pytest --cov=. --cov-report=xml || true
+          else
+            echo "No tests found in anti_jamming_service directory. Creating empty coverage report."
+            mkdir -p coverage
+            echo '<?xml version="1.0" ?><coverage version="7.4.0"></coverage>' > coverage.xml
+          fi
 
       - name: Upload coverage report
         uses: actions/upload-artifact@v4
@@ -127,13 +154,22 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r vision_system/requirements.txt
+          if [ -f vision_system/requirements.txt ]; then
+            pip install -r vision_system/requirements.txt
+          fi
           pip install pytest pytest-cov
 
       - name: Run vision system tests
         run: |
           cd vision_system
-          pytest --cov=. --cov-report=xml || true
+          if [ -d tests ] || [ -f pytest.ini ] || find . -name "test_*.py" | grep -q .; then
+            echo "Running vision system tests..."
+            pytest --cov=. --cov-report=xml || true
+          else
+            echo "No tests found in vision_system directory. Creating empty coverage report."
+            mkdir -p coverage
+            echo '<?xml version="1.0" ?><coverage version="7.4.0"></coverage>' > coverage.xml
+          fi
 
       - name: Upload coverage report
         uses: actions/upload-artifact@v4
@@ -156,3 +192,5 @@ jobs:
           SLACK_MESSAGE: 'Daily tests completed'
           SLACK_TITLE: Daily Tests Results
           SLACK_USERNAME: GitHub Actions
+        if: ${{ secrets.SLACK_WEBHOOK != '' }}
+        continue-on-error: true

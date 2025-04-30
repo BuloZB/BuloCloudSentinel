@@ -26,18 +26,61 @@ jobs:
           
       - name: Run Bandit
         run: |
+          # Run bandit with JSON output
           bandit -r . -x ./tests,./venv -f json -o bandit-results.json
+          
+      - name: Convert JSON to SARIF
+        run: |
+          # Install sarif-tools
+          pip install sarif-tools
+          
+          # Convert JSON to SARIF format
+          python -c "
+          import json
+          import sarif_tools as sarif
+          
+          # Load bandit JSON results
+          with open('bandit-results.json', 'r') as f:
+              data = json.load(f)
+          
+          # Convert to SARIF
+          sarif_output = sarif.json_to_sarif(
+              tool_name='bandit',
+              tool_version='1.7.5',
+              results=data.get('results', []),
+              sarif_version='2.1.0'
+          )
+          
+          # Write SARIF output
+          with open('bandit-results.sarif', 'w') as f:
+              json.dump(sarif_output, f)
+          "
           
       - name: Upload Bandit scan results
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: bandit-results.json
+          sarif_file: bandit-results.sarif
           category: bandit
         if: always()
         
       - name: Check for high severity issues
         run: |
-          if grep -q '"issue_severity": "HIGH"' bandit-results.json; then
-            echo "High severity security issues found!"
-            exit 1
-          fi
+          # Parse JSON and check for high severity issues
+          python -c "
+          import json
+          import sys
+          
+          with open('bandit-results.json', 'r') as f:
+              data = json.load(f)
+          
+          high_severity_issues = [r for r in data.get('results', [])
+                                 if r.get('issue_severity') == 'HIGH']
+          
+          if high_severity_issues:
+              print('High severity security issues found:')
+              for issue in high_severity_issues:
+                  print(f'- {issue.get(\"test_name\")}: {issue.get(\"issue_text\")}')
+              sys.exit(1)
+          else:
+              print('No high severity issues found.')
+          "

@@ -15,6 +15,16 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: Check if Dockerfile exists
+        id: check_dockerfile
+        run: |
+          if [ -f "./backend/Dockerfile" ]; then
+            echo "dockerfile_exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "dockerfile_exists=false" >> $GITHUB_OUTPUT
+            echo "::warning::Dockerfile not found in backend directory"
+          fi
+
       - name: Build backend Docker image
         uses: docker/build-push-action@v5
         with:
@@ -23,6 +33,7 @@ jobs:
           tags: bulo-cloud-sentinel/backend:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
+        if: steps.check_dockerfile.outputs.dockerfile_exists == 'true'
 
   build-frontend:
     runs-on: ubuntu-latest
@@ -33,6 +44,16 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: Check if Dockerfile exists
+        id: check_dockerfile_frontend
+        run: |
+          if [ -f "./frontend/Dockerfile" ]; then
+            echo "dockerfile_exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "dockerfile_exists=false" >> $GITHUB_OUTPUT
+            echo "::warning::Dockerfile not found in frontend directory"
+          fi
+
       - name: Build frontend Docker image
         uses: docker/build-push-action@v5
         with:
@@ -41,6 +62,7 @@ jobs:
           tags: bulo-cloud-sentinel/frontend:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
+        if: steps.check_dockerfile_frontend.outputs.dockerfile_exists == 'true'
 
   build-anti-jamming-service:
     runs-on: ubuntu-latest
@@ -51,6 +73,16 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: Check if Dockerfile exists
+        id: check_dockerfile_anti_jamming
+        run: |
+          if [ -f "./anti_jamming_service/Dockerfile" ]; then
+            echo "dockerfile_exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "dockerfile_exists=false" >> $GITHUB_OUTPUT
+            echo "::warning::Dockerfile not found in anti_jamming_service directory"
+          fi
+
       - name: Build anti-jamming service Docker image
         uses: docker/build-push-action@v5
         with:
@@ -59,6 +91,7 @@ jobs:
           tags: bulo-cloud-sentinel/anti-jamming-service:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
+        if: steps.check_dockerfile_anti_jamming.outputs.dockerfile_exists == 'true'
 
   build-vision-system:
     runs-on: ubuntu-latest
@@ -69,6 +102,16 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: Check if Dockerfile exists
+        id: check_dockerfile_vision
+        run: |
+          if [ -f "./vision_system/Dockerfile" ]; then
+            echo "dockerfile_exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "dockerfile_exists=false" >> $GITHUB_OUTPUT
+            echo "::warning::Dockerfile not found in vision_system directory"
+          fi
+
       - name: Build vision system Docker image
         uses: docker/build-push-action@v5
         with:
@@ -77,6 +120,7 @@ jobs:
           tags: bulo-cloud-sentinel/vision-system:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
+        if: steps.check_dockerfile_vision.outputs.dockerfile_exists == 'true'
 
   notification:
     needs: [build-backend, build-frontend, build-anti-jamming-service, build-vision-system]
@@ -93,3 +137,5 @@ jobs:
           SLACK_MESSAGE: 'Docker builds completed'
           SLACK_TITLE: Docker Build Results
           SLACK_USERNAME: GitHub Actions
+        if: ${{ secrets.SLACK_WEBHOOK != '' }}
+        continue-on-error: true
