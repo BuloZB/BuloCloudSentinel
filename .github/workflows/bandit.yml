@@ -8,6 +8,11 @@ on:
   schedule:
     - cron: '0 0 * * *'  # Run daily at midnight
 
+# Define required permissions for this workflow
+permissions:
+  contents: read  # Need read access to repository contents
+  security-events: write  # Need write access to upload security scan results
+
 jobs:
   bandit:
     runs-on: ubuntu-latest
