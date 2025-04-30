@@ -128,9 +128,30 @@ def create_token(data: dict, expires_delta: Union[timedelta, None] = None) -> st
 
 def decode_token(token: str) -> Optional[dict]:
     try:
-        decoded = jwt.decode(token, SESSION_SECRET, algorithms=[ALGORITHM])
+        # Decode token with full validation
+        decoded = jwt.decode(
+            token,
+            SESSION_SECRET,
+            algorithms=[ALGORITHM],
+            options={
+                "verify_signature": True,
+                "verify_exp": True,
+                "verify_iat": True,
+                "require": ["id"]  # Require at least the user ID
+            }
+        )
+
+        # Check if token was issued in the future (clock skew)
+        if "iat" in decoded:
+            iat_timestamp = decoded["iat"]
+            if isinstance(iat_timestamp, datetime):
+                iat_timestamp = iat_timestamp.timestamp()
+            if iat_timestamp > datetime.now(UTC).timestamp() + 30:  # Allow 30 seconds of clock skew
+                return None
+
         return decoded
-    except Exception:
+    except Exception as e:
+        log.warning(f"Token validation failed: {str(e)}")
         return None
 
 

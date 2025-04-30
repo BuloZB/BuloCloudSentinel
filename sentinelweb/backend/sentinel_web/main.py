@@ -94,21 +94,46 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# Set CORS middleware
+# Set CORS middleware with secure settings
+from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.sessions import SessionMiddleware
+from starlette.staticfiles import StaticFiles
+from starlette.exceptions import HTTPException as StarletteHTTPException
+from fastapi import FastAPI, Request, Response, Depends, HTTPException, status
+
+# Get allowed origins from environment or use a secure default
+allowed_origins = os.environ.get("ALLOWED_ORIGINS", "").split(",")
+if not allowed_origins or allowed_origins == [""]:
+    # Default to same origin if not specified
+    allowed_origins = ["http://localhost:3000", "https://localhost:3000"]
+    log.warning(f"ALLOWED_ORIGINS not set in environment. Using default: {allowed_origins}")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=allowed_origins,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type", "Accept", "Origin", "User-Agent"],
+    expose_headers=["Content-Length", "Content-Type"],
+    max_age=3600,  # Cache preflight requests for 1 hour
 )
 
-# Add session middleware
+# Add session middleware with secure settings
+import secrets
+session_secret = os.environ.get("SECRET_KEY", "")
+if not session_secret:
+    # Generate a secure random key if not provided
+    # This will change on restart, which is fine for development
+    # but in production, SECRET_KEY should be set in environment
+    log.warning("SECRET_KEY not set in environment. Using a generated key.")
+    session_secret = secrets.token_hex(32)
+
 app.add_middleware(
     SessionMiddleware,
-    secret_key=os.environ.get("SECRET_KEY", "sentinelweb-secret-key"),
-    same_site="lax",
-    https_only=False,
+    secret_key=session_secret,
+    same_site="strict",  # Increased security from "lax" to "strict"
+    https_only=True,  # Enforce HTTPS for cookies
+    max_age=3600,  # 1 hour session timeout
 )
 
 # Set application state

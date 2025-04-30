@@ -241,11 +241,30 @@ bulo-cloud-sentinel/
 
 Bulo.Cloud Sentinel takes security seriously. We have implemented comprehensive security measures throughout the platform:
 
-- **🔐 Security Documentation**: Detailed security documentation is available in the [SECURITY.md](SECURITY.md) file and [security guidelines](docs/security_guidelines.md).
+- **🔐 Security Documentation**: Detailed security documentation is available in the [SECURITY.md](SECURITY.md) file, [security guidelines](docs/security_guidelines.md), and [security incident response plan](docs/security_incident_response_plan.md).
 - **🔒 Security Features**: The platform includes advanced security features such as multi-factor authentication, role-based access control, and data encryption.
 - **🔍 Security Scanning**: Automated security scanning is integrated into the CI/CD pipeline to detect vulnerabilities.
 - **🛡️ Vulnerability Reporting**: If you discover a security vulnerability, please follow the reporting process outlined in [SECURITY.md](SECURITY.md).
 - **📝 Security Updates**: Security updates are documented in [security_vulnerability_fixes.md](docs/security_vulnerability_fixes.md).
+- **🔒 Recent Security Improvements**:
+  - Enhanced JWT token validation with full signature verification and expiration checks
+  - Secure session management with strict cookie settings (SameSite=strict, HTTPS-only)
+  - Restricted CORS settings to prevent cross-origin attacks
+  - Secure password handling with Argon2id hashing
+  - Removed hardcoded credentials and API keys
+  - Updated vulnerable dependencies (python-jose, python-multipart, cryptography, pillow)
+  - Added Content Security Policy (CSP) headers
+  - Implemented token revocation and blacklisting
+  - Added advanced rate limiting for authentication endpoints
+  - Enhanced password validation with checks for common passwords
+  - Implemented secure file upload validation
+  - Added comprehensive security headers (HSTS, X-Content-Type-Options, etc.)
+  - Centralized security configuration
+  - Implemented automated security testing with OWASP ZAP
+  - Added security monitoring and alerting system
+  - Created comprehensive secure coding guidelines
+  - Implemented security incident response plan
+  - Enhanced CI/CD pipeline with additional security scanning tools
 
 For more information about security features, see the [Security Module](#-security-module) section.
 

@@ -924,12 +924,22 @@ async def inspect_websocket(request: Request, call_next):
     return await call_next(request)
 
 
+# Set CORS middleware with secure settings
+# Get allowed origins from environment or use a secure default
+allowed_origins = CORS_ALLOW_ORIGIN
+if not allowed_origins or allowed_origins == ["*"]:
+    # Default to same origin if not specified
+    allowed_origins = ["http://localhost:3000", "https://localhost:3000"]
+    log.warning(f"CORS_ALLOW_ORIGIN not set properly. Using default: {allowed_origins}")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=CORS_ALLOW_ORIGIN,
+    allow_origins=allowed_origins,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type", "Accept", "Origin", "User-Agent"],
+    expose_headers=["Content-Length", "Content-Type"],
+    max_age=3600,  # Cache preflight requests for 1 hour
 )
 
 

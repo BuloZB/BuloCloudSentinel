@@ -21,9 +21,12 @@ This document provides security guidelines for developers working on the Bulo.Cl
 
 - **Use the provided authentication framework**: Always use the built-in authentication framework (`security/auth`) instead of implementing your own.
 - **Implement multi-factor authentication**: Use the MFA utilities (`security/auth/mfa.py`) for sensitive operations.
-- **Secure password handling**: Use the password utilities (`security/auth/password.py`) for hashing and verifying passwords.
-- **Token validation**: Always validate JWT tokens using the provided utilities (`security/auth/jwt_handler.py`).
-- **Session management**: Implement proper session timeouts and invalidation mechanisms.
+- **Secure password handling**: Use the password utilities (`security/auth/password.py`) for hashing and verifying passwords with Argon2id.
+- **Token validation**: Always validate JWT tokens using the provided utilities (`security/auth/jwt_handler.py`), ensuring full validation of signature, expiration, and issuer.
+- **Session management**: Implement proper session timeouts (max 1 hour) and invalidation mechanisms.
+- **Avoid using python-jose**: Use PyJWT instead of python-jose due to security vulnerabilities.
+- **Implement token revocation**: Use a token blacklist or revocation mechanism for logout and password changes.
+- **Secure cookie settings**: Always set cookies with `HttpOnly`, `Secure`, and `SameSite=strict` flags.
 
 Example of proper authentication:
 
@@ -127,10 +130,21 @@ result = await execute_safe_query(engine, query, params)
 ## API Security
 
 - **Rate limiting**: Implement rate limiting for API endpoints using the provided utilities (`security/api/rate_limiting.py`).
-- **Input validation**: Validate all API inputs.
-- **Output validation**: Validate all API outputs.
-- **Security headers**: Use security headers for API responses.
-- **CORS**: Implement proper CORS configuration.
+- **Input validation**: Validate all API inputs using Pydantic models with strict validation.
+- **Output validation**: Validate all API outputs to prevent data leakage.
+- **Security headers**: Use security headers for API responses, including:
+  - Content-Security-Policy
+  - X-Content-Type-Options: nosniff
+  - X-Frame-Options: DENY
+  - X-XSS-Protection: 1; mode=block
+  - Strict-Transport-Security: max-age=31536000; includeSubDomains
+  - Permissions-Policy: geolocation=(), camera=(), microphone=()
+- **CORS**: Implement proper CORS configuration with specific allowed origins (never use wildcard `*`).
+- **Authentication**: Require authentication for all sensitive endpoints.
+- **Authorization**: Implement proper authorization checks for all endpoints.
+- **API versioning**: Implement API versioning to handle breaking changes.
+- **Request throttling**: Implement request throttling to prevent DoS attacks.
+- **API documentation**: Document API security requirements and controls.
 
 Example of proper API security:
 
@@ -245,33 +259,144 @@ pip freeze > requirements.txt
 
 ## Frontend Security
 
-- **Content Security Policy**: Implement a Content Security Policy to prevent XSS attacks.
-- **Input validation**: Validate all user inputs on the frontend.
-- **Output encoding**: Encode all outputs to prevent XSS attacks.
-- **CSRF protection**: Implement CSRF protection for forms.
-- **Secure cookies**: Use secure cookies with appropriate flags.
+- **Content Security Policy**: Implement a Content Security Policy to prevent XSS attacks with strict directives:
+  ```
+  default-src 'self';
+  script-src 'self' 'unsafe-inline';
+  style-src 'self' 'unsafe-inline';
+  img-src 'self' data:;
+  connect-src 'self' https://api.example.com;
+  frame-ancestors 'none';
+  form-action 'self';
+  ```
+- **Input validation**: Validate all user inputs on the frontend using libraries like Zod or Yup.
+- **Output encoding**: Use DOMPurify to sanitize HTML content before rendering.
+- **CSRF protection**: Implement CSRF protection for all forms using the Double Submit Cookie pattern.
+- **Secure cookies**: Use secure cookies with appropriate flags (HttpOnly, Secure, SameSite=strict).
+- **Subresource Integrity**: Use SRI for all external scripts and stylesheets.
+- **Trusted Types**: Implement Trusted Types to prevent DOM-based XSS attacks.
+- **Frame protection**: Use X-Frame-Options and CSP frame-ancestors to prevent clickjacking.
+- **Sanitize user-generated content**: Always sanitize user-generated content before rendering.
+- **Use React's built-in protections**: Leverage React's built-in XSS protections by avoiding dangerouslySetInnerHTML.
+- **Implement proper error boundaries**: Use error boundaries to prevent exposing sensitive information in error messages.
 
 Example of proper frontend security:
 
 ```javascript
-// Input validation
-function validateInput(input) {
-  // Validate input
-  if (!input.match(/^[a-zA-Z0-9]+$/)) {
-    throw new Error("Invalid input");
-  }
-  return input;
+// React component with proper security practices
+import React, { useState, useEffect } from 'react';
+import DOMPurify from 'dompurify';
+import { z } from 'zod';
+import axios from 'axios';
+
+// Input validation schema using Zod
+const inputSchema = z.object({
+  username: z.string().min(3).max(50).regex(/^[a-zA-Z0-9_]+$/),
+  email: z.string().email(),
+  message: z.string().max(1000)
+});
+
+// Secure form component
+function SecureForm() {
+  const [formData, setFormData] = useState({ username: '', email: '', message: '' });
+  const [errors, setErrors] = useState({});
+  const [csrfToken, setCsrfToken] = useState('');
+
+  // Get CSRF token on component mount
+  useEffect(() => {
+    axios.get('/api/csrf-token')
+      .then(response => setCsrfToken(response.data.token))
+      .catch(error => console.error('Failed to fetch CSRF token:', error));
+  }, []);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // Validate input
+    try {
+      inputSchema.parse(formData);
+
+      // Send data with CSRF token
+      axios.post('/api/submit', formData, {
+        headers: {
+          'X-CSRF-Token': csrfToken
+        }
+      });
+
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        // Convert Zod errors to a more usable format
+        const fieldErrors = {};
+        error.errors.forEach(err => {
+          const field = err.path[0];
+          fieldErrors[field] = err.message;
+        });
+        setErrors(fieldErrors);
+      }
+    }
+  };
+
+  // Safely display user content
+  const renderSafeHTML = (content) => {
+    return { __html: DOMPurify.sanitize(content) };
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <div>
+        <label htmlFor="username">Username:</label>
+        <input
+          type="text"
+          id="username"
+          name="username"
+          value={formData.username}
+          onChange={handleChange}
+        />
+        {errors.username && <p className="error">{errors.username}</p>}
+      </div>
+
+      <div>
+        <label htmlFor="email">Email:</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
+        />
+        {errors.email && <p className="error">{errors.email}</p>}
+      </div>
+
+      <div>
+        <label htmlFor="message">Message:</label>
+        <textarea
+          id="message"
+          name="message"
+          value={formData.message}
+          onChange={handleChange}
+        />
+        {errors.message && <p className="error">{errors.message}</p>}
+      </div>
+
+      {/* Only use dangerouslySetInnerHTML when absolutely necessary and with sanitization */}
+      {formData.message && (
+        <div className="preview">
+          <h3>Preview:</h3>
+          <div dangerouslySetInnerHTML={renderSafeHTML(formData.message)} />
+        </div>
+      )}
+
+      <input type="hidden" name="csrf_token" value={csrfToken} />
+      <button type="submit">Submit</button>
+    </form>
+  );
 }
 
-// Output encoding
-function encodeOutput(output) {
-  return output
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
+export default SecureForm;
 ```
 
 ## Security Testing

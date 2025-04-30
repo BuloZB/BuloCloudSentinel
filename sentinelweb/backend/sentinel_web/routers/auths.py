@@ -300,6 +300,8 @@ async def ldap_auth(request: Request, response: Response, form_data: LdapForm):
                     key="token",
                     value=token,
                     httponly=True,  # Ensures the cookie is not accessible via JavaScript
+                    samesite=WEBUI_AUTH_COOKIE_SAME_SITE,
+                    secure=WEBUI_AUTH_COOKIE_SECURE,
                 )
 
                 user_permissions = get_permissions(
