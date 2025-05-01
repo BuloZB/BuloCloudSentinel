@@ -59,8 +59,8 @@ colbert-ai==0.2.21
 einops==0.8.1
 tinygrad==0.9.0  # Lightweight ML runtime
 safetensors==0.4.3  # For loading safetensors models
-torch==2.2.2  # PyTorch for ML inference
-onnx==1.16.1  # ONNX model format support
+torch==2.7.0  # PyTorch for ML inference
+onnx==1.17.0  # ONNX model format support
 onnxruntime==1.20.1  # ONNX runtime for inference
 tensorflow-lite==2.15.0  # TFLite for lightweight inference
 
