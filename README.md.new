@@ -168,17 +168,6 @@ Bulo.Cloud Sentinel supports multiple ML backends for inference:
 - **PyTorch**: A full-featured ML framework for high-performance inference
 - **TensorFlow Lite**: A lightweight ML runtime for mobile and edge devices
 
-The platform also includes an enhanced inference engine with advanced capabilities:
-
-- **Batch Inference**: Process multiple inputs in batches for improved throughput
-- **Streaming Inference**: Process a continuous stream of inputs in real-time
-- **Distributed Inference**: Distribute inference workloads across multiple nodes
-- **Model Management**: Convert, visualize, and analyze models
-- **Model Optimization**: Optimize models for improved performance
-- **Model Quantization**: Quantize models for reduced size and faster inference
-
-See [Enhanced Inference Engine](docs/enhanced_inference.md) for more details.
-
 You can select the backend to use via the `ML_BACKEND` environment variable or the `--ml-backend` command-line option:
 
 ```bash
@@ -260,13 +249,7 @@ bulo-cloud-sentinel/
 │       ├── engine.py     # Central engine for loading backends
 │       ├── tinygrad_backend.py # TinyGrad inference backend
 │       ├── torch_backend.py    # PyTorch inference backend
-│       ├── tflite_backend.py   # TensorFlow Lite inference backend
-│       ├── batch_engine.py     # Batch inference engine
-│       ├── distributed_engine.py # Distributed inference engine
-│       ├── convert.py    # Model conversion utilities
-│       ├── visualize.py  # Model visualization utilities
-│       ├── web_converter.py # Web interface for model conversion
-│       └── model_manager.py # Web interface for model management
+│       └── tflite_backend.py   # TensorFlow Lite inference backend
 ├── ai_analytics/         # Advanced AI and Analytics module
 │   ├── models/           # AI model definitions
 │   │   ├── detection/    # Object detection models
@@ -289,9 +272,7 @@ bulo-cloud-sentinel/
 │   └── bulosentinel.Dockerfile # Docker configuration for tinygrad integration
 ├── dronecore/            # Core drone control libraries
 ├── examples/             # Example scripts and demos
-│   ├── tinygrad_demo.py  # Demo of TinyGrad inference backend
-│   ├── benchmark_backends.py # Benchmark different ML backends
-│   └── enhanced_inference_demo.py # Demo of enhanced inference capabilities
+│   └── tinygrad_demo.py  # Demo of TinyGrad inference backend
 ├── drone_show_service/   # Drone Show microservice for light shows
 │   ├── addons/           # Blender integration and other add-ons
 │   ├── api/              # API endpoints

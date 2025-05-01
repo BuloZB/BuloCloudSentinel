@@ -1,0 +1,71 @@
+name: Test TinyGrad Backend
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Run daily at midnight
+  push:
+    branches: [ main ]
+    paths:
+      - 'ai/inference/**'
+      - 'tests/test_tinygrad_backend.py'
+      - 'requirements.txt'
+      - '.github/workflows/test_tinygrad.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'ai/inference/**'
+      - 'tests/test_tinygrad_backend.py'
+      - 'requirements.txt'
+      - '.github/workflows/test_tinygrad.yml'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.9, '3.10', '3.11']
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest
+        pip install tinygrad safetensors torch onnx onnxruntime tensorflow-cpu
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    
+    - name: Run tests
+      run: |
+        pytest tests/test_tinygrad_backend.py -v
+    
+    - name: Run TinyGrad demo
+      run: |
+        python examples/tinygrad_demo.py --backend tinygrad --device CPU
+    
+    - name: Run benchmark
+      run: |
+        python examples/benchmark_backends.py --backends tinygrad --device CPU --num-runs 5
+    
+    - name: Test model conversion
+      run: |
+        # Download a sample model
+        mkdir -p models
+        wget -q https://github.com/tinygrad/tinygrad/raw/master/weights/mobilenet_v2.npz -O models/mobilenet_v2.npz
+        
+        # Test model info
+        python -m ai.inference.convert models/mobilenet_v2.npz models/mobilenet_v2.safetensors --format safetensors --info
+        
+        # Test conversion to SafeTensors
+        python -m ai.inference.convert models/mobilenet_v2.npz models/mobilenet_v2.safetensors --format safetensors
+        
+        # Test optimization
+        python -m ai.inference.convert models/mobilenet_v2.npz models/mobilenet_v2_optimized.npz --optimize
+        
+        # Clean up
+        rm -f models/mobilenet_v2.npz models/mobilenet_v2.safetensors models/mobilenet_v2_optimized.npz

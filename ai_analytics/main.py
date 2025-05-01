@@ -8,14 +8,20 @@ predictive analytics.
 
 import logging
 import os
+import sys
 from fastapi import FastAPI, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 
+# Add project root to path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 # Import local modules
-from api.routes import detection, recognition, behavior, analytics, multimodal
+from api.routes import detection, recognition, behavior, analytics, multimodal, inference
 from services.video_stream_manager import VideoStreamManager
 from services.event_publisher import EventPublisher
 from services.multimodal_detection import MultimodalDetectionService
+from services.inference_service import InferenceService
+from services.enhanced_detection import EnhancedDetectionService
 from utils.config import load_config, get_config
 from api.dependencies import (
     get_video_stream_manager,
@@ -54,9 +60,13 @@ app.add_middleware(
 video_manager = VideoStreamManager(config["video_streams"])
 event_publisher = EventPublisher(config["event_broker"])
 
+# Initialize inference service
+inference_service = InferenceService(config["inference"])
+
 # Store services in app state
 app.state.video_manager = video_manager
 app.state.event_publisher = event_publisher
+app.state.inference_service = inference_service
 app.state.config = config
 
 # Include API routes
@@ -65,6 +75,7 @@ app.include_router(recognition.router, prefix="/api/recognition", tags=["recogni
 app.include_router(behavior.router, prefix="/api/behavior", tags=["behavior"])
 app.include_router(analytics.router, prefix="/api/analytics", tags=["analytics"])
 app.include_router(multimodal.router, prefix="/api/multimodal", tags=["multimodal"])
+app.include_router(inference.router, prefix="/api/inference", tags=["inference"])
 
 @app.on_event("startup")
 async def startup_event():
