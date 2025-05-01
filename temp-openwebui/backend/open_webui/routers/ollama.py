@@ -1525,12 +1525,20 @@ async def download_model(
     url_idx: Optional[int] = None,
     user=Depends(get_admin_user),
 ):
-    allowed_hosts = ["https://huggingface.co/", "https://github.com/"]
+    allowed_hosts = ["huggingface.co", "github.com"]
 
-    if not any(form_data.url.startswith(host) for host in allowed_hosts):
+    parsed_url = urlparse(form_data.url)
+
+    if parsed_url.scheme != "https" or parsed_url.netloc not in allowed_hosts:
         raise HTTPException(
             status_code=400,
             detail="Invalid file_url. Only URLs from allowed hosts are permitted.",
+        )
+
+    if not parsed_url.path or ".." in parsed_url.path:
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid file_url. Path traversal is not allowed.",
         )
 
     if url_idx is None:
