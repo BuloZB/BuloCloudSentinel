@@ -5,6 +5,20 @@ This module provides FastAPI endpoints for interacting with Anduril's Lattice pl
 """
 
 from fastapi import APIRouter, HTTPException, Depends, BackgroundTasks
+
+from security.validation.unified_validation import (
+    validate_email,
+    validate_username,
+    validate_name,
+    validate_uuid,
+    validate_url,
+    sanitize_string,
+    sanitize_html,
+    check_sql_injection,
+    input_validator,
+    form_validator,
+    request_validator,
+)
 from pydantic import BaseModel, Field
 from typing import Dict, List, Any, Optional
 
@@ -157,6 +171,20 @@ class PatrolTaskRequest(BaseModel):
 
 
 # Initialization
+
+def validate_request_data(request_data: dict, schema: dict) -> dict:
+    """
+    Validate request data against a schema.
+
+    Args:
+        request_data: Request data to validate
+        schema: Validation schema
+
+    Returns:
+        Validated request data
+    """
+    return request_validator.validate_request(request_data, schema)
+
 def initialize_adapter(sensor_fusion_engine: SensorFusionEngine, mesh_network: MeshNetwork):
     """
     Initialize the Anduril Lattice adapter.

@@ -1,4 +1,18 @@
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Depends, HTTPException
+
+from security.validation.unified_validation import (
+    validate_email,
+    validate_username,
+    validate_name,
+    validate_uuid,
+    validate_url,
+    sanitize_string,
+    sanitize_html,
+    check_sql_injection,
+    input_validator,
+    form_validator,
+    request_validator,
+)
 from typing import List, Dict, Any
 from backend.api.dependencies import get_current_user
 

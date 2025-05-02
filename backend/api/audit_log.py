@@ -1,4 +1,18 @@
 from fastapi import APIRouter, Request, Depends, HTTPException, status
+
+from security.validation.unified_validation import (
+    validate_email,
+    validate_username,
+    validate_name,
+    validate_uuid,
+    validate_url,
+    sanitize_string,
+    sanitize_html,
+    check_sql_injection,
+    input_validator,
+    form_validator,
+    request_validator,
+)
 from pydantic import BaseModel
 from datetime import datetime
 from backend.api.dependencies import verify_jwt_token

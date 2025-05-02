@@ -23,7 +23,7 @@ from sentinel_web.env import (
 
 from fastapi import BackgroundTasks, Depends, HTTPException, Request, Response, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from passlib.context import CryptContext
+from security.auth.unified_auth import hash_password, verify_password
 
 
 logging.getLogger("passlib").setLevel(logging.ERROR)

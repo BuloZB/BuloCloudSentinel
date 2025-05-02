@@ -334,10 +334,18 @@ Bulo.Cloud Sentinel takes security seriously. We have implemented comprehensive 
 - **🛡️ Vulnerability Reporting**: If you discover a security vulnerability, please follow the reporting process outlined in [SECURITY.md](SECURITY.md).
 - **📝 Security Updates**: Security updates are documented in [security_vulnerability_fixes.md](docs/security_vulnerability_fixes.md).
 - **🔒 Recent Security Improvements**:
+  - Replaced python-jose with PyJWT to address critical vulnerabilities (CVE-2024-33664, CVE-2024-33663)
+  - Implemented unified authentication module with Argon2id for secure password hashing
+  - Created comprehensive input validation and sanitization framework
+  - Implemented unified security middleware with security headers, CSRF protection, and rate limiting
+  - Added secure error handling to prevent information leakage
+  - Created comprehensive security testing framework with automated vulnerability scanning
+  - Implemented detailed security incident response plan with clear procedures
+  - Enhanced GitHub workflow for security scanning with multiple tools
+  - Created secure coding guidelines for developers
   - Enhanced JWT token validation with full signature verification and expiration checks
   - Secure session management with strict cookie settings (SameSite=strict, HTTPS-only)
   - Restricted CORS settings to prevent cross-origin attacks
-  - Secure password handling with Argon2id hashing
   - Removed hardcoded credentials and API keys
   - Updated vulnerable dependencies (python-jose, python-multipart, cryptography, pillow)
   - Added Content Security Policy (CSP) headers
@@ -349,8 +357,6 @@ Bulo.Cloud Sentinel takes security seriously. We have implemented comprehensive 
   - Centralized security configuration
   - Implemented automated security testing with OWASP ZAP
   - Added security monitoring and alerting system
-  - Created comprehensive secure coding guidelines
-  - Implemented security incident response plan
   - Enhanced CI/CD pipeline with additional security scanning tools
 
 For more information about security features, see the [Security Module](#-security-module) section.

@@ -11,7 +11,7 @@ import jwt
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jwt.exceptions import PyJWTError
-from passlib.context import CryptContext
+from security.auth.unified_auth import hash_password, verify_password
 from pydantic import BaseModel
 
 from core.config import settings
@@ -40,29 +40,10 @@ class User(BaseModel):
     permissions: List[str] = []
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    """
-    Verify a password against a hash.
-
-    Args:
-        plain_password: Plain text password
-        hashed_password: Hashed password
-
-    Returns:
-        True if password matches hash, False otherwise
-    """
-    return pwd_context.verify(plain_password, hashed_password)
+    return verify_password(plain_password, hashed_password)
 
 def get_password_hash(password: str) -> str:
-    """
-    Hash a password.
-
-    Args:
-        password: Plain text password
-
-    Returns:
-        Hashed password
-    """
-    return pwd_context.hash(password)
+    return hash_password(password)
 
 def create_access_token(
     subject: Union[str, int],

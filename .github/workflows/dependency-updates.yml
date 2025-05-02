@@ -20,9 +20,52 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pip-tools
+          pip install pip-tools safety
+
+      - name: Check for security vulnerabilities
+        id: safety
+        run: |
+          safety check -r requirements.txt --json > safety-report.json || true
+          safety check -r backend/requirements.txt --json > backend-safety-report.json || true
+          safety check -r anti_jamming_service/requirements.txt --json > anti-jamming-safety-report.json || true
+          safety check -r vision_system/requirements.txt --json > vision-safety-report.json || true
+
+          # Combine reports
+          jq -s 'add' safety-report.json backend-safety-report.json anti-jamming-safety-report.json vision-safety-report.json > combined-safety-report.json
+
+          # Check if there are vulnerabilities
+          echo "HAS_VULNERABILITIES=$(jq 'length > 0' combined-safety-report.json)" >> $GITHUB_ENV
+
+      - name: Update dependencies for security
+        if: env.HAS_VULNERABILITIES == 'true'
+        run: |
+          # Run the dependency update script
+          python scripts/update_dependencies.py
+
+          # Check if there are changes
+          if [[ -n $(git status --porcelain) ]]; then
+            # Create a new branch
+            git config --global user.name "GitHub Actions"
+            git config --global user.email "actions@github.com"
+            BRANCH_NAME="security-updates-$(date +'%Y%m%d')"
+            git checkout -b $BRANCH_NAME
+
+            # Commit and push changes
+            git add .
+            git commit -m "Update dependencies to fix security vulnerabilities"
+            git push origin $BRANCH_NAME
+
+            # Create pull request
+            gh pr create --title "Security: Update dependencies to fix vulnerabilities" \
+              --body "This PR updates dependencies to fix security vulnerabilities." \
+              --base main \
+              --head $BRANCH_NAME
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Check for Python dependency updates
+        if: env.HAS_VULNERABILITIES != 'true'
         run: |
           pip-compile --upgrade requirements-secure.txt || true
           pip-compile --upgrade backend/requirements.txt || true

@@ -4,7 +4,7 @@ Bulo.Cloud Sentinel Security Module.
 This module provides comprehensive security features for the Bulo.Cloud Sentinel platform.
 """
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 
 # Authentication and authorization
 from .auth.jwt_handler import (
@@ -66,6 +66,32 @@ from .api.security_headers import (
     add_security_headers,
     get_csp_header,
     get_permissions_policy_header,
+)
+
+from .api.csrf_protection import (
+    CSRFMiddleware,
+    add_csrf_protection,
+    csrf_protect,
+    get_csrf_token,
+    set_csrf_token,
+)
+
+from .api.unified_security import (
+    configure_security,
+)
+
+# Error handling
+from .error_handling.secure_error_handler import (
+    ErrorType,
+    ErrorResponse,
+    create_error_response,
+    configure_error_handlers,
+    configure_custom_exception_handlers,
+    SecurityException,
+    AuthenticationException,
+    AuthorizationException,
+    RateLimitException,
+    ValidationException,
 )
 
 # Input validation

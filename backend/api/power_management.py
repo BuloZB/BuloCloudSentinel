@@ -6,6 +6,20 @@ energy prediction, and power optimization.
 """
 
 from fastapi import APIRouter, HTTPException, Depends, BackgroundTasks
+
+from security.validation.unified_validation import (
+    validate_email,
+    validate_username,
+    validate_name,
+    validate_uuid,
+    validate_url,
+    sanitize_string,
+    sanitize_html,
+    check_sql_injection,
+    input_validator,
+    form_validator,
+    request_validator,
+)
 from typing import List, Dict, Any, Optional
 from datetime import datetime
 
@@ -29,6 +43,20 @@ energy_prediction_service = None
 
 
 # Initialize services
+
+def validate_request_data(request_data: dict, schema: dict) -> dict:
+    """
+    Validate request data against a schema.
+
+    Args:
+        request_data: Request data to validate
+        schema: Validation schema
+
+    Returns:
+        Validated request data
+    """
+    return request_validator.validate_request(request_data, schema)
+
 def initialize_services(
     battery_monitoring_service: BatteryMonitoringService,
     energy_pred_service: EnergyPredictionService

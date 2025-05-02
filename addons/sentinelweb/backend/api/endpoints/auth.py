@@ -5,6 +5,20 @@ This module provides endpoints for user authentication and token management.
 """
 
 from datetime import timedelta
+
+from security.validation.unified_validation import (
+    validate_email,
+    validate_username,
+    validate_name,
+    validate_uuid,
+    validate_url,
+    sanitize_string,
+    sanitize_html,
+    check_sql_injection,
+    input_validator,
+    form_validator,
+    request_validator,
+)
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, status

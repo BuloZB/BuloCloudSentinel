@@ -21,6 +21,8 @@ from .security_scanner import (
     get_scanner
 )
 
+from .security_test_runner import SecurityTestRunner
+
 __all__ = [
     # Security scanner
     "SecurityIssue",
@@ -36,5 +38,8 @@ __all__ = [
     "load_result",
     "add_scanner",
     "remove_scanner",
-    "get_scanner"
+    "get_scanner",
+
+    # Security test runner
+    "SecurityTestRunner"
 ]

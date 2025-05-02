@@ -1,4 +1,18 @@
 import hashlib
+
+from security.validation.unified_validation import (
+    validate_email,
+    validate_username,
+    validate_name,
+    validate_uuid,
+    validate_url,
+    sanitize_string,
+    sanitize_html,
+    check_sql_injection,
+    input_validator,
+    form_validator,
+    request_validator,
+)
 import json
 import logging
 import os
@@ -69,6 +83,20 @@ SPEECH_CACHE_DIR.mkdir(parents=True, exist_ok=True)
 from pydub import AudioSegment
 from pydub.utils import mediainfo
 
+
+
+def validate_request_data(request_data: dict, schema: dict) -> dict:
+    """
+    Validate request data against a schema.
+
+    Args:
+        request_data: Request data to validate
+        schema: Validation schema
+
+    Returns:
+        Validated request data
+    """
+    return request_validator.validate_request(request_data, schema)
 
 def get_audio_format(file_path):
     """Check if the given file needs to be converted to a different format."""

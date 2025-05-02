@@ -5,8 +5,19 @@ This module provides functions for validating and sanitizing user inputs
 to prevent injection attacks and other security issues.
 """
 
-import re
-import html
+from security.validation.unified_validation import (
+    validate_email,
+    validate_username,
+    validate_name,
+    validate_uuid,
+    validate_url,
+    sanitize_string,
+    sanitize_html,
+    check_sql_injection,
+    input_validator,
+    form_validator,
+    request_validator,
+)
 import unicodedata
 from typing import Any, Dict, List, Optional, Union, Pattern
 from fastapi import HTTPException, status

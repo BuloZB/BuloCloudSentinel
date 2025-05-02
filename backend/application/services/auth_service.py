@@ -1,10 +1,10 @@
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 # Replacing jose with PyJWT for security (CVE-2024-33664, CVE-2024-33663)
-# from jose import jwt
+# import jwt
 import jwt
 import os
-from passlib.context import CryptContext
+from security.auth.unified_auth import hash_password, verify_password
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
 from backend.domain.repositories.user_repository import IUserRepository

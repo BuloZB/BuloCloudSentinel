@@ -11,7 +11,7 @@ from typing import Optional, List
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 # Replacing jose with PyJWT for security (CVE-2024-33664, CVE-2024-33663)
-# from jose import JWTError, jwt
+# from jwt.exceptions import PyJWTError as JWTError, jwt
 import jwt
 from jwt.exceptions import PyJWTError as JWTError
 from pydantic import BaseModel
@@ -52,7 +52,8 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -
     to_encode = data.copy()
     expire = datetime.now(timezone.utc) + (expires_delta or timedelta(minutes=settings.JWT_EXPIRATION_MINUTES))
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, settings.JWT_SECRET, algorithm=settings.JWT_ALGORITHM)
+    encoded_jwt = from security.auth.unified_auth import create_access_token as _create_access_token
+    return _create_access_token(subject=to_encode)
     return encoded_jwt
 
 async def get_current_user(token: str = Depends(oauth2_scheme)) -> User:

@@ -1,0 +1,234 @@
+name: Security Testing
+
+on:
+  schedule:
+    - cron: '0 0 * * 0'  # Run weekly on Sunday at midnight
+  workflow_dispatch:  # Allow manual triggering
+  push:
+    branches:
+      - main
+    paths:
+      - '**.py'
+      - '**.js'
+      - '**.ts'
+      - '**.jsx'
+      - '**.tsx'
+      - 'requirements.txt'
+      - 'package.json'
+
+jobs:
+  dependency-scanning:
+    name: Dependency Scanning
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install safety
+
+      - name: Run safety check
+        run: |
+          safety check -r requirements.txt --json > safety-report.json || true
+          safety check -r backend/requirements.txt --json > backend-safety-report.json || true
+          safety check -r anti_jamming_service/requirements.txt --json > anti-jamming-safety-report.json || true
+          safety check -r vision_system/requirements.txt --json > vision-safety-report.json || true
+
+      - name: Upload safety reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: safety-reports
+          path: |
+            safety-report.json
+            backend-safety-report.json
+            anti-jamming-safety-report.json
+            vision-safety-report.json
+
+  code-scanning:
+    name: Code Scanning
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install bandit semgrep
+
+      - name: Run bandit scan
+        run: |
+          bandit -r . -f json -o bandit-report.json -x "tests,venv,env,.venv,.env,node_modules" || true
+
+      - name: Run semgrep scan
+        run: |
+          semgrep --config=p/security-audit --json -o semgrep-report.json . || true
+
+      - name: Upload code scanning reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: code-scanning-reports
+          path: |
+            bandit-report.json
+            semgrep-report.json
+
+  secret-scanning:
+    name: Secret Scanning
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Trufflehog
+        uses: trufflesecurity/trufflehog-actions-scan@master
+        with:
+          path: .
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+          extra_args: --json --only-verified
+
+  security-report:
+    name: Generate Security Report
+    runs-on: ubuntu-latest
+    needs: [dependency-scanning, code-scanning, secret-scanning]
+    if: always()
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Download safety reports
+        uses: actions/download-artifact@v3
+        with:
+          name: safety-reports
+          path: reports/safety
+
+      - name: Download code scanning reports
+        uses: actions/download-artifact@v3
+        with:
+          name: code-scanning-reports
+          path: reports/code-scanning
+
+      - name: Generate security report
+        run: |
+          mkdir -p reports
+          
+          echo "# Security Scan Report" > security-report.md
+          echo "" >> security-report.md
+          echo "**Date:** $(date +'%Y-%m-%d %H:%M:%S')" >> security-report.md
+          echo "" >> security-report.md
+          
+          echo "## Dependency Scanning" >> security-report.md
+          echo "" >> security-report.md
+          
+          # Process safety reports
+          TOTAL_VULNERABILITIES=0
+          for report in reports/safety/*.json; do
+            if [ -f "$report" ]; then
+              VULNS=$(jq 'length' "$report")
+              TOTAL_VULNERABILITIES=$((TOTAL_VULNERABILITIES + VULNS))
+              
+              echo "### $(basename "$report" .json)" >> security-report.md
+              echo "" >> security-report.md
+              echo "Found $VULNS vulnerabilities." >> security-report.md
+              echo "" >> security-report.md
+              
+              if [ "$VULNS" -gt 0 ]; then
+                echo "| Package | Vulnerability | Severity | Description |" >> security-report.md
+                echo "|---------|---------------|----------|-------------|" >> security-report.md
+                
+                jq -r '.[] | "| \(.package_name) | \(.vulnerability_id) | \(.severity) | \(.advisory) |"' "$report" >> security-report.md
+                echo "" >> security-report.md
+              fi
+            fi
+          done
+          
+          echo "## Code Scanning" >> security-report.md
+          echo "" >> security-report.md
+          
+          # Process bandit report
+          if [ -f "reports/code-scanning/bandit-report.json" ]; then
+            ISSUES=$(jq '.results | length' "reports/code-scanning/bandit-report.json")
+            
+            echo "### Bandit Scan" >> security-report.md
+            echo "" >> security-report.md
+            echo "Found $ISSUES issues." >> security-report.md
+            echo "" >> security-report.md
+            
+            if [ "$ISSUES" -gt 0 ]; then
+              echo "| Severity | Issue | File | Line |" >> security-report.md
+              echo "|----------|-------|------|------|" >> security-report.md
+              
+              jq -r '.results[] | "| \(.issue_severity) | \(.issue_text) | \(.filename) | \(.line_number) |"' "reports/code-scanning/bandit-report.json" >> security-report.md
+              echo "" >> security-report.md
+            fi
+          fi
+          
+          # Process semgrep report
+          if [ -f "reports/code-scanning/semgrep-report.json" ]; then
+            ISSUES=$(jq '.results | length' "reports/code-scanning/semgrep-report.json")
+            
+            echo "### Semgrep Scan" >> security-report.md
+            echo "" >> security-report.md
+            echo "Found $ISSUES issues." >> security-report.md
+            echo "" >> security-report.md
+            
+            if [ "$ISSUES" -gt 0 ]; then
+              echo "| Severity | Issue | File | Line |" >> security-report.md
+              echo "|----------|-------|------|------|" >> security-report.md
+              
+              jq -r '.results[] | "| \(.extra.severity) | \(.extra.message) | \(.path) | \(.start.line) |"' "reports/code-scanning/semgrep-report.json" >> security-report.md
+              echo "" >> security-report.md
+            fi
+          fi
+          
+          echo "## Recommendations" >> security-report.md
+          echo "" >> security-report.md
+          echo "1. **Fix identified vulnerabilities** - Address all vulnerabilities found in the dependency check." >> security-report.md
+          echo "2. **Fix identified code issues** - Address all issues found in the code scanning." >> security-report.md
+          echo "3. **Implement regular security testing** - Run security tests regularly to identify and fix issues." >> security-report.md
+          echo "4. **Keep dependencies up to date** - Regularly update dependencies to address security vulnerabilities." >> security-report.md
+
+      - name: Upload security report
+        uses: actions/upload-artifact@v3
+        with:
+          name: security-report
+          path: security-report.md
+
+      - name: Create issue if vulnerabilities found
+        if: github.event_name == 'schedule'
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            
+            try {
+              const securityReport = fs.readFileSync('security-report.md', 'utf8');
+              
+              // Create issue
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: `Security Scan: Vulnerabilities found`,
+                body: securityReport
+              });
+            } catch (error) {
+              console.error('Error creating issue:', error);
+            }

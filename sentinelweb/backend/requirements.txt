@@ -1,11 +1,11 @@
 fastapi==0.115.12  # Updated to latest version
 uvicorn[standard]==0.34.0
 pydantic==2.10.6
-python-multipart==0.0.20  # Updated to latest version to fix CVE-2024-53981
+python-multipart==0.0.20  # Updated to latest version to fix CVE-2024-539810  # Updated to latest version to fix CVE-2024-53981
 
 python-socketio==5.13.0
 # Removing python-jose due to vulnerabilities CVE-2024-33664 and CVE-2024-33663
-# python-jose==3.4.0
+# # python-jose==3.4.0  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663
 # Using PyJWT instead (see line 91)
 passlib[bcrypt]==1.7.4
 
@@ -43,7 +43,7 @@ google-generativeai==0.8.4
 tiktoken
 
 langchain==0.3.19
-langchain-community==0.3.18
+langchain-community==0.4.0  # Updated to fix CVE-2024-8309, CVE-2024-2965, CVE-2024-469468
 
 fake-useragent==2.1.0
 chromadb==0.6.3

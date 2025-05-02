@@ -1,4 +1,18 @@
 import logging
+
+from security.validation.unified_validation import (
+    validate_email,
+    validate_username,
+    validate_name,
+    validate_uuid,
+    validate_url,
+    sanitize_string,
+    sanitize_html,
+    check_sql_injection,
+    input_validator,
+    form_validator,
+    request_validator,
+)
 import os
 import uuid
 from fnmatch import fnmatch
@@ -45,6 +59,20 @@ router = APIRouter()
 # Check if the current user has access to a file through any knowledge bases the user may be in.
 ############################
 
+
+
+def validate_request_data(request_data: dict, schema: dict) -> dict:
+    """
+    Validate request data against a schema.
+
+    Args:
+        request_data: Request data to validate
+        schema: Validation schema
+
+    Returns:
+        Validated request data
+    """
+    return request_validator.validate_request(request_data, schema)
 
 def has_access_to_file(
     file_id: Optional[str], access_type: str, user=Depends(get_verified_user)

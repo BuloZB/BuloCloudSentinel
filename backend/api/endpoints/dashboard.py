@@ -1,3 +1,18 @@
+from sqlalchemy import select, update
+
+from security.validation.unified_validation import (
+    validate_email,
+    validate_username,
+    validate_name,
+    validate_uuid,
+    validate_url,
+    sanitize_string,
+    sanitize_html,
+    check_sql_injection,
+    input_validator,
+    form_validator,
+    request_validator,
+)
 """
 SentinelWeb Backend - Dashboard Endpoints
 
@@ -77,7 +92,7 @@ async def get_dashboard_layouts(
     """
     # Get user ID from database
     user_result = await db.execute(
-        f"SELECT id FROM users WHERE username = '{current_user.username}'"
+        select(User.id).where(User.username == current_user.username)
     )
     user_id = user_result.scalar_one_or_none()
     
@@ -89,7 +104,7 @@ async def get_dashboard_layouts(
     
     # Get dashboard layouts
     result = await db.execute(
-        f"SELECT * FROM dashboard_layouts WHERE user_id = '{user_id}'"
+        select(DashboardLayout).where(DashboardLayout.user_id == user_id)
     )
     layouts = result.fetchall()
     
@@ -114,7 +129,7 @@ async def create_dashboard_layout(
     """
     # Get user ID from database
     user_result = await db.execute(
-        f"SELECT id FROM users WHERE username = '{current_user.username}'"
+        select(User.id).where(User.username == current_user.username)
     )
     user_id = user_result.scalar_one_or_none()
     
@@ -127,7 +142,7 @@ async def create_dashboard_layout(
     # If this layout is default, unset default for other layouts
     if layout.is_default:
         await db.execute(
-            f"UPDATE dashboard_layouts SET is_default = FALSE WHERE user_id = '{user_id}'"
+            update(DashboardLayout).where(DashboardLayout.user_id == user_id).values(is_default=False)
         )
     
     # Create dashboard layout
@@ -163,7 +178,7 @@ async def get_dashboard_layout(
     """
     # Get user ID from database
     user_result = await db.execute(
-        f"SELECT id FROM users WHERE username = '{current_user.username}'"
+        select(User.id).where(User.username == current_user.username)
     )
     user_id = user_result.scalar_one_or_none()
     
@@ -175,7 +190,7 @@ async def get_dashboard_layout(
     
     # Get dashboard layout
     result = await db.execute(
-        f"SELECT * FROM dashboard_layouts WHERE id = '{layout_id}' AND user_id = '{user_id}'"
+        select(DashboardLayout).where(DashboardLayout.id == layout_id, DashboardLayout.user_id == user_id)
     )
     layout = result.fetchone()
     
@@ -208,7 +223,7 @@ async def update_dashboard_layout(
     """
     # Get user ID from database
     user_result = await db.execute(
-        f"SELECT id FROM users WHERE username = '{current_user.username}'"
+        select(User.id).where(User.username == current_user.username)
     )
     user_id = user_result.scalar_one_or_none()
     
@@ -220,7 +235,7 @@ async def update_dashboard_layout(
     
     # Get dashboard layout
     result = await db.execute(
-        f"SELECT * FROM dashboard_layouts WHERE id = '{layout_id}' AND user_id = '{user_id}'"
+        select(DashboardLayout).where(DashboardLayout.id == layout_id, DashboardLayout.user_id == user_id)
     )
     db_layout = result.fetchone()
     
@@ -233,7 +248,7 @@ async def update_dashboard_layout(
     # If this layout is default, unset default for other layouts
     if layout.is_default:
         await db.execute(
-            f"UPDATE dashboard_layouts SET is_default = FALSE WHERE user_id = '{user_id}'"
+            update(DashboardLayout).where(DashboardLayout.user_id == user_id).values(is_default=False)
         )
     
     # Update dashboard layout
@@ -265,7 +280,7 @@ async def delete_dashboard_layout(
     """
     # Get user ID from database
     user_result = await db.execute(
-        f"SELECT id FROM users WHERE username = '{current_user.username}'"
+        select(User.id).where(User.username == current_user.username)
     )
     user_id = user_result.scalar_one_or_none()
     
@@ -277,7 +292,7 @@ async def delete_dashboard_layout(
     
     # Get dashboard layout
     result = await db.execute(
-        f"SELECT * FROM dashboard_layouts WHERE id = '{layout_id}' AND user_id = '{user_id}'"
+        select(DashboardLayout).where(DashboardLayout.id == layout_id, DashboardLayout.user_id == user_id)
     )
     db_layout = result.fetchone()
     

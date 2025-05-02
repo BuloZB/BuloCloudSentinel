@@ -1,4 +1,18 @@
 import logging
+
+from security.validation.unified_validation import (
+    validate_email,
+    validate_username,
+    validate_name,
+    validate_uuid,
+    validate_url,
+    sanitize_string,
+    sanitize_html,
+    check_sql_injection,
+    input_validator,
+    form_validator,
+    request_validator,
+)
 import os
 import shutil
 import uuid
@@ -66,6 +80,20 @@ async def get_folders(user=Depends(get_verified_user)):
 
 
 @router.post("/")
+
+def validate_request_data(request_data: dict, schema: dict) -> dict:
+    """
+    Validate request data against a schema.
+
+    Args:
+        request_data: Request data to validate
+        schema: Validation schema
+
+    Returns:
+        Validated request data
+    """
+    return request_validator.validate_request(request_data, schema)
+
 def create_folder(form_data: FolderForm, user=Depends(get_verified_user)):
     folder = Folders.get_folder_by_parent_id_and_user_id_and_name(
         None, user.id, form_data.name

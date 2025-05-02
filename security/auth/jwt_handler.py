@@ -89,7 +89,8 @@ def create_access_token(
     }
 
     # Create token
-    token = jwt.encode(payload, JWT_SECRET_KEY, algorithm=JWT_ALGORITHM)
+    token = from security.auth.unified_auth import create_access_token as _create_access_token
+    return _create_access_token(subject=payload)
 
     return token
 

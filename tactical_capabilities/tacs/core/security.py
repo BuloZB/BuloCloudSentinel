@@ -40,7 +40,8 @@ async def create_access_token(data: Dict[str, Any], expires_delta: Optional[time
 
     to_encode.update({"exp": expire})
 
-    encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+    encoded_jwt = from security.auth.unified_auth import create_access_token as _create_access_token
+    return _create_access_token(subject=to_encode)
 
     return encoded_jwt
 

@@ -3,6 +3,20 @@
 # least connections, or least response time for better resource utilization and performance optimization.
 
 import asyncio
+
+from security.validation.unified_validation import (
+    validate_email,
+    validate_username,
+    validate_name,
+    validate_uuid,
+    validate_url,
+    sanitize_string,
+    sanitize_html,
+    check_sql_injection,
+    input_validator,
+    form_validator,
+    request_validator,
+)
 import json
 import logging
 import os
@@ -72,6 +86,20 @@ log.setLevel(SRC_LOG_LEVELS["OLLAMA"])
 
 # Create a round-robin cycle for load balancing
 _url_index_cycles = {}
+
+
+def validate_request_data(request_data: dict, schema: dict) -> dict:
+    """
+    Validate request data against a schema.
+
+    Args:
+        request_data: Request data to validate
+        schema: Validation schema
+
+    Returns:
+        Validated request data
+    """
+    return request_validator.validate_request(request_data, schema)
 
 def get_next_url_index(model_id, available_indices):
     """

@@ -75,6 +75,94 @@ The Security Module is implemented using industry-standard security libraries an
 - **API Security**: Input validation, output encoding, and proper error handling
 - **Logging**: Structured logging with sensitive data masking
 
+## 🔄 Recent Security Updates
+
+The following security updates have been implemented:
+
+1. **Replaced python-jose with PyJWT**: Removed python-jose due to vulnerabilities (CVE-2024-33664 and CVE-2024-33663) and replaced it with PyJWT.
+2. **Standardized authentication**: Implemented a unified authentication module using Argon2id for password hashing.
+3. **Fixed dependency vulnerabilities**: Updated vulnerable dependencies to secure versions.
+4. **Implemented comprehensive input validation**: Created a unified input validation module.
+
+## 🛠️ Using the Unified Security Modules
+
+### Authentication
+
+Use the unified authentication module for all authentication needs:
+
+```python
+from security.auth.unified_auth import (
+    hash_password,
+    verify_password,
+    create_access_token,
+    create_refresh_token,
+    decode_token,
+    get_current_token_data,
+    get_current_user_id,
+    has_role,
+    has_permission,
+    require_role,
+    require_permission,
+)
+
+# Hash a password
+hashed_password = hash_password("secure_password")
+
+# Verify a password
+is_valid = verify_password(hashed_password, "secure_password")
+
+# Create a JWT token
+token = create_access_token(
+    subject="user_id",
+    roles=["admin"],
+    permissions=["read", "write"]
+)
+
+# Protect an endpoint with role-based access control
+@app.get("/admin")
+async def admin_endpoint(token_data = Depends(require_role("admin"))):
+    return {"message": "Admin access granted"}
+```
+
+### Input Validation
+
+Use the unified validation module for all input validation needs:
+
+```python
+from security.validation.unified_validation import (
+    validate_email,
+    validate_username,
+    validate_name,
+    validate_uuid,
+    validate_url,
+    sanitize_string,
+    sanitize_html,
+    check_sql_injection,
+    input_validator,
+    form_validator,
+    request_validator,
+)
+
+# Validate an email
+is_valid = validate_email("user@example.com")
+
+# Sanitize HTML
+safe_html = sanitize_html("<script>alert('XSS')</script>")
+
+# Validate a form
+validation_schema = {
+    "username": {"type": "string", "min_length": 3, "max_length": 32},
+    "email": {"type": "email", "required": True},
+    "age": {"type": "integer", "min_value": 18, "max_value": 120},
+}
+
+try:
+    validated_data = form_validator.validate_form(form_data, validation_schema)
+except HTTPException as e:
+    # Handle validation error
+    pass
+```
+
 ## 📋 Security Best Practices
 
 The Security Module enforces the following security best practices:
@@ -86,3 +174,19 @@ The Security Module enforces the following security best practices:
 5. **Keep It Simple**: Simple security designs are easier to verify
 6. **Regular Updates**: Keeping dependencies up-to-date
 7. **Security Testing**: Regular security testing and code reviews
+8. **Always use the unified modules**: Use the unified authentication and validation modules instead of implementing your own
+9. **Validate all inputs**: Validate all user inputs using the unified validation module
+10. **Implement proper error handling**: Don't expose sensitive information in error messages
+
+## 🚀 Running Security Updates
+
+To run all security updates, use the provided script:
+
+```bash
+python scripts/run_security_updates.py
+```
+
+This will:
+1. Update all dependencies to secure versions
+2. Update all authentication implementations to use the unified module
+3. Update all input validation implementations to use the unified module
