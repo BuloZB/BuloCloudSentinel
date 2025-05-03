@@ -7,6 +7,8 @@ of the Bulo.Cloud Sentinel platform, using secure algorithms and practices.
 
 import os
 import logging
+import secrets
+import sys
 from datetime import datetime, timedelta, timezone
 from typing import Dict, List, Optional, Union, Any
 
@@ -31,7 +33,18 @@ ph = PasswordHasher(
 )
 
 # JWT settings
-JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "")
+# Generate a secure random key if not provided in environment variables
+JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
+if not JWT_SECRET_KEY:
+    # In production, this should be set in environment variables
+    # For development, generate a secure random key
+    if os.getenv("ENVIRONMENT", "development").lower() == "production":
+        logger.critical("JWT_SECRET_KEY environment variable not set in production environment!")
+        sys.exit(1)
+    else:
+        logger.warning("JWT_SECRET_KEY environment variable not set. Generating a random key for development.")
+        JWT_SECRET_KEY = secrets.token_hex(32)
+
 JWT_ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30"))
 REFRESH_TOKEN_EXPIRE_DAYS = int(os.getenv("REFRESH_TOKEN_EXPIRE_DAYS", "7"))

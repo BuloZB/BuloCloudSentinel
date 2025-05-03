@@ -16,16 +16,16 @@ from ..logging.secure_logging import get_secure_logger
 
 def configure_cors(
     app: FastAPI,
-    allow_origins: Union[List[str], str] = ["*"],
+    allow_origins: Union[List[str], str] = ["http://localhost:3000", "https://bulocloud-sentinel.com"],
     allow_methods: List[str] = ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
-    allow_headers: List[str] = ["*"],
+    allow_headers: List[str] = ["Accept", "Authorization", "Content-Type", "X-Requested-With", "X-CSRF-Token"],
     allow_credentials: bool = False,
-    expose_headers: List[str] = [],
+    expose_headers: List[str] = ["Content-Length", "Content-Type", "X-Request-ID"],
     max_age: int = 600
 ):
     """
     Configure CORS for a FastAPI application.
-    
+
     Args:
         app: FastAPI application
         allow_origins: List of allowed origins or "*" for all
@@ -36,14 +36,24 @@ def configure_cors(
         max_age: Maximum age of preflight requests
     """
     logger = get_secure_logger("cors")
-    
+
     # Convert string to list if needed
     if isinstance(allow_origins, str):
         if allow_origins == "*":
+            logger.warning("Wildcard origin '*' is insecure. Consider specifying explicit origins.")
             allow_origins = ["*"]
         else:
             allow_origins = [origin.strip() for origin in allow_origins.split(",")]
-    
+
+    # Check for wildcard headers
+    if "*" in allow_headers:
+        logger.warning("Wildcard headers '*' is insecure. Consider specifying explicit headers.")
+
+    # Check for credentials with wildcard origin
+    if allow_credentials and "*" in allow_origins:
+        logger.error("Insecure CORS configuration: credentials with wildcard origin is not allowed")
+        raise ValueError("Cannot use credentials with wildcard origin")
+
     # Log CORS configuration
     logger.info(
         "Configuring CORS",
@@ -56,7 +66,7 @@ def configure_cors(
             "max_age": max_age
         }
     )
-    
+
     # Add CORS middleware
     app.add_middleware(
         CORSMiddleware,
@@ -79,12 +89,12 @@ def configure_secure_cors(
 ):
     """
     Configure secure CORS for a FastAPI application.
-    
+
     This function sets up CORS with secure defaults:
     - No wildcard origins
     - No credentials
     - Limited methods and headers
-    
+
     Args:
         app: FastAPI application
         allow_origins: List of allowed origins (no wildcards)
@@ -94,7 +104,7 @@ def configure_secure_cors(
         max_age: Maximum age of preflight requests
     """
     logger = get_secure_logger("cors")
-    
+
     # Validate origins
     if not allow_origins or "*" in allow_origins:
         logger.warning(
@@ -102,11 +112,11 @@ def configure_secure_cors(
             {"allow_origins": allow_origins}
         )
         raise ValueError("Secure CORS requires specific origins (no wildcards)")
-    
+
     # Set default methods if not provided
     if allow_methods is None:
         allow_methods = ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
-    
+
     # Set default headers if not provided
     if allow_headers is None:
         allow_headers = [
@@ -115,7 +125,7 @@ def configure_secure_cors(
             "Content-Type",
             "X-Requested-With"
         ]
-    
+
     # Set default exposed headers if not provided
     if expose_headers is None:
         expose_headers = [
@@ -123,7 +133,7 @@ def configure_secure_cors(
             "Content-Type",
             "X-Request-ID"
         ]
-    
+
     # Log CORS configuration
     logger.info(
         "Configuring secure CORS",
@@ -135,7 +145,7 @@ def configure_secure_cors(
             "max_age": max_age
         }
     )
-    
+
     # Add CORS middleware
     app.add_middleware(
         CORSMiddleware,

@@ -606,6 +606,90 @@ class SecurityTestRunner:
                 "error": str(e)
             }
 
+    def run_unit_tests(self) -> Dict[str, Any]:
+        """
+        Run unit tests for security components.
+
+        Returns:
+            Dictionary with test results
+        """
+        logger.info("Running security unit tests")
+
+        report_file = self.reports_dir / f"security_unit_tests_{self.timestamp}.json"
+
+        try:
+            # Check if pytest is installed
+            try:
+                subprocess.run(
+                    ["pytest", "--version"],
+                    check=True,
+                    capture_output=True,
+                    text=True
+                )
+            except (subprocess.CalledProcessError, FileNotFoundError):
+                logger.warning("Pytest is not installed. Installing...")
+                subprocess.run(
+                    [sys.executable, "-m", "pip", "install", "pytest"],
+                    check=True,
+                    capture_output=True,
+                    text=True
+                )
+
+            # Run pytest for security tests
+            result = subprocess.run(
+                [
+                    "pytest",
+                    str(ROOT_DIR / "security" / "testing" / "test_*.py"),
+                    "-v",
+                    "--junitxml", str(self.reports_dir / f"security_unit_tests_{self.timestamp}.xml")
+                ],
+                check=False,
+                capture_output=True,
+                text=True
+            )
+
+            # Parse the output
+            test_output = result.stdout
+
+            # Count passed and failed tests
+            passed_count = test_output.count("PASSED")
+            failed_count = test_output.count("FAILED")
+            error_count = test_output.count("ERROR")
+            skipped_count = test_output.count("SKIPPED")
+
+            # Save the report
+            with open(report_file, "w") as f:
+                json.dump({
+                    "output": test_output,
+                    "passed": passed_count,
+                    "failed": failed_count,
+                    "errors": error_count,
+                    "skipped": skipped_count,
+                    "return_code": result.returncode
+                }, f, indent=2)
+
+            # Create test results
+            test_results = {
+                "status": "completed",
+                "passed": passed_count,
+                "failed": failed_count,
+                "errors": error_count,
+                "skipped": skipped_count,
+                "total": passed_count + failed_count + error_count + skipped_count,
+                "report_file": str(report_file)
+            }
+
+            logger.info(f"Security unit tests completed. Passed: {passed_count}, Failed: {failed_count}, Errors: {error_count}, Skipped: {skipped_count}")
+
+            return test_results
+        except Exception as e:
+            logger.error(f"Error running security unit tests: {str(e)}")
+
+            return {
+                "status": "error",
+                "error": str(e)
+            }
+
     def run_all_tests(self) -> Dict[str, Any]:
         """
         Run all security tests.
@@ -623,6 +707,9 @@ class SecurityTestRunner:
 
         # Run API security scan
         self.results["tests"]["api_security_scan"] = self.run_api_security_scan()
+
+        # Run unit tests
+        self.results["tests"]["unit_tests"] = self.run_unit_tests()
 
         # Save results
         self.save_results()
@@ -694,6 +781,15 @@ class SecurityTestRunner:
                             for severity, count in test_results["severity_counts"].items():
                                 f.write(f"- {severity.title()}: {count}\n")
                             f.write("\n")
+
+                    elif "passed" in test_results:
+                        # Unit test results
+                        f.write(f"**Tests Summary:**\n\n")
+                        f.write(f"- **Passed:** {test_results['passed']}\n")
+                        f.write(f"- **Failed:** {test_results['failed']}\n")
+                        f.write(f"- **Errors:** {test_results['errors']}\n")
+                        f.write(f"- **Skipped:** {test_results['skipped']}\n")
+                        f.write(f"- **Total:** {test_results['total']}\n\n")
 
                     if "report_file" in test_results:
                         f.write(f"**Detailed Report:** {test_results['report_file']}\n\n")

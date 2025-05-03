@@ -4,7 +4,7 @@ fastapi==0.115.12  # Updated to latest version
 uvicorn[standard]==0.34.0
 pydantic==2.11.4  # Updated to latest version
 email-validator==2.1.1
-python-multipart==0.0.20  # Updated to latest version to fix CVE-2024-539810  # Updated to latest version to fix CVE-2024-539810  # Updated to latest version to fix CVE-2024-53981
+python-multipart==0.0.20  # Updated to latest version to fix CVE-2024-53981
 asgiref==3.8.1
 
 # Database
@@ -36,6 +36,7 @@ cryptography==46.0.0  # Updated to latest version to fix CVE-2024-26130, CVE-202
 pyopenssl==24.0.0
 certifi==2024.10.5  # Updated to latest version
 python-magic==0.4.27
+argon2-cffi==23.1.0  # Added for secure password hashing
 
 # Utils
 python-dotenv==1.0.1  # Latest version

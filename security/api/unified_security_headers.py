@@ -25,36 +25,41 @@ DEFAULT_SECURITY_HEADERS = {
     "X-Frame-Options": "DENY",
     "X-XSS-Protection": "1; mode=block",
     "Referrer-Policy": "strict-origin-when-cross-origin",
-    "Permissions-Policy": "camera=(), microphone=(), geolocation=(), interest-cohort=()",
+    "Permissions-Policy": "camera=(), microphone=(), geolocation=(), interest-cohort=(), payment=(), usb=(), accelerometer=(), gyroscope=(), magnetometer=()",
     "Cache-Control": "no-store, max-age=0",
     "Pragma": "no-cache",
-    "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+    "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+    "Cross-Origin-Opener-Policy": "same-origin",
+    "Cross-Origin-Embedder-Policy": "require-corp",
+    "Cross-Origin-Resource-Policy": "same-origin"
 }
 
 # Default Content Security Policy
 DEFAULT_CSP = (
     "default-src 'self'; "
-    "script-src 'self'; "
-    "style-src 'self'; "
-    "img-src 'self' data:; "
-    "font-src 'self'; "
-    "connect-src 'self'; "
+    "script-src 'self' 'unsafe-inline'; "  # Allow inline scripts for compatibility
+    "style-src 'self' 'unsafe-inline'; "   # Allow inline styles for compatibility
+    "img-src 'self' data: https:; "        # Allow data: URLs for images and https images
+    "font-src 'self' data:; "              # Allow data: URLs for fonts
+    "connect-src 'self' https:; "          # Allow HTTPS connections
     "media-src 'self'; "
-    "object-src 'none'; "
+    "object-src 'none'; "                  # Block <object>, <embed>, and <applet>
     "child-src 'self'; "
     "frame-src 'self'; "
-    "worker-src 'self'; "
-    "frame-ancestors 'none'; "
-    "form-action 'self'; "
-    "base-uri 'self'; "
-    "manifest-src 'self'"
+    "worker-src 'self' blob:; "            # Allow blob: for web workers
+    "frame-ancestors 'none'; "             # Prevent framing (similar to X-Frame-Options)
+    "form-action 'self'; "                 # Restrict form submissions
+    "base-uri 'self'; "                    # Restrict <base> URIs
+    "manifest-src 'self'; "
+    "upgrade-insecure-requests; "          # Upgrade HTTP to HTTPS
+    "block-all-mixed-content"              # Block mixed content
 )
 
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
     """
     Middleware for adding security headers to responses.
     """
-    
+
     def __init__(
         self,
         app: ASGIApp,
@@ -65,7 +70,7 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
     ):
         """
         Initialize the security headers middleware.
-        
+
         Args:
             app: ASGI application
             headers: Security headers to add
@@ -78,7 +83,7 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         self.content_security_policy = content_security_policy or DEFAULT_CSP
         self.include_csp = include_csp
         self.exclude_paths = exclude_paths or []
-        
+
         # Log configuration
         logger.info(
             "Configuring security headers middleware",
@@ -88,33 +93,33 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
                 "exclude_paths": self.exclude_paths
             }
         )
-    
+
     async def dispatch(self, request: Request, call_next) -> Response:
         """
         Dispatch the request and add security headers to the response.
-        
+
         Args:
             request: Request object
             call_next: Next middleware or route handler
-            
+
         Returns:
             Response with security headers
         """
         # Process the request
         response = await call_next(request)
-        
+
         # Check if the path should be excluded
         if any(request.url.path.startswith(path) for path in self.exclude_paths):
             return response
-        
+
         # Add security headers
         for header_name, header_value in self.headers.items():
             response.headers[header_name] = header_value
-        
+
         # Add Content Security Policy header if enabled
         if self.include_csp:
             response.headers["Content-Security-Policy"] = self.content_security_policy
-        
+
         return response
 
 def get_csp_header(
@@ -138,7 +143,7 @@ def get_csp_header(
 ) -> str:
     """
     Generate a Content Security Policy header value.
-    
+
     Args:
         default_src: Default source directives
         script_src: Script source directives
@@ -157,7 +162,7 @@ def get_csp_header(
         manifest_src: Manifest source directives
         report_uri: Report URI directive
         report_to: Report-To directive
-        
+
     Returns:
         Content Security Policy header value
     """
@@ -166,67 +171,67 @@ def get_csp_header(
         if not values:
             return ""
         return f"{name} {' '.join(values)}; "
-    
+
     # Build the CSP header
     csp = ""
-    
+
     if default_src:
         csp += format_directive("default-src", default_src)
     else:
         csp += "default-src 'self'; "
-    
+
     if script_src:
         csp += format_directive("script-src", script_src)
-    
+
     if style_src:
         csp += format_directive("style-src", style_src)
-    
+
     if img_src:
         csp += format_directive("img-src", img_src)
-    
+
     if font_src:
         csp += format_directive("font-src", font_src)
-    
+
     if connect_src:
         csp += format_directive("connect-src", connect_src)
-    
+
     if media_src:
         csp += format_directive("media-src", media_src)
-    
+
     if object_src:
         csp += format_directive("object-src", object_src)
     else:
         csp += "object-src 'none'; "
-    
+
     if child_src:
         csp += format_directive("child-src", child_src)
-    
+
     if frame_src:
         csp += format_directive("frame-src", frame_src)
-    
+
     if worker_src:
         csp += format_directive("worker-src", worker_src)
-    
+
     if frame_ancestors:
         csp += format_directive("frame-ancestors", frame_ancestors)
     else:
         csp += "frame-ancestors 'none'; "
-    
+
     if form_action:
         csp += format_directive("form-action", form_action)
-    
+
     if base_uri:
         csp += format_directive("base-uri", base_uri)
-    
+
     if manifest_src:
         csp += format_directive("manifest-src", manifest_src)
-    
+
     if report_uri:
         csp += f"report-uri {report_uri}; "
-    
+
     if report_to:
         csp += f"report-to {report_to}; "
-    
+
     return csp.strip()
 
 def get_permissions_policy_header(
@@ -242,7 +247,7 @@ def get_permissions_policy_header(
 ) -> str:
     """
     Generate a Permissions-Policy header value.
-    
+
     Args:
         camera: Whether to allow camera access
         microphone: Whether to allow microphone access
@@ -253,14 +258,14 @@ def get_permissions_policy_header(
         magnetometer: Whether to allow magnetometer access
         payment: Whether to allow payment API access
         usb: Whether to allow USB API access
-        
+
     Returns:
         Permissions-Policy header value
     """
     # Helper function to format directives
     def format_directive(name: str, allowed: bool) -> str:
         return f"{name}={'' if allowed else '()'}"
-    
+
     # Build the Permissions-Policy header
     directives = [
         format_directive("camera", camera),
@@ -273,7 +278,7 @@ def get_permissions_policy_header(
         format_directive("payment", payment),
         format_directive("usb", usb)
     ]
-    
+
     return ", ".join(directives)
 
 def add_security_headers(
@@ -285,7 +290,7 @@ def add_security_headers(
 ) -> None:
     """
     Add security headers middleware to a FastAPI application.
-    
+
     Args:
         app: FastAPI application
         headers: Security headers to add
@@ -301,5 +306,5 @@ def add_security_headers(
         include_csp=include_csp,
         exclude_paths=exclude_paths
     )
-    
+
     logger.info("Added security headers middleware to FastAPI application")

@@ -21,6 +21,7 @@ from security.api.unified_security_headers import (
 )
 from security.api.csrf_protection import CSRFMiddleware
 from security.api.rate_limiting import RateLimitMiddleware, RateLimiter
+from security.api.request_id_middleware import RequestIDMiddleware
 from security.error_handling.secure_error_handler import (
     configure_error_handlers,
     configure_custom_exception_handlers
@@ -35,7 +36,7 @@ def configure_security(
     security_headers: Optional[Dict[str, str]] = None,
     content_security_policy: Optional[str] = None,
     include_csp: bool = True,
-    
+
     # CSRF protection settings
     enable_csrf: bool = True,
     csrf_secret_key: Optional[str] = None,
@@ -45,32 +46,41 @@ def configure_security(
     csrf_cookie_httponly: bool = True,
     csrf_cookie_samesite: str = "Lax",
     csrf_safe_methods: Optional[List[str]] = None,
-    
+    csrf_token_rotation_age: int = 3600,  # 1 hour
+    csrf_double_submit: bool = True,
+    csrf_enforce_samesite: bool = True,
+
     # Rate limiting settings
     enable_rate_limiting: bool = True,
     rate_limit: int = 100,
     rate_window: int = 60,
     rate_block_duration: int = 300,
     redis_url: Optional[str] = None,
-    
+
+    # Request ID settings
+    enable_request_id: bool = True,
+    request_id_header: str = "X-Request-ID",
+    generate_request_id: bool = True,
+    include_request_id_in_response: bool = True,
+
     # Common settings
     exclude_paths: Optional[List[str]] = None,
     trusted_hosts: Optional[List[str]] = None,
-    
+
     # Error handling settings
     configure_errors: bool = True
 ) -> None:
     """
     Configure security middleware for a FastAPI application.
-    
+
     Args:
         app: FastAPI application
-        
+
         # Security headers settings
         security_headers: Security headers to add
         content_security_policy: Content Security Policy header value
         include_csp: Whether to include the Content Security Policy header
-        
+
         # CSRF protection settings
         enable_csrf: Whether to enable CSRF protection
         csrf_secret_key: Secret key for CSRF token generation
@@ -80,18 +90,18 @@ def configure_security(
         csrf_cookie_httponly: Whether to set the HttpOnly flag on the CSRF cookie
         csrf_cookie_samesite: SameSite attribute for the CSRF cookie
         csrf_safe_methods: HTTP methods that don't require CSRF protection
-        
+
         # Rate limiting settings
         enable_rate_limiting: Whether to enable rate limiting
         rate_limit: Request limit for rate limiting
         rate_window: Time window in seconds for rate limiting
         rate_block_duration: Blocking duration in seconds for rate limiting
         redis_url: Redis connection URL for rate limiting
-        
+
         # Common settings
         exclude_paths: Paths to exclude from security middleware
         trusted_hosts: Trusted hosts for the application
-        
+
         # Error handling settings
         configure_errors: Whether to configure error handlers
     """
@@ -102,7 +112,7 @@ def configure_security(
     csrf_safe_methods = csrf_safe_methods or ["GET", "HEAD", "OPTIONS", "TRACE"]
     csrf_secret_key = csrf_secret_key or os.environ.get("SECRET_KEY", "")
     redis_url = redis_url or os.environ.get("REDIS_URL", "redis://localhost:6379/0")
-    
+
     # Log configuration
     logger.info(
         "Configuring security middleware",
@@ -114,7 +124,7 @@ def configure_security(
             "exclude_paths": exclude_paths
         }
     )
-    
+
     # Add security headers middleware
     app.add_middleware(
         SecurityHeadersMiddleware,
@@ -123,7 +133,16 @@ def configure_security(
         include_csp=include_csp,
         exclude_paths=exclude_paths
     )
-    
+
+    # Add request ID middleware (should be first to ensure all requests have an ID)
+    if enable_request_id:
+        app.add_middleware(
+            RequestIDMiddleware,
+            header_name=request_id_header,
+            generate_if_missing=generate_request_id,
+            include_in_response=include_request_id_in_response
+        )
+
     # Add CSRF protection middleware
     if enable_csrf and csrf_secret_key:
         app.add_middleware(
@@ -134,10 +153,13 @@ def configure_security(
             cookie_secure=csrf_cookie_secure,
             cookie_httponly=csrf_cookie_httponly,
             cookie_samesite=csrf_cookie_samesite,
+            token_rotation_age=csrf_token_rotation_age,
             safe_methods=csrf_safe_methods,
-            exclude_paths=exclude_paths
+            exclude_paths=exclude_paths,
+            enforce_samesite=csrf_enforce_samesite,
+            double_submit=csrf_double_submit
         )
-    
+
     # Add rate limiting middleware
     if enable_rate_limiting:
         try:
@@ -148,7 +170,7 @@ def configure_security(
                 default_window=rate_window,
                 default_block_duration=rate_block_duration
             )
-            
+
             # Add rate limit middleware
             app.add_middleware(
                 RateLimitMiddleware,
@@ -158,17 +180,17 @@ def configure_security(
                 block_duration=rate_block_duration,
                 exclude_paths=exclude_paths
             )
-            
+
             # Store rate limiter in app state for use in dependencies
             app.state.rate_limiter = rate_limiter
         except Exception as e:
             logger.error(f"Failed to configure rate limiting: {str(e)}")
-    
+
     # Configure error handlers
     if configure_errors:
         configure_error_handlers(app)
         configure_custom_exception_handlers(app)
-    
+
     # Add trusted hosts middleware if provided
     if trusted_hosts:
         from starlette.middleware.trustedhost import TrustedHostMiddleware
@@ -176,5 +198,5 @@ def configure_security(
             TrustedHostMiddleware,
             allowed_hosts=trusted_hosts
         )
-    
+
     logger.info("Security middleware configuration complete")
