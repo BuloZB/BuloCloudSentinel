@@ -20,7 +20,7 @@ NVD_API_URL = "https://services.nvd.nist.gov/rest/json/cves/2.0"
 def get_installed_packages() -> Dict[str, str]:
     """
     Get installed Python packages.
-    
+
     Returns:
         Dictionary of package name to version
     """
@@ -32,11 +32,11 @@ def check_package_vulnerabilities(
 ) -> List[Dict[str, Any]]:
     """
     Check a package for known vulnerabilities.
-    
+
     Args:
         package_name: Package name
         package_version: Package version
-        
+
     Returns:
         List of vulnerabilities
     """
@@ -46,90 +46,90 @@ def check_package_vulnerabilities(
             "keywordSearch": package_name,
             "keywordExactMatch": True
         }
-        
-        response = requests.get(NVD_API_URL, params=params)
+
+        response = requests.get(NVD_API_URL, params=params, timeout=30)
         data = response.json()
-        
+
         vulnerabilities = []
-        
+
         # Process results
         if "vulnerabilities" in data:
             for vuln in data["vulnerabilities"]:
                 cve = vuln["cve"]
-                
+
                 # Check if this vulnerability affects the package
                 affected = False
-                
+
                 if "configurations" in cve:
                     for config in cve["configurations"]:
                         for node in config.get("nodes", []):
                             for cpe_match in node.get("cpeMatch", []):
                                 cpe = cpe_match.get("criteria", "")
-                                
+
                                 if package_name.lower() in cpe.lower():
                                     # Check version range
                                     if "versionStartIncluding" in cpe_match and "versionEndIncluding" in cpe_match:
                                         start_version = parse_version(cpe_match["versionStartIncluding"])
                                         end_version = parse_version(cpe_match["versionEndIncluding"])
                                         current_version = parse_version(package_version)
-                                        
+
                                         if start_version <= current_version <= end_version:
                                             affected = True
                                     elif "versionStartIncluding" in cpe_match and "versionEndExcluding" in cpe_match:
                                         start_version = parse_version(cpe_match["versionStartIncluding"])
                                         end_version = parse_version(cpe_match["versionEndExcluding"])
                                         current_version = parse_version(package_version)
-                                        
+
                                         if start_version <= current_version < end_version:
                                             affected = True
                                     elif "versionStartExcluding" in cpe_match and "versionEndIncluding" in cpe_match:
                                         start_version = parse_version(cpe_match["versionStartExcluding"])
                                         end_version = parse_version(cpe_match["versionEndIncluding"])
                                         current_version = parse_version(package_version)
-                                        
+
                                         if start_version < current_version <= end_version:
                                             affected = True
                                     elif "versionStartExcluding" in cpe_match and "versionEndExcluding" in cpe_match:
                                         start_version = parse_version(cpe_match["versionStartExcluding"])
                                         end_version = parse_version(cpe_match["versionEndExcluding"])
                                         current_version = parse_version(package_version)
-                                        
+
                                         if start_version < current_version < end_version:
                                             affected = True
                                     elif "versionStartIncluding" in cpe_match:
                                         start_version = parse_version(cpe_match["versionStartIncluding"])
                                         current_version = parse_version(package_version)
-                                        
+
                                         if start_version <= current_version:
                                             affected = True
                                     elif "versionStartExcluding" in cpe_match:
                                         start_version = parse_version(cpe_match["versionStartExcluding"])
                                         current_version = parse_version(package_version)
-                                        
+
                                         if start_version < current_version:
                                             affected = True
                                     elif "versionEndIncluding" in cpe_match:
                                         end_version = parse_version(cpe_match["versionEndIncluding"])
                                         current_version = parse_version(package_version)
-                                        
+
                                         if current_version <= end_version:
                                             affected = True
                                     elif "versionEndExcluding" in cpe_match:
                                         end_version = parse_version(cpe_match["versionEndExcluding"])
                                         current_version = parse_version(package_version)
-                                        
+
                                         if current_version < end_version:
                                             affected = True
-                
+
                 if affected:
                     # Get vulnerability details
                     vuln_id = cve["id"]
                     description = cve.get("descriptions", [{}])[0].get("value", "No description")
-                    
+
                     # Get severity
                     severity = "unknown"
                     cvss_score = 0.0
-                    
+
                     if "metrics" in cve:
                         if "cvssMetricV31" in cve["metrics"]:
                             cvss_data = cve["metrics"]["cvssMetricV31"][0]["cvssData"]
@@ -143,7 +143,7 @@ def check_package_vulnerabilities(
                             cvss_data = cve["metrics"]["cvssMetricV2"][0]["cvssData"]
                             severity = cvss_data.get("baseSeverity", "unknown").lower()
                             cvss_score = cvss_data.get("baseScore", 0.0)
-                    
+
                     # Add to vulnerabilities
                     vulnerabilities.append({
                         "id": vuln_id,
@@ -153,9 +153,9 @@ def check_package_vulnerabilities(
                         "severity": severity,
                         "cvss_score": cvss_score
                     })
-        
+
         return vulnerabilities
-    
+
     except Exception as e:
         print(f"Error checking vulnerabilities for {package_name}: {str(e)}")
         return []
@@ -163,25 +163,25 @@ def check_package_vulnerabilities(
 def check_all_packages() -> Dict[str, List[Dict[str, Any]]]:
     """
     Check all installed packages for vulnerabilities.
-    
+
     Returns:
         Dictionary of package name to list of vulnerabilities
     """
     packages = get_installed_packages()
     vulnerabilities = {}
-    
+
     for package_name, package_version in packages.items():
         package_vulns = check_package_vulnerabilities(package_name, package_version)
-        
+
         if package_vulns:
             vulnerabilities[package_name] = package_vulns
-    
+
     return vulnerabilities
 
 def run_safety_check() -> Tuple[bool, List[Dict[str, Any]]]:
     """
     Run safety check using the safety package.
-    
+
     Returns:
         Tuple of (success, vulnerabilities)
     """
@@ -192,21 +192,21 @@ def run_safety_check() -> Tuple[bool, List[Dict[str, Any]]]:
         except ImportError:
             print("Safety package not installed. Installing...")
             subprocess.check_call([sys.executable, "-m", "pip", "install", "safety"])
-        
+
         # Run safety check
         result = subprocess.run(
             [sys.executable, "-m", "safety", "check", "--json"],
             capture_output=True,
             text=True
         )
-        
+
         # Parse output
         if result.returncode == 0:
             return True, []
-        
+
         vulnerabilities = json.loads(result.stdout)
         return False, vulnerabilities
-    
+
     except Exception as e:
         print(f"Error running safety check: {str(e)}")
         return False, []
@@ -217,11 +217,11 @@ def run_bandit_scan(
 ) -> Tuple[bool, Dict[str, Any]]:
     """
     Run Bandit security scan on Python code.
-    
+
     Args:
         directory: Directory to scan
         report_file: Optional file to save report
-        
+
     Returns:
         Tuple of (success, results)
     """
@@ -232,15 +232,15 @@ def run_bandit_scan(
         except ImportError:
             print("Bandit package not installed. Installing...")
             subprocess.check_call([sys.executable, "-m", "pip", "install", "bandit"])
-        
+
         # Run bandit scan
         cmd = [sys.executable, "-m", "bandit", "-r", directory, "-f", "json"]
-        
+
         if report_file:
             cmd.extend(["-o", report_file])
-        
+
         result = subprocess.run(cmd, capture_output=True, text=True)
-        
+
         # Parse output
         try:
             scan_results = json.loads(result.stdout)
@@ -249,7 +249,7 @@ def run_bandit_scan(
         except json.JSONDecodeError:
             print(f"Error parsing Bandit output: {result.stdout}")
             return False, {}
-    
+
     except Exception as e:
         print(f"Error running Bandit scan: {str(e)}")
         return False, {}
@@ -259,10 +259,10 @@ def check_npm_packages(
 ) -> Dict[str, List[Dict[str, Any]]]:
     """
     Check NPM packages for vulnerabilities.
-    
+
     Args:
         package_json_path: Path to package.json file
-        
+
     Returns:
         Dictionary of package name to list of vulnerabilities
     """
@@ -273,10 +273,10 @@ def check_npm_packages(
         except (subprocess.SubprocessError, FileNotFoundError):
             print("npm not found. Please install Node.js and npm.")
             return {}
-        
+
         # Get directory containing package.json
         directory = os.path.dirname(os.path.abspath(package_json_path))
-        
+
         # Run npm audit
         result = subprocess.run(
             ["npm", "audit", "--json"],
@@ -284,23 +284,23 @@ def check_npm_packages(
             capture_output=True,
             text=True
         )
-        
+
         # Parse output
         try:
             audit_results = json.loads(result.stdout)
-            
+
             vulnerabilities = {}
-            
+
             if "vulnerabilities" in audit_results:
                 for package_name, vuln_info in audit_results["vulnerabilities"].items():
                     package_vulns = []
-                    
+
                     for via in vuln_info.get("via", []):
                         if isinstance(via, dict):
                             vuln_id = via.get("url", "").split("/")[-1]
                             description = via.get("title", "No description")
                             severity = via.get("severity", "unknown").lower()
-                            
+
                             package_vulns.append({
                                 "id": vuln_id,
                                 "package": package_name,
@@ -309,16 +309,16 @@ def check_npm_packages(
                                 "severity": severity,
                                 "fix": vuln_info.get("fixAvailable", False)
                             })
-                    
+
                     if package_vulns:
                         vulnerabilities[package_name] = package_vulns
-            
+
             return vulnerabilities
-        
+
         except json.JSONDecodeError:
             print(f"Error parsing npm audit output: {result.stdout}")
             return {}
-    
+
     except Exception as e:
         print(f"Error checking NPM packages: {str(e)}")
         return {}

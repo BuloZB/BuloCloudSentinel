@@ -265,7 +265,12 @@ def get_cert_fingerprint(cert_file: str, algorithm: str = "sha256") -> str:
     if algorithm == "sha256":
         fingerprint = cert.fingerprint(hashes.SHA256())
     elif algorithm == "sha1":
+        # Mark SHA1 as not used for security purposes
+        # This is only used for compatibility with legacy systems
+        # and should not be used for security-critical applications
         fingerprint = cert.fingerprint(hashes.SHA1())
+        import logging
+        logging.warning("SHA1 is a weak hash algorithm and should not be used for security purposes")
     else:
         raise ValueError(f"Unsupported algorithm: {algorithm}")
 

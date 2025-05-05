@@ -7,9 +7,8 @@ to protect API endpoints from abuse.
 
 import time
 import hashlib
-import os
-from typing import Dict, List, Optional, Tuple, Union, Callable, Any
-from datetime import datetime, timedelta, timezone
+from typing import Dict, List, Optional, Tuple, Callable
+from datetime import datetime
 
 from fastapi import FastAPI, Request, Response, status, Depends
 from fastapi.responses import JSONResponse
@@ -94,7 +93,8 @@ class RateLimiter:
         path = request.url.path
 
         # Hash the key to avoid storing sensitive information
-        key = hashlib.md5(f"{client_ip}:{path}".encode()).hexdigest()
+        # Use SHA-256 instead of MD5 for better security
+        key = hashlib.sha256(f"{client_ip}:{path}".encode()).hexdigest()
 
         return key
 
