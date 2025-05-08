@@ -168,6 +168,19 @@ The Security Module provides comprehensive security features for the Bulo.Cloud 
 - **🔐 Secure Password Handling**: Argon2id password hashing with proper salting
 - **📝 Secure Logging**: Logging utilities that mask sensitive data automatically
 
+### 🌐 Edge Kit
+
+The Edge Kit is a plug-and-play Docker bundle for deploying Bulo.CloudSentinel capabilities at the edge:
+
+- **🖥️ Hardware Support**: Optimized for Jetson Orin Nano and Raspberry Pi 5
+- **🚀 Low-Latency Inference**: Run quantized AI models (YOLOv10-nano INT8) at the edge
+- **📹 Optimized Streaming**: Ingest local RTSP streams and publish low-bitrate HLS/WebRTC
+- **🔄 Self-Updates**: Over-the-air updates with rollback capability
+- **🔒 Secure by Design**: Read-only root FS, seccomp & AppArmor profiles, Vault integration
+- **🔌 Containerized**: Three main containers (edge_inference, rtsp_relay, edge_agent)
+- **📊 Performance**: End-to-end latency < 250 ms for 1080p stream
+- **🛠️ Easy Deployment**: Single `docker-compose.yml` + script `edge_install.sh`
+
 ## 🚀 Getting Started
 
 ### Prerequisites
@@ -264,6 +277,22 @@ python examples/benchmark_backends.py --backends tinygrad
 python examples/benchmark_backends.py --device CUDA
 ```
 
+### Installing the Edge Kit
+
+To install the Edge Kit on a Jetson Orin Nano or Raspberry Pi 5:
+
+```bash
+# Download and run the installation script
+curl -fsSL https://raw.githubusercontent.com/BuloZB/BuloCloudSentinel/main/edge_kit/edge_install.sh | sudo bash
+
+# Or clone the repository and run the script manually
+git clone https://github.com/BuloZB/BuloCloudSentinel.git
+cd BuloCloudSentinel/edge_kit
+sudo ./edge_install.sh
+```
+
+The Edge Kit will be installed in `/opt/bulocloud/edge_kit` and configured to start automatically on boot. You can access the management interface at `http://<device-ip>:9090`.
+
 ## 🛠️ Development
 
 ### Project Structure
@@ -319,6 +348,12 @@ bulo-cloud-sentinel/
 │   ├── services/         # Business logic services
 │   └── utils/            # Utility functions
 ├── drone_swarm_system/   # Drone Swarm System microservice
+├── edge_kit/             # Edge Kit for low-latency inference at the perimeter
+│   ├── inference/        # Edge Inference container with Triton Server
+│   ├── rtsp_relay/       # RTSP Relay container for video streaming
+│   ├── edge_agent/       # Edge Agent container for OTA updates
+│   ├── models/           # Pre-trained models for edge inference
+│   └── config/           # Configuration files for edge deployment
 ├── sim/                  # Digital Twin & Simulation environment
 │   ├── bazel/            # Bazel build configuration
 │   ├── docker/           # Docker configuration files

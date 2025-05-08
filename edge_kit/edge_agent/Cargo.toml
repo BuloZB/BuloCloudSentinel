@@ -1,0 +1,70 @@
+[package]
+name = "edge_agent"
+version = "0.1.0"
+edition = "2021"
+authors = ["Bulo.CloudSentinel Team"]
+description = "Edge agent for Bulo.CloudSentinel Edge Kit"
+
+[dependencies]
+# Async runtime
+tokio = { version = "1.32", features = ["full"] }
+futures = "0.3"
+
+# Web server
+axum = "0.6"
+tower = "0.4"
+tower-http = { version = "0.4", features = ["trace", "cors"] }
+hyper = "0.14"
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+serde_yaml = "0.9"
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+tracing-appender = "0.2"
+
+# MQTT
+rumqttc = "0.22"
+paho-mqtt = "0.12"
+
+# HTTP client
+reqwest = { version = "0.11", features = ["json", "rustls-tls"] }
+
+# Docker API
+bollard = "0.14"
+
+# Vault
+vault = "0.6"
+
+# Crypto and security
+rustls = "0.21"
+rustls-pemfile = "1.0"
+spiffe = "0.2"
+x509-parser = "0.15"
+
+# Utilities
+chrono = { version = "0.4", features = ["serde"] }
+uuid = { version = "1.4", features = ["v4", "serde"] }
+thiserror = "1.0"
+anyhow = "1.0"
+clap = { version = "4.4", features = ["derive"] }
+dotenv = "0.15"
+async-trait = "0.1"
+once_cell = "1.18"
+parking_lot = "0.12"
+tempfile = "3.8"
+
+[dev-dependencies]
+mockall = "0.11"
+tokio-test = "0.4"
+wiremock = "0.5"
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true

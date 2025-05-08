@@ -1,0 +1,117 @@
+version: '3.8'
+
+services:
+  # Edge Inference Service - Triton Server with TensorRT/ONNX Runtime
+  edge_inference:
+    build:
+      context: ./inference
+      dockerfile: Dockerfile
+      args:
+        - DEVICE_TYPE=${DEVICE_TYPE:-jetson}  # jetson or rpi
+    image: bulocloud/edge-inference:latest
+    container_name: edge-inference
+    restart: unless-stopped
+    volumes:
+      - ./models:/models
+      - ./config:/config
+    environment:
+      - MODEL_REPOSITORY=/models
+      - INFERENCE_BACKEND=${INFERENCE_BACKEND:-tensorrt}  # tensorrt, onnxruntime, or tinygrad
+      - DEVICE_ID=${DEVICE_ID:-0}
+      - MAX_BATCH_SIZE=${MAX_BATCH_SIZE:-4}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - METRICS_PORT=${METRICS_PORT:-8002}
+    ports:
+      - "8001:8001"  # Triton HTTP endpoint
+      - "8002:8002"  # Metrics endpoint
+    networks:
+      - edge-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8002/metrics"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    # GPU support for Jetson
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  # RTSP Relay Service - Ingests RTSP and publishes WebRTC/HLS
+  rtsp_relay:
+    build:
+      context: ./rtsp_relay
+      dockerfile: Dockerfile
+    image: bulocloud/rtsp-relay:latest
+    container_name: rtsp-relay
+    restart: unless-stopped
+    volumes:
+      - ./config:/config
+      - ./storage:/storage
+    environment:
+      - RTSP_SOURCES_CONFIG=/config/rtsp_sources.yaml
+      - HLS_SEGMENT_DURATION=${HLS_SEGMENT_DURATION:-2}
+      - WEBRTC_ICE_SERVERS=${WEBRTC_ICE_SERVERS:-stun:stun.l.google.com:19302}
+      - STREAM_BUFFER_SIZE=${STREAM_BUFFER_SIZE:-1024}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    ports:
+      - "8554:8554"  # RTSP server
+      - "8888:8888"  # HTTP server for HLS
+      - "8889:8889"  # WebRTC signaling
+    networks:
+      - edge-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8888/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+  # Edge Agent Service - OTA updates, healthchecks, MQTT
+  edge_agent:
+    build:
+      context: ./edge_agent
+      dockerfile: Dockerfile
+    image: bulocloud/edge-agent:latest
+    container_name: edge-agent
+    restart: unless-stopped
+    privileged: true  # Needed for OTA updates
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./config:/config
+      - ./storage:/storage
+      - ./certs:/certs:ro
+    environment:
+      - DEVICE_ID=${DEVICE_ID:-edge-device-001}
+      - DEVICE_TYPE=${DEVICE_TYPE:-jetson}
+      - MQTT_BROKER=${MQTT_BROKER:-mqtt://bulocloud-mqtt:1883}
+      - MQTT_USERNAME=${MQTT_USERNAME:-}
+      - MQTT_PASSWORD=${MQTT_PASSWORD:-}
+      - MQTT_CLIENT_ID=${MQTT_CLIENT_ID:-edge-device-001}
+      - MQTT_TOPIC_PREFIX=${MQTT_TOPIC_PREFIX:-bulocloud/edge}
+      - VAULT_ADDR=${VAULT_ADDR:-http://bulocloud-vault:8200}
+      - VAULT_TOKEN=${VAULT_TOKEN:-}
+      - VAULT_PATH=${VAULT_PATH:-secret/edge}
+      - UPDATE_CHECK_INTERVAL=${UPDATE_CHECK_INTERVAL:-3600}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    ports:
+      - "9090:9090"  # Agent API
+    networks:
+      - edge-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9090/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    depends_on:
+      - edge_inference
+      - rtsp_relay
+
+networks:
+  edge-network:
+    driver: bridge
