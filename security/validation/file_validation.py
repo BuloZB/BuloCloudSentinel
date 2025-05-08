@@ -36,7 +36,7 @@ DEFAULT_ALLOWED_MIME_TYPES = {
     # Images
     "image/jpeg", "image/png", "image/gif", "image/bmp", "image/svg+xml", "image/webp",
     # Documents
-    "application/pdf", 
+    "application/pdf",
     "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     "application/vnd.ms-powerpoint", "application/vnd.openxmlformats-officedocument.presentationml.presentation",
@@ -60,11 +60,11 @@ HIGH_RISK_EXTENSIONS = {
 class FileValidator:
     """
     Validator for file uploads.
-    
+
     This class provides methods for validating file uploads to prevent
     security vulnerabilities.
     """
-    
+
     def __init__(
         self,
         allowed_extensions: Optional[Set[str]] = None,
@@ -75,7 +75,7 @@ class FileValidator:
     ):
         """
         Initialize the file validator.
-        
+
         Args:
             allowed_extensions: Set of allowed file extensions
             allowed_mime_types: Set of allowed MIME types
@@ -88,105 +88,105 @@ class FileValidator:
         self.max_file_size = max_file_size
         self.validate_content = validate_content
         self.block_high_risk = block_high_risk
-        
+
     async def validate(self, file: UploadFile) -> Tuple[bool, Optional[str]]:
         """
         Validate a file upload.
-        
+
         Args:
             file: The uploaded file
-            
+
         Returns:
             Tuple of (is_valid, error_message)
         """
         # Validate filename
         if not self._validate_filename(file.filename):
             return False, "Invalid filename"
-            
+
         # Validate file extension
         extension = self._get_file_extension(file.filename)
         if not extension:
             return False, "Missing file extension"
-            
+
         if extension.lower() not in self.allowed_extensions:
             return False, f"File extension '{extension}' not allowed"
-            
+
         if self.block_high_risk and extension.lower() in HIGH_RISK_EXTENSIONS:
             return False, f"High-risk file extension '{extension}' not allowed"
-            
+
         # Validate file size
         file_size = await self._get_file_size(file)
         if file_size > self.max_file_size:
             return False, f"File size exceeds maximum allowed size ({self.max_file_size} bytes)"
-            
+
         # Validate file content
         if self.validate_content:
             # Read the first chunk of the file to determine its MIME type
             file.file.seek(0)
             chunk = await file.read(2048)  # Read first 2KB
             file.file.seek(0)  # Reset file position
-            
+
             # Get MIME type using python-magic
             mime_type = magic.from_buffer(chunk, mime=True)
-            
+
             if mime_type not in self.allowed_mime_types:
                 return False, f"File content type '{mime_type}' not allowed"
-                
+
             # Check if the MIME type matches the file extension
             if not self._validate_mime_type_matches_extension(mime_type, extension):
                 return False, f"File content type '{mime_type}' does not match extension '{extension}'"
-                
+
         return True, None
-        
+
     def _validate_filename(self, filename: Optional[str]) -> bool:
         """
         Validate a filename.
-        
+
         Args:
             filename: The filename to validate
-            
+
         Returns:
             True if the filename is valid, False otherwise
         """
         if not filename:
             return False
-            
+
         # Check for path traversal attempts
         if os.path.basename(filename) != filename:
             return False
-            
+
         # Check for invalid characters
         if re.search(r'[<>:"/\\|?*\x00-\x1F]', filename):
             return False
-            
+
         return True
-        
+
     def _get_file_extension(self, filename: Optional[str]) -> Optional[str]:
         """
         Get the file extension from a filename.
-        
+
         Args:
             filename: The filename
-            
+
         Returns:
             The file extension, or None if there is no extension
         """
         if not filename:
             return None
-            
+
         parts = filename.rsplit(".", 1)
         if len(parts) < 2:
             return None
-            
+
         return parts[1].lower()
-        
+
     async def _get_file_size(self, file: UploadFile) -> int:
         """
         Get the size of an uploaded file.
-        
+
         Args:
             file: The uploaded file
-            
+
         Returns:
             The file size in bytes
         """
@@ -194,15 +194,15 @@ class FileValidator:
         size = file.file.tell()
         file.file.seek(0)
         return size
-        
+
     def _validate_mime_type_matches_extension(self, mime_type: str, extension: str) -> bool:
         """
         Validate that a MIME type matches a file extension.
-        
+
         Args:
             mime_type: The MIME type
             extension: The file extension
-            
+
         Returns:
             True if the MIME type matches the extension, False otherwise
         """
@@ -244,16 +244,16 @@ class FileValidator:
             "wmv": ["video/x-ms-wmv"],
             "webm": ["video/webm"],
         }
-        
+
         # Get expected MIME types for the extension
         expected_mime_types = extension_mime_map.get(extension.lower(), [])
-        
+
         # If we don't have expected MIME types for this extension, allow it
         if not expected_mime_types:
             return True
-            
+
         return mime_type in expected_mime_types
-        
+
 # Create a default file validator instance
 default_file_validator = FileValidator()
 
@@ -266,20 +266,20 @@ async def validate_file_upload(
 ) -> UploadFile:
     """
     Validate a file upload.
-    
+
     This function can be used as a dependency in FastAPI routes to validate
     file uploads.
-    
+
     Args:
         file: The uploaded file
         allowed_extensions: Set of allowed file extensions
         allowed_mime_types: Set of allowed MIME types
         max_file_size: Maximum file size in bytes
         validate_content: Whether to validate file content
-        
+
     Returns:
         The validated file
-        
+
     Raises:
         HTTPException: If the file is invalid
     """
@@ -289,7 +289,7 @@ async def validate_file_upload(
         max_file_size=max_file_size,
         validate_content=validate_content,
     )
-    
+
     is_valid, error_message = await validator.validate(file)
     if not is_valid:
         log.warning(f"Invalid file upload: {error_message}")
@@ -297,34 +297,42 @@ async def validate_file_upload(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=error_message,
         )
-        
+
     return file
 
 async def compute_file_hash(file: UploadFile, algorithm: str = "sha256") -> str:
     """
     Compute a hash of a file.
-    
+
     Args:
         file: The file to hash
         algorithm: The hash algorithm to use
-        
+
     Returns:
         The file hash as a hexadecimal string
     """
     hash_obj = None
     if algorithm == "md5":
-        hash_obj = hashlib.md5()
+        # Mark MD5 as not used for security purposes
+        hash_obj = hashlib.md5(usedforsecurity=False)
+        log.warning("MD5 is a weak hash algorithm and should not be used for security purposes")
     elif algorithm == "sha1":
-        hash_obj = hashlib.sha1()
+        # Mark SHA1 as not used for security purposes
+        hash_obj = hashlib.sha1(usedforsecurity=False)
+        log.warning("SHA1 is a weak hash algorithm and should not be used for security purposes")
     elif algorithm == "sha256":
         hash_obj = hashlib.sha256()
     elif algorithm == "sha512":
         hash_obj = hashlib.sha512()
     else:
         raise ValueError(f"Unsupported hash algorithm: {algorithm}")
-        
+
+    # Recommend using stronger algorithms
+    if algorithm in ["md5", "sha1"]:
+        log.warning(f"Consider using SHA-256 or SHA-512 instead of {algorithm}")
+
     file.file.seek(0)
-    
+
     # Read the file in chunks to avoid loading the entire file into memory
     chunk_size = 8192  # 8KB chunks
     while True:
@@ -332,31 +340,31 @@ async def compute_file_hash(file: UploadFile, algorithm: str = "sha256") -> str:
         if not chunk:
             break
         hash_obj.update(chunk)
-        
+
     file.file.seek(0)
-    
+
     return hash_obj.hexdigest()
 
 def sanitize_filename(filename: str) -> str:
     """
     Sanitize a filename to make it safe for storage.
-    
+
     Args:
         filename: The filename to sanitize
-        
+
     Returns:
         The sanitized filename
     """
     # Remove path components
     filename = os.path.basename(filename)
-    
+
     # Replace invalid characters with underscores
     filename = re.sub(r'[<>:"/\\|?*\x00-\x1F]', "_", filename)
-    
+
     # Limit length
     if len(filename) > 255:
         name, ext = os.path.splitext(filename)
         name = name[:255 - len(ext)]
         filename = name + ext
-        
+
     return filename

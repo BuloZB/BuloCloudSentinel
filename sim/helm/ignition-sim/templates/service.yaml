@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "ignition-sim.fullname" . }}-ignition-gazebo
+  labels:
+    {{- include "ignition-sim.labels" . | nindent 4 }}
+    app.kubernetes.io/component: ignition-gazebo
+spec:
+  type: {{ .Values.ignitionGazebo.service.type }}
+  ports:
+    - port: {{ .Values.ignitionGazebo.service.port }}
+      targetPort: gazebo
+      protocol: TCP
+      name: gazebo
+  selector:
+    {{- include "ignition-sim.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: ignition-gazebo
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "ignition-sim.fullname" . }}-ros2-humble
+  labels:
+    {{- include "ignition-sim.labels" . | nindent 4 }}
+    app.kubernetes.io/component: ros2-humble
+spec:
+  type: {{ .Values.ros2Humble.service.type }}
+  ports:
+    - port: {{ .Values.ros2Humble.service.port }}
+      targetPort: websocket
+      protocol: TCP
+      name: websocket
+  selector:
+    {{- include "ignition-sim.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: ros2-humble
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "ignition-sim.fullname" . }}-sim-swarm-gateway
+  labels:
+    {{- include "ignition-sim.labels" . | nindent 4 }}
+    app.kubernetes.io/component: sim-swarm-gateway
+spec:
+  type: {{ .Values.simSwarmGateway.service.type }}
+  ports:
+    - port: {{ .Values.simSwarmGateway.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "ignition-sim.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: sim-swarm-gateway
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "ignition-sim.fullname" . }}-sim-web-ui
+  labels:
+    {{- include "ignition-sim.labels" . | nindent 4 }}
+    app.kubernetes.io/component: sim-web-ui
+spec:
+  type: {{ .Values.simWebUI.service.type }}
+  ports:
+    - port: {{ .Values.simWebUI.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "ignition-sim.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: sim-web-ui

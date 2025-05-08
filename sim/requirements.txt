@@ -1,0 +1,50 @@
+# Core dependencies
+numpy>=1.26.4
+scipy>=1.13.1
+matplotlib>=3.9.0
+pyyaml>=6.0.1
+pytest>=8.0.2
+pytest-asyncio>=0.23.5
+
+# ROS 2 dependencies
+rclpy>=0.18.0
+ros2pkg>=0.18.0
+ros2run>=0.18.0
+ros2launch>=0.18.0
+
+# Gazebo dependencies
+gz-python>=0.1.0
+
+# Networking and communication
+websockets>=12.0.0
+httpx>=0.27.0
+fastapi>=0.115.12
+pydantic>=2.11.4
+
+# Utilities
+typer>=0.9.0
+rich>=13.7.0
+loguru>=0.7.2
+tqdm>=4.66.2
+
+# Testing and validation
+pytest-cov>=4.1.0
+pytest-xdist>=3.5.0
+flake8>=7.0.0
+black>=24.2.0
+isort>=5.13.2
+
+# Security
+cryptography>=46.0.0
+pyjwt>=2.8.0
+python-multipart>=0.0.21
+
+# Visualization
+open3d>=0.17.0
+pyqtgraph>=0.13.3
+pyopengl>=3.1.7
+
+# Machine learning (optional)
+torch>=2.2.2
+torchvision>=0.17.0
+tinygrad>=0.9.0

@@ -1,0 +1,94 @@
+# Simulation Swarm Gateway Configuration
+
+# API settings
+host: "0.0.0.0"
+port: 8070
+
+# Sentinel API settings
+sentinel_api_url: "http://bulocloud-sentinel-api:8000"
+sentinel_api_token: ""  # Set via environment variable SENTINEL_API_TOKEN
+
+# ROS 2 settings
+ros_domain_id: 42
+ros_namespace: "sim"
+
+# Drone settings
+drones:
+  - id: "drone_1"
+    name: "Simulation Drone 1"
+    type: "quadcopter"
+    topics:
+      pose: "/drone_1/pose"
+      gps: "/drone_1/gps"
+      imu: "/drone_1/imu"
+      battery: "/drone_1/battery"
+      mission_status: "/drone_1/mission_status"
+      command: "/drone_1/command"
+      mission: "/drone_1/mission"
+  
+  - id: "drone_2"
+    name: "Simulation Drone 2"
+    type: "quadcopter"
+    topics:
+      pose: "/drone_2/pose"
+      gps: "/drone_2/gps"
+      imu: "/drone_2/imu"
+      battery: "/drone_2/battery"
+      mission_status: "/drone_2/mission_status"
+      command: "/drone_2/command"
+      mission: "/drone_2/mission"
+  
+  - id: "drone_3"
+    name: "Simulation Drone 3"
+    type: "quadcopter"
+    topics:
+      pose: "/drone_3/pose"
+      gps: "/drone_3/gps"
+      imu: "/drone_3/imu"
+      battery: "/drone_3/battery"
+      mission_status: "/drone_3/mission_status"
+      command: "/drone_3/command"
+      mission: "/drone_3/mission"
+  
+  - id: "drone_4"
+    name: "Simulation Drone 4"
+    type: "quadcopter"
+    topics:
+      pose: "/drone_4/pose"
+      gps: "/drone_4/gps"
+      imu: "/drone_4/imu"
+      battery: "/drone_4/battery"
+      mission_status: "/drone_4/mission_status"
+      command: "/drone_4/command"
+      mission: "/drone_4/mission"
+  
+  - id: "drone_5"
+    name: "Simulation Drone 5"
+    type: "quadcopter"
+    topics:
+      pose: "/drone_5/pose"
+      gps: "/drone_5/gps"
+      imu: "/drone_5/imu"
+      battery: "/drone_5/battery"
+      mission_status: "/drone_5/mission_status"
+      command: "/drone_5/command"
+      mission: "/drone_5/mission"
+
+# Telemetry settings
+telemetry:
+  update_rate: 10  # Hz
+  buffer_size: 100  # Number of telemetry points to buffer
+
+# Mission settings
+missions:
+  default_altitude: 10.0  # meters
+  default_speed: 5.0  # m/s
+  default_takeoff_altitude: 5.0  # meters
+  default_landing_speed: 1.0  # m/s
+
+# Logging settings
+logging:
+  level: "INFO"
+  file: "/data/logs/gateway.log"
+  max_size: 10485760  # 10 MB
+  backup_count: 5

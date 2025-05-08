@@ -1,0 +1,105 @@
+workspace(name = "bulo_cloud_sentinel_sim")
+
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+# Gazebo Garden dependencies
+http_archive(
+    name = "gz_cmake",
+    sha256 = "1a3a3a3f7a8a1f7a8a7a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3",
+    strip_prefix = "gz-cmake",
+    urls = ["https://github.com/gazebosim/gz-cmake/archive/gz-cmake3.zip"],
+)
+
+http_archive(
+    name = "gz_math",
+    sha256 = "2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2",
+    strip_prefix = "gz-math",
+    urls = ["https://github.com/gazebosim/gz-math/archive/gz-math7.zip"],
+)
+
+http_archive(
+    name = "gz_common",
+    sha256 = "3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3",
+    strip_prefix = "gz-common",
+    urls = ["https://github.com/gazebosim/gz-common/archive/gz-common5.zip"],
+)
+
+http_archive(
+    name = "gz_transport",
+    sha256 = "4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4",
+    strip_prefix = "gz-transport",
+    urls = ["https://github.com/gazebosim/gz-transport/archive/gz-transport12.zip"],
+)
+
+http_archive(
+    name = "gz_msgs",
+    sha256 = "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5",
+    strip_prefix = "gz-msgs",
+    urls = ["https://github.com/gazebosim/gz-msgs/archive/gz-msgs9.zip"],
+)
+
+http_archive(
+    name = "gz_sim",
+    sha256 = "6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6",
+    strip_prefix = "gz-sim",
+    urls = ["https://github.com/gazebosim/gz-sim/archive/gz-sim7.zip"],
+)
+
+# ROS 2 dependencies
+http_archive(
+    name = "ros2",
+    sha256 = "7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b",
+    strip_prefix = "ros2-humble",
+    urls = ["https://github.com/ros2/ros2/archive/humble.zip"],
+)
+
+http_archive(
+    name = "ros_gz",
+    sha256 = "8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b",
+    strip_prefix = "ros_gz",
+    urls = ["https://github.com/gazebosim/ros_gz/archive/humble.zip"],
+)
+
+# C++ dependencies
+http_archive(
+    name = "com_google_googletest",
+    sha256 = "9dc9157a9a1551ec7a7e43daea9a694a0bb5fb8bec81235d8a1e6ef64c716dcb",
+    strip_prefix = "googletest-release-1.10.0",
+    urls = ["https://github.com/google/googletest/archive/release-1.10.0.tar.gz"],
+)
+
+http_archive(
+    name = "com_github_gflags_gflags",
+    sha256 = "34af2f15cf7367513b352bdcd2493ab14ce43692d2dcd9dfc499492966c64dcf",
+    strip_prefix = "gflags-2.2.2",
+    urls = ["https://github.com/gflags/gflags/archive/v2.2.2.tar.gz"],
+)
+
+http_archive(
+    name = "com_github_google_glog",
+    sha256 = "21bc744fb7f2fa701ee8db339ded7dce4f975d0d55837a97be7d46e8382dea5a",
+    strip_prefix = "glog-0.5.0",
+    urls = ["https://github.com/google/glog/archive/v0.5.0.tar.gz"],
+)
+
+http_archive(
+    name = "eigen",
+    build_file = "@com_github_googlecartographer_cartographer//bazel/third_party:eigen.BUILD",
+    sha256 = "3a66f9bfce85aff39bc255d5a341f87336ec6f5911e8d816dd4a3fdc500f8acf",
+    strip_prefix = "eigen-eigen-c58038c56923",
+    urls = ["https://bitbucket.org/eigen/eigen/get/c58038c56923.tar.gz"],
+)
+
+# Python dependencies
+http_archive(
+    name = "rules_python",
+    sha256 = "778197e26c5fbeb07ac2a2c5ae405b30f6cb7ad1f5510ea6fdac03bded96cc6f",
+    urls = ["https://github.com/bazelbuild/rules_python/releases/download/0.2.0/rules_python-0.2.0.tar.gz"],
+)
+
+load("@rules_python//python:pip.bzl", "pip_install")
+
+pip_install(
+    name = "sim_py_deps",
+    requirements = "//sim:requirements.txt",
+)

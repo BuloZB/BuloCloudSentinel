@@ -1,0 +1,235 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ignition-sim.fullname" . }}-ignition-gazebo
+  labels:
+    {{- include "ignition-sim.labels" . | nindent 4 }}
+    app.kubernetes.io/component: ignition-gazebo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "ignition-sim.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: ignition-gazebo
+  template:
+    metadata:
+      labels:
+        {{- include "ignition-sim.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: ignition-gazebo
+    spec:
+      {{- with .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.global.securityContext | nindent 8 }}
+      containers:
+        - name: ignition-gazebo
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          image: "{{ .Values.global.registry }}{{ .Values.ignitionGazebo.image.repository }}:{{ .Values.ignitionGazebo.image.tag }}"
+          imagePullPolicy: {{ .Values.ignitionGazebo.image.pullPolicy }}
+          ports:
+            - name: gazebo
+              containerPort: 11345
+              protocol: TCP
+          env:
+            {{- toYaml .Values.ignitionGazebo.env | nindent 12 }}
+          volumeMounts:
+            {{- toYaml .Values.ignitionGazebo.volumeMounts | nindent 12 }}
+          resources:
+            {{- toYaml .Values.ignitionGazebo.resources | nindent 12 }}
+      volumes:
+        {{- toYaml .Values.ignitionGazebo.volumes | nindent 8 }}
+      {{- with .Values.global.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.global.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.global.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ignition-sim.fullname" . }}-ros2-humble
+  labels:
+    {{- include "ignition-sim.labels" . | nindent 4 }}
+    app.kubernetes.io/component: ros2-humble
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "ignition-sim.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: ros2-humble
+  template:
+    metadata:
+      labels:
+        {{- include "ignition-sim.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: ros2-humble
+    spec:
+      {{- with .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.global.securityContext | nindent 8 }}
+      containers:
+        - name: ros2-humble
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          image: "{{ .Values.global.registry }}{{ .Values.ros2Humble.image.repository }}:{{ .Values.ros2Humble.image.tag }}"
+          imagePullPolicy: {{ .Values.ros2Humble.image.pullPolicy }}
+          ports:
+            - name: websocket
+              containerPort: 8765
+              protocol: TCP
+          env:
+            {{- toYaml .Values.ros2Humble.env | nindent 12 }}
+          volumeMounts:
+            {{- toYaml .Values.ros2Humble.volumeMounts | nindent 12 }}
+          resources:
+            {{- toYaml .Values.ros2Humble.resources | nindent 12 }}
+      volumes:
+        {{- toYaml .Values.ros2Humble.volumes | nindent 8 }}
+      {{- with .Values.global.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.global.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.global.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ignition-sim.fullname" . }}-sim-swarm-gateway
+  labels:
+    {{- include "ignition-sim.labels" . | nindent 4 }}
+    app.kubernetes.io/component: sim-swarm-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "ignition-sim.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: sim-swarm-gateway
+  template:
+    metadata:
+      labels:
+        {{- include "ignition-sim.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: sim-swarm-gateway
+    spec:
+      {{- with .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.global.securityContext | nindent 8 }}
+      containers:
+        - name: sim-swarm-gateway
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          image: "{{ .Values.global.registry }}{{ .Values.simSwarmGateway.image.repository }}:{{ .Values.simSwarmGateway.image.tag }}"
+          imagePullPolicy: {{ .Values.simSwarmGateway.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8070
+              protocol: TCP
+          env:
+            {{- toYaml .Values.simSwarmGateway.env | nindent 12 }}
+          volumeMounts:
+            {{- toYaml .Values.simSwarmGateway.volumeMounts | nindent 12 }}
+          resources:
+            {{- toYaml .Values.simSwarmGateway.resources | nindent 12 }}
+      volumes:
+        {{- toYaml .Values.simSwarmGateway.volumes | nindent 8 }}
+      {{- with .Values.global.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.global.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.global.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ignition-sim.fullname" . }}-sim-web-ui
+  labels:
+    {{- include "ignition-sim.labels" . | nindent 4 }}
+    app.kubernetes.io/component: sim-web-ui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "ignition-sim.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: sim-web-ui
+  template:
+    metadata:
+      labels:
+        {{- include "ignition-sim.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: sim-web-ui
+    spec:
+      {{- with .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.global.securityContext | nindent 8 }}
+      containers:
+        - name: sim-web-ui
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          image: "{{ .Values.global.registry }}{{ .Values.simWebUI.image.repository }}:{{ .Values.simWebUI.image.tag }}"
+          imagePullPolicy: {{ .Values.simWebUI.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          env:
+            {{- toYaml .Values.simWebUI.env | nindent 12 }}
+          volumeMounts:
+            {{- toYaml .Values.simWebUI.volumeMounts | nindent 12 }}
+          resources:
+            {{- toYaml .Values.simWebUI.resources | nindent 12 }}
+      volumes:
+        {{- toYaml .Values.simWebUI.volumes | nindent 8 }}
+      {{- with .Values.global.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.global.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.global.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

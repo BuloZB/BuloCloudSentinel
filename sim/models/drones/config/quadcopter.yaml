@@ -1,0 +1,123 @@
+# Quadcopter Configuration
+
+# General specifications
+name: "Standard Quadcopter"
+type: "quadcopter"
+version: "1.0.0"
+
+# Physical properties
+dimensions:
+  length: 0.47  # meters
+  width: 0.47   # meters
+  height: 0.11  # meters
+mass: 1.5       # kg
+max_takeoff_weight: 2.0  # kg
+payload_capacity: 0.5    # kg
+
+# Performance characteristics
+max_speed: 15.0          # m/s
+max_ascent_rate: 5.0     # m/s
+max_descent_rate: 3.0    # m/s
+max_angular_velocity: 3.0  # rad/s
+hover_thrust: 0.5        # normalized (0-1)
+max_flight_time: 25.0    # minutes at hover with no payload
+max_range: 2000.0        # meters
+max_altitude: 120.0      # meters AGL
+wind_resistance: 10.0    # m/s maximum wind speed
+
+# Motor specifications
+motors:
+  count: 4
+  type: "brushless"
+  kv: 920           # rpm/volt
+  max_thrust: 9.0   # Newtons per motor
+  max_power: 180.0  # Watts per motor
+  time_constant_up: 0.0125    # seconds
+  time_constant_down: 0.025   # seconds
+  max_rot_velocity: 1100      # rad/s
+  motor_constant: 8.54858e-06 # N·m / (rad/s)^2
+  moment_constant: 0.016      # N·m / N
+  rotor_drag_coefficient: 0.000806428
+  rolling_moment_coefficient: 1.0e-06
+
+# Propeller specifications
+propellers:
+  diameter: 0.254  # meters (10 inch)
+  pitch: 0.1143    # meters (4.5 inch)
+  configuration: "X"  # X configuration
+
+# Battery specifications
+battery:
+  type: "LiPo"
+  cells: 4         # 4S
+  capacity: 5200   # mAh
+  voltage: 14.8    # V nominal
+  max_discharge: 25  # C
+  weight: 0.45     # kg
+
+# Sensor specifications
+sensors:
+  imu:
+    update_rate: 200  # Hz
+    gyro_noise: 0.009  # rad/s standard deviation
+    gyro_bias: 0.00075  # rad/s bias
+    accel_noise: 0.021  # m/s^2 standard deviation
+    accel_bias: 0.05    # m/s^2 bias
+  
+  gps:
+    update_rate: 10  # Hz
+    horizontal_accuracy: 1.0  # meters standard deviation
+    vertical_accuracy: 1.5    # meters standard deviation
+    velocity_accuracy: 0.1    # m/s standard deviation
+  
+  barometer:
+    update_rate: 20  # Hz
+    accuracy: 0.5    # meters standard deviation
+  
+  magnetometer:
+    update_rate: 20  # Hz
+    accuracy: 0.0001  # Tesla standard deviation
+  
+  camera:
+    update_rate: 30  # Hz
+    resolution: [1280, 720]  # pixels
+    field_of_view: 60  # degrees
+    format: "RGB8"
+    noise: 0.007  # standard deviation
+
+# Control parameters
+control:
+  velocity_gain: [2.7, 2.7, 2.7]
+  attitude_gain: [2.0, 2.0, 2.0]
+  angular_rate_gain: [0.5, 0.5, 0.5]
+  max_linear_acceleration: [2.0, 2.0, 2.0]  # m/s^2
+  max_linear_velocity: [5.0, 5.0, 5.0]      # m/s
+  max_angular_velocity: [3.0, 3.0, 3.0]     # rad/s
+
+# Aerodynamic properties
+aerodynamics:
+  drag_coefficient: [0.1, 0.1, 0.2]  # [x, y, z]
+  frontal_area: 0.05  # m^2
+  side_area: 0.05     # m^2
+  top_area: 0.15      # m^2
+
+# Environmental effects
+environment:
+  wind_effect_factor: 1.0
+  rain_effect_factor: 0.8  # Reduced performance in rain
+  temperature_range: [-10, 40]  # Celsius
+  humidity_range: [0, 100]  # Percent
+
+# Failure modes
+failure_modes:
+  motor_failure: true
+  battery_failure: true
+  sensor_failure: true
+  communication_failure: true
+
+# Simulation parameters
+simulation:
+  init_pose: [0, 0, 0.1, 0, 0, 0]  # [x, y, z, roll, pitch, yaw]
+  init_velocity: [0, 0, 0, 0, 0, 0]  # [vx, vy, vz, wx, wy, wz]
+  physics_update_rate: 1000  # Hz
+  rotor_velocity_slowdown_sim: 10  # Slowdown factor for rotor visualization

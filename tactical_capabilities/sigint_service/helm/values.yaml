@@ -79,18 +79,18 @@ config:
 
 secrets:
   postgres:
-    user: postgres
-    password: postgres
+    user: placeholderusername
+    password: placeholderpassword
   jwt:
-    secret: supersecretkey
+    secret: ""  # Generate with: openssl rand -hex 32
   rabbitmq:
-    username: guest
-    password: guest
+    username: placeholderusername
+    password: placeholderpassword
   redis:
     password: ""
   minio:
-    accessKey: minioadmin
-    secretKey: minioadmin
+    accessKey: placeholderusername
+    secretKey: placeholderpassword
 
 networkPolicy:
   enabled: true

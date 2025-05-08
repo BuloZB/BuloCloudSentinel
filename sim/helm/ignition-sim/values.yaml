@@ -1,0 +1,234 @@
+# Default values for ignition-sim.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# Global settings
+global:
+  # Image registry
+  registry: ""
+  # Image pull secrets
+  imagePullSecrets: []
+  # Node selector
+  nodeSelector: {}
+  # Tolerations
+  tolerations: []
+  # Affinity
+  affinity: {}
+  # Security context
+  securityContext:
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
+    runAsNonRoot: true
+    readOnlyRootFilesystem: true
+  # Resource limits
+  resources:
+    limits:
+      cpu: 2
+      memory: 4Gi
+    requests:
+      cpu: 500m
+      memory: 1Gi
+
+# Ignition Gazebo settings
+ignitionGazebo:
+  # Image settings
+  image:
+    repository: bulo-cloud-sentinel/ignition-gazebo
+    tag: latest
+    pullPolicy: IfNotPresent
+  # Service settings
+  service:
+    type: ClusterIP
+    port: 11345
+  # Resource settings
+  resources:
+    limits:
+      cpu: 4
+      memory: 8Gi
+      nvidia.com/gpu: 1
+    requests:
+      cpu: 1
+      memory: 2Gi
+  # Environment variables
+  env:
+    - name: IGN_GAZEBO_RESOURCE_PATH
+      value: /models:/worlds
+    - name: IGN_GAZEBO_SYSTEM_PLUGIN_PATH
+      value: /usr/lib/x86_64-linux-gnu/ign-gazebo-7/plugins
+    - name: IGN_TRANSPORT_TOPIC_STATISTICS
+      value: "1"
+    - name: IGN_GUI_PLUGIN_PATH
+      value: /usr/lib/x86_64-linux-gnu/ign-gazebo-7/plugins/gui
+  # Volume settings
+  volumes:
+    - name: models
+      configMap:
+        name: ignition-sim-models
+    - name: worlds
+      configMap:
+        name: ignition-sim-worlds
+    - name: sim-data
+      persistentVolumeClaim:
+        claimName: ignition-sim-data
+  volumeMounts:
+    - name: models
+      mountPath: /models
+      readOnly: true
+    - name: worlds
+      mountPath: /worlds
+      readOnly: true
+    - name: sim-data
+      mountPath: /data
+
+# ROS 2 Humble settings
+ros2Humble:
+  # Image settings
+  image:
+    repository: bulo-cloud-sentinel/ros2-humble
+    tag: latest
+    pullPolicy: IfNotPresent
+  # Service settings
+  service:
+    type: ClusterIP
+    port: 8765
+  # Resource settings
+  resources:
+    limits:
+      cpu: 2
+      memory: 4Gi
+    requests:
+      cpu: 500m
+      memory: 1Gi
+  # Environment variables
+  env:
+    - name: ROS_DOMAIN_ID
+      value: "42"
+    - name: RMW_IMPLEMENTATION
+      value: rmw_cyclonedds_cpp
+    - name: CYCLONEDDS_URI
+      value: file:///ros2_ws/cyclonedds.xml
+  # Volume settings
+  volumes:
+    - name: ros2-ws
+      configMap:
+        name: ignition-sim-ros2-ws
+    - name: sim-data
+      persistentVolumeClaim:
+        claimName: ignition-sim-data
+  volumeMounts:
+    - name: ros2-ws
+      mountPath: /ros2_ws
+      readOnly: true
+    - name: sim-data
+      mountPath: /data
+
+# Sim Swarm Gateway settings
+simSwarmGateway:
+  # Image settings
+  image:
+    repository: bulo-cloud-sentinel/sim-swarm-gateway
+    tag: latest
+    pullPolicy: IfNotPresent
+  # Service settings
+  service:
+    type: ClusterIP
+    port: 8070
+  # Resource settings
+  resources:
+    limits:
+      cpu: 1
+      memory: 2Gi
+    requests:
+      cpu: 200m
+      memory: 512Mi
+  # Environment variables
+  env:
+    - name: ROS_DOMAIN_ID
+      value: "42"
+    - name: SENTINEL_API_URL
+      value: http://bulocloud-sentinel-api:8000
+    - name: SENTINEL_API_TOKEN
+      valueFrom:
+        secretKeyRef:
+          name: sentinel-api-token
+          key: token
+    - name: GATEWAY_CONFIG
+      value: /gateway/config/gateway.yaml
+  # Volume settings
+  volumes:
+    - name: gateway-config
+      configMap:
+        name: ignition-sim-gateway-config
+    - name: sim-data
+      persistentVolumeClaim:
+        claimName: ignition-sim-data
+  volumeMounts:
+    - name: gateway-config
+      mountPath: /gateway/config
+      readOnly: true
+    - name: sim-data
+      mountPath: /data
+
+# Sim Web UI settings
+simWebUI:
+  # Image settings
+  image:
+    repository: bulo-cloud-sentinel/sim-web-ui
+    tag: latest
+    pullPolicy: IfNotPresent
+  # Service settings
+  service:
+    type: ClusterIP
+    port: 8080
+  # Ingress settings
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    hosts:
+      - host: sim.bulocloud-sentinel.local
+        paths:
+          - path: /
+            pathType: Prefix
+    tls:
+      - secretName: sim-tls-secret
+        hosts:
+          - sim.bulocloud-sentinel.local
+  # Resource settings
+  resources:
+    limits:
+      cpu: 1
+      memory: 1Gi
+    requests:
+      cpu: 100m
+      memory: 256Mi
+  # Environment variables
+  env:
+    - name: GATEWAY_URL
+      value: http://sim-swarm-gateway:8070
+    - name: WEB_PORT
+      value: "8080"
+  # Volume settings
+  volumes:
+    - name: web-config
+      configMap:
+        name: ignition-sim-web-config
+    - name: sim-data
+      persistentVolumeClaim:
+        claimName: ignition-sim-data
+  volumeMounts:
+    - name: web-config
+      mountPath: /web/config
+      readOnly: true
+    - name: sim-data
+      mountPath: /data
+
+# Persistent volume claim settings
+persistentVolumeClaim:
+  enabled: true
+  storageClassName: standard
+  accessModes:
+    - ReadWriteOnce
+  size: 10Gi

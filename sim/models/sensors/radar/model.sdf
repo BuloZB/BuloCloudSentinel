@@ -1,0 +1,107 @@
+<?xml version="1.0" ?>
+<sdf version="1.8">
+  <model name="radar">
+    <pose>0 0 0 0 0 0</pose>
+    
+    <link name="base_link">
+      <inertial>
+        <mass>0.25</mass>
+        <inertia>
+          <ixx>0.00001</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.00001</iyy>
+          <iyz>0</iyz>
+          <izz>0.00001</izz>
+        </inertia>
+        <pose>0 0 0 0 0 0</pose>
+      </inertial>
+      
+      <collision name="collision">
+        <geometry>
+          <box>
+            <size>0.1 0.05 0.02</size>
+          </box>
+        </geometry>
+      </collision>
+      
+      <visual name="visual">
+        <geometry>
+          <mesh>
+            <uri>model://radar/meshes/radar.dae</uri>
+            <scale>1 1 1</scale>
+          </mesh>
+        </geometry>
+        <material>
+          <ambient>0.3 0.3 0.3 1.0</ambient>
+          <diffuse>0.3 0.3 0.3 1.0</diffuse>
+          <specular>0.1 0.1 0.1 1.0</specular>
+        </material>
+      </visual>
+      
+      <!-- Radar sensor -->
+      <sensor name="radar_sensor" type="gpu_ray">
+        <pose>0 0 0 0 0 0</pose>
+        <topic>radar</topic>
+        <update_rate>20</update_rate>
+        <ray>
+          <scan>
+            <horizontal>
+              <samples>400</samples>
+              <resolution>1</resolution>
+              <min_angle>-0.5236</min_angle>  <!-- -30 degrees -->
+              <max_angle>0.5236</max_angle>   <!-- 30 degrees -->
+            </horizontal>
+            <vertical>
+              <samples>1</samples>
+              <resolution>1</resolution>
+              <min_angle>0</min_angle>
+              <max_angle>0</max_angle>
+            </vertical>
+          </scan>
+          <range>
+            <min>0.1</min>
+            <max>200.0</max>
+            <resolution>0.01</resolution>
+          </range>
+          <noise>
+            <type>gaussian</type>
+            <mean>0.0</mean>
+            <stddev>0.01</stddev>
+          </noise>
+        </ray>
+        <visualize>true</visualize>
+        <always_on>true</always_on>
+      </sensor>
+    </link>
+    
+    <!-- Custom radar plugin -->
+    <plugin
+      filename="ignition-gazebo-radar-system"
+      name="ignition::gazebo::systems::Radar">
+      <topic>radar</topic>
+      <update_rate>20</update_rate>
+      <horizontal_fov>1.047</horizontal_fov>
+      <vertical_fov>0.1</vertical_fov>
+      <range_min>0.1</range_min>
+      <range_max>200.0</range_max>
+      <range_resolution>0.01</range_resolution>
+      <velocity_resolution>0.1</velocity_resolution>
+      <frequency>77.0</frequency>  <!-- 77 GHz automotive radar -->
+      <power>0.5</power>
+      <gain>20.0</gain>
+      <radar_cross_section_threshold>0.1</radar_cross_section_threshold>
+      <noise_mean>0.0</noise_mean>
+      <noise_stddev>0.01</noise_stddev>
+    </plugin>
+    
+    <!-- ROS2 bridge plugin -->
+    <plugin
+      filename="ignition-gazebo-ros-gpu-ray-system"
+      name="ignition::gazebo::systems::RosGpuRay">
+      <namespace>sensors</namespace>
+      <topic>radar</topic>
+      <frame_id>radar_link</frame_id>
+    </plugin>
+  </model>
+</sdf>

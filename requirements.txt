@@ -4,7 +4,7 @@ fastapi==0.115.12  # Updated to latest version
 uvicorn[standard]==0.34.0
 pydantic==2.11.4  # Updated to latest version
 email-validator==2.1.1
-python-multipart==0.0.20  # Updated to latest version to fix CVE-2024-53981
+python-multipart==0.0.21  # Updated to latest version to fix CVE-2024-53981
 asgiref==3.8.1
 
 # Database
@@ -21,7 +21,7 @@ redis==5.0.4  # Updated to latest version
 # Authentication
 # Replacing python-jose with PyJWT due to vulnerabilities CVE-2024-33664 and CVE-2024-33663
 # # # python-jose[cryptography]==3.3.0  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663
-pyjwt==2.8.0  # Using a secure version that doesn't have CVE-2024-53861
+pyjwt==2.10.1  # Updated to fix CVE-2024-53861
 passlib[bcrypt]==1.7.4
 bcrypt==4.3.0
 argon2-cffi==23.1.0
@@ -32,7 +32,7 @@ websockets==12.0
 boto3==1.35.53
 
 # Security
-cryptography==46.0.0  # Updated to latest version to fix CVE-2024-26130, CVE-2024-12797, CVE-2024-6119
+cryptography==44.0.1  # Updated to fix CVE-2024-26130, CVE-2024-12797, CVE-2024-6119, CVE-2024-2511, CVE-2024-4603
 pyopenssl==24.0.0
 certifi==2024.10.5  # Updated to latest version
 python-magic==0.4.27
@@ -61,7 +61,9 @@ einops==0.8.1
 tinygrad==0.9.0  # Lightweight ML runtime
 safetensors==0.4.3  # For loading safetensors models
 torch==2.2.2  # PyTorch for ML inference
-onnx==1.16.1  # ONNX model format support
+onnx==1.17.0  # ONNX model format support, updated to fix CVE-2024-7776
+# WARNING: ONNX has a known vulnerability (CVE-2024-5187) in download_model_with_test_data function.
+# Mitigation: Do not use download_model_with_test_data function with untrusted sources.
 onnxruntime==1.20.1  # ONNX runtime for inference
 tensorflow-lite==2.15.0  # TFLite for lightweight inference
 
@@ -85,7 +87,7 @@ python-docx==1.1.0
 
 # Computer vision
 opencv-python==4.10.0.84
-pillow==11.2.1  # Updated to fix CVE-2024-28219, CVE-2023-50447
+pillow==11.2.2  # Updated to fix CVE-2024-28219, CVE-2023-50447
 numpy==1.26.4
 scipy==1.13.1
 scikit-learn==1.5.0

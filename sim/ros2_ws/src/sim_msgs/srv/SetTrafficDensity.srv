@@ -1,0 +1,7 @@
+# Request
+float64 vehicle_density     # 0-1 scale
+float64 pedestrian_density  # 0-1 scale
+---
+# Response
+bool success
+string message

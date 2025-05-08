@@ -1,0 +1,96 @@
+<?xml version="1.0" ?>
+<sdf version="1.8">
+  <model name="thermal_camera">
+    <pose>0 0 0 0 0 0</pose>
+    
+    <link name="base_link">
+      <inertial>
+        <mass>0.1</mass>
+        <inertia>
+          <ixx>0.00001</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.00001</iyy>
+          <iyz>0</iyz>
+          <izz>0.00001</izz>
+        </inertia>
+        <pose>0 0 0 0 0 0</pose>
+      </inertial>
+      
+      <collision name="collision">
+        <geometry>
+          <box>
+            <size>0.03 0.03 0.03</size>
+          </box>
+        </geometry>
+      </collision>
+      
+      <visual name="visual">
+        <geometry>
+          <mesh>
+            <uri>model://thermal_camera/meshes/thermal_camera.dae</uri>
+            <scale>1 1 1</scale>
+          </mesh>
+        </geometry>
+        <material>
+          <ambient>0.1 0.1 0.1 1.0</ambient>
+          <diffuse>0.1 0.1 0.1 1.0</diffuse>
+          <specular>0.01 0.01 0.01 1.0</specular>
+        </material>
+      </visual>
+      
+      <!-- Thermal camera sensor -->
+      <sensor name="thermal_camera_sensor" type="thermal_camera">
+        <pose>0 0 0 0 0 0</pose>
+        <topic>thermal</topic>
+        <update_rate>20</update_rate>
+        <camera>
+          <horizontal_fov>1.047</horizontal_fov>
+          <image>
+            <width>640</width>
+            <height>480</height>
+            <format>R8G8B8</format>
+          </image>
+          <clip>
+            <near>0.1</near>
+            <far>100</far>
+          </clip>
+          <noise>
+            <type>gaussian</type>
+            <mean>0.0</mean>
+            <stddev>0.007</stddev>
+          </noise>
+          <lens>
+            <type>gnomonical</type>
+            <scale_to_hfov>true</scale_to_hfov>
+            <cutoff_angle>1.5707</cutoff_angle>
+            <env_texture_size>256</env_texture_size>
+          </lens>
+        </camera>
+        <thermal_camera>
+          <min_temperature>253.15</min_temperature>  <!-- -20°C -->
+          <max_temperature>673.15</max_temperature>  <!-- 400°C -->
+          <resolution>0.01</resolution>
+          <ambient_temperature>293.15</ambient_temperature>  <!-- 20°C -->
+          <emissivity>0.95</emissivity>
+          <noise>
+            <type>gaussian</type>
+            <mean>0.0</mean>
+            <stddev>0.5</stddev>
+          </noise>
+        </thermal_camera>
+        <visualize>true</visualize>
+        <always_on>true</always_on>
+      </sensor>
+    </link>
+    
+    <!-- ROS2 bridge plugin -->
+    <plugin
+      filename="ignition-gazebo-ros-thermal-camera-system"
+      name="ignition::gazebo::systems::RosThermalCamera">
+      <namespace>sensors</namespace>
+      <topic>thermal</topic>
+      <frame_id>thermal_camera_link</frame_id>
+    </plugin>
+  </model>
+</sdf>

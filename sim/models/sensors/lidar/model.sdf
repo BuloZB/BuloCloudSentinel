@@ -1,0 +1,88 @@
+<?xml version="1.0" ?>
+<sdf version="1.8">
+  <model name="3d_lidar">
+    <pose>0 0 0 0 0 0</pose>
+    
+    <link name="base_link">
+      <inertial>
+        <mass>0.35</mass>
+        <inertia>
+          <ixx>0.0001</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.0001</iyy>
+          <iyz>0</iyz>
+          <izz>0.0001</izz>
+        </inertia>
+        <pose>0 0 0 0 0 0</pose>
+      </inertial>
+      
+      <collision name="collision">
+        <geometry>
+          <cylinder>
+            <radius>0.05</radius>
+            <length>0.07</length>
+          </cylinder>
+        </geometry>
+      </collision>
+      
+      <visual name="visual">
+        <geometry>
+          <mesh>
+            <uri>model://lidar/meshes/lidar.dae</uri>
+            <scale>1 1 1</scale>
+          </mesh>
+        </geometry>
+        <material>
+          <ambient>0.1 0.1 0.1 1.0</ambient>
+          <diffuse>0.1 0.1 0.1 1.0</diffuse>
+          <specular>0.01 0.01 0.01 1.0</specular>
+        </material>
+      </visual>
+      
+      <!-- 3D LiDAR sensor -->
+      <sensor name="3d_lidar_sensor" type="gpu_lidar">
+        <pose>0 0 0 0 0 0</pose>
+        <topic>lidar</topic>
+        <update_rate>10</update_rate>
+        <lidar>
+          <scan>
+            <horizontal>
+              <samples>1800</samples>
+              <resolution>1</resolution>
+              <min_angle>-3.14159</min_angle>
+              <max_angle>3.14159</max_angle>
+            </horizontal>
+            <vertical>
+              <samples>16</samples>
+              <resolution>1</resolution>
+              <min_angle>-0.261799</min_angle>
+              <max_angle>0.261799</max_angle>
+            </vertical>
+          </scan>
+          <range>
+            <min>0.1</min>
+            <max>100.0</max>
+            <resolution>0.01</resolution>
+          </range>
+          <noise>
+            <type>gaussian</type>
+            <mean>0.0</mean>
+            <stddev>0.01</stddev>
+          </noise>
+        </lidar>
+        <visualize>true</visualize>
+        <always_on>true</always_on>
+      </sensor>
+    </link>
+    
+    <!-- ROS2 bridge plugin -->
+    <plugin
+      filename="ignition-gazebo-ros-gpu-lidar-system"
+      name="ignition::gazebo::systems::RosGpuLidar">
+      <namespace>sensors</namespace>
+      <topic>lidar</topic>
+      <frame_id>lidar_link</frame_id>
+    </plugin>
+  </model>
+</sdf>

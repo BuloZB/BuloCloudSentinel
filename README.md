@@ -126,6 +126,24 @@ The Drone Show Microservice enables planning, simulation, and execution of chore
 - **🔋 Battery Management**: Optimize shows based on battery levels
 - **🔒 Security Hardened**: Comprehensive security measures and dependency management
 
+### 🌐 Digital Twin & Simulation
+
+The Digital Twin & Simulation environment provides a deterministic, software-in-the-loop (SITL) testing platform:
+
+- **🎮 Ignition Gazebo**: Physics and rendering engine for realistic drone simulation
+- **🤖 ROS 2 Humble**: Robotics middleware for communication
+- **🏙️ Urban Environments**: Detailed urban worlds with buildings, streets, traffic, and GPS multipath effects
+- **🔄 Swarm Simulation**: Support for multi-drone scenarios and swarm logic testing
+- **🌦️ Weather Simulation**: Realistic wind, rain, fog, and time-of-day effects with turbulence modeling
+- **🚗 Traffic Simulation**: Dynamic vehicles and pedestrians with realistic movement patterns
+- **📡 Advanced Sensors**: LiDAR, thermal cameras, depth cameras, and radar sensor simulation
+- **🔋 Battery Simulation**: Realistic battery discharge curves and power management
+- **📊 Telemetry Bridge**: Seamless integration with existing Bulo.CloudSentinel platform
+- **🧪 Comprehensive Testing**: Scenario-based testing with failure injection capabilities
+- **📈 Visualization Tools**: Real-time 3D visualization of trajectories, sensor data, and metrics
+- **☁️ Kubernetes Deployment**: Helm charts for easy deployment to Kubernetes clusters
+- **🔒 Security Hardened**: Non-root containers with read-only filesystem and parameter validation
+
 ### 🔒 Security Module
 
 The Security Module provides comprehensive security features for the Bulo.Cloud Sentinel platform:
@@ -301,6 +319,14 @@ bulo-cloud-sentinel/
 │   ├── services/         # Business logic services
 │   └── utils/            # Utility functions
 ├── drone_swarm_system/   # Drone Swarm System microservice
+├── sim/                  # Digital Twin & Simulation environment
+│   ├── bazel/            # Bazel build configuration
+│   ├── docker/           # Docker configuration files
+│   ├── helm/             # Helm charts for Kubernetes deployment
+│   ├── models/           # Gazebo models
+│   ├── ros2_ws/          # ROS 2 workspace
+│   ├── scripts/          # Utility scripts
+│   └── tests/            # Test files
 ├── frontend/             # React frontend application
 │   ├── public/           # Static assets
 │   └── src/              # Source code

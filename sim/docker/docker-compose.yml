@@ -1,0 +1,124 @@
+version: '3.8'
+
+services:
+  ignition-gazebo:
+    build:
+      context: .
+      dockerfile: Dockerfile.ignition
+    image: bulo-cloud-sentinel/ignition-gazebo:latest
+    container_name: ignition-gazebo
+    restart: unless-stopped
+    user: 1000:1000  # Non-root user
+    read_only: true  # Read-only filesystem
+    tmpfs:
+      - /tmp
+      - /run
+    volumes:
+      - ../models:/models:ro
+      - ../worlds:/worlds:ro
+      - sim-data:/data
+    environment:
+      - IGN_GAZEBO_RESOURCE_PATH=/models:/worlds
+      - IGN_GAZEBO_SYSTEM_PLUGIN_PATH=/usr/lib/x86_64-linux-gnu/ign-gazebo-7/plugins
+      - IGN_TRANSPORT_TOPIC_STATISTICS=1
+      - IGN_GUI_PLUGIN_PATH=/usr/lib/x86_64-linux-gnu/ign-gazebo-7/plugins/gui
+    ports:
+      - "11345:11345"  # Gazebo server port
+    networks:
+      - sim-network
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  ros2-humble:
+    build:
+      context: .
+      dockerfile: Dockerfile.ros2
+    image: bulo-cloud-sentinel/ros2-humble:latest
+    container_name: ros2-humble
+    restart: unless-stopped
+    user: 1000:1000  # Non-root user
+    read_only: true  # Read-only filesystem
+    tmpfs:
+      - /tmp
+      - /run
+    volumes:
+      - ../ros2_ws:/ros2_ws:ro
+      - sim-data:/data
+    environment:
+      - ROS_DOMAIN_ID=42
+      - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+      - CYCLONEDDS_URI=file:///ros2_ws/cyclonedds.xml
+    ports:
+      - "8765:8765"  # ROS2 bridge WebSocket port
+    networks:
+      - sim-network
+    depends_on:
+      - ignition-gazebo
+
+  sim-swarm-gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile.gateway
+    image: bulo-cloud-sentinel/sim-swarm-gateway:latest
+    container_name: sim-swarm-gateway
+    restart: unless-stopped
+    user: 1000:1000  # Non-root user
+    read_only: true  # Read-only filesystem
+    tmpfs:
+      - /tmp
+      - /run
+    volumes:
+      - ../gateway:/gateway:ro
+      - sim-data:/data
+    environment:
+      - ROS_DOMAIN_ID=42
+      - SENTINEL_API_URL=http://bulocloud-sentinel-api:8000
+      - SENTINEL_API_TOKEN=${SENTINEL_API_TOKEN:-}
+      - GATEWAY_CONFIG=/gateway/config/gateway.yaml
+    ports:
+      - "8070:8070"  # Gateway API port
+    networks:
+      - sim-network
+      - sentinel-network
+    depends_on:
+      - ros2-humble
+
+  sim-web-ui:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    image: bulo-cloud-sentinel/sim-web-ui:latest
+    container_name: sim-web-ui
+    restart: unless-stopped
+    user: 1000:1000  # Non-root user
+    read_only: true  # Read-only filesystem
+    tmpfs:
+      - /tmp
+      - /run
+    volumes:
+      - ../web:/web:ro
+      - sim-data:/data
+    environment:
+      - GATEWAY_URL=http://sim-swarm-gateway:8070
+      - WEB_PORT=8080
+    ports:
+      - "8080:8080"  # Web UI port
+    networks:
+      - sim-network
+    depends_on:
+      - sim-swarm-gateway
+
+networks:
+  sim-network:
+    driver: bridge
+  sentinel-network:
+    external: true
+
+volumes:
+  sim-data:
+    driver: local

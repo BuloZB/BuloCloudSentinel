@@ -1,0 +1,142 @@
+# Swarm Navigation Test Scenario
+
+name: swarm_navigation
+description: Test that a swarm of drones can navigate through an urban environment without collisions
+
+# World configuration
+world: urban_downtown
+
+# Drone configuration
+drones:
+  - id: drone_1
+    type: quadcopter
+    position: [-10, -10, 0.1]
+    orientation: [0, 0, 0]
+    mission:
+      type: waypoint
+      waypoints:
+        - [10, 10, 20]
+        - [30, 30, 30]
+        - [50, 10, 20]
+        - [30, -10, 20]
+        - [10, 10, 20]
+        - [-10, -10, 0.1]
+  
+  - id: drone_2
+    type: quadcopter
+    position: [-5, -10, 0.1]
+    orientation: [0, 0, 0]
+    mission:
+      type: waypoint
+      waypoints:
+        - [10, 20, 25]
+        - [40, 20, 35]
+        - [40, -20, 25]
+        - [10, -20, 25]
+        - [-5, -10, 0.1]
+  
+  - id: drone_3
+    type: quadcopter
+    position: [0, -10, 0.1]
+    orientation: [0, 0, 0]
+    mission:
+      type: waypoint
+      waypoints:
+        - [20, 0, 30]
+        - [20, 40, 40]
+        - [-20, 40, 30]
+        - [-20, 0, 30]
+        - [0, -10, 0.1]
+  
+  - id: drone_4
+    type: quadcopter
+    position: [5, -10, 0.1]
+    orientation: [0, 0, 0]
+    mission:
+      type: waypoint
+      waypoints:
+        - [30, 10, 35]
+        - [10, 40, 45]
+        - [-30, 10, 35]
+        - [-10, -20, 35]
+        - [5, -10, 0.1]
+  
+  - id: drone_5
+    type: quadcopter
+    position: [10, -10, 0.1]
+    orientation: [0, 0, 0]
+    mission:
+      type: waypoint
+      waypoints:
+        - [0, 0, 40]
+        - [0, 50, 50]
+        - [-50, 0, 40]
+        - [0, -50, 40]
+        - [50, 0, 40]
+        - [10, -10, 0.1]
+
+# Test duration in seconds
+duration: 300.0
+
+# Environment configuration
+environment:
+  weather_type: clear
+  wind_speed: 2.0
+  wind_direction: 45.0
+  wind_gust_factor: 0.2
+  wind_turbulence_intensity: 0.1
+  rain_intensity: 0.0
+  fog_density: 0.0
+  time_of_day: 12.0
+  gps_multipath_factor: 0.2
+
+# Traffic configuration
+traffic:
+  vehicle_density: 0.3
+  pedestrian_density: 0.2
+
+# Metrics to collect
+metrics:
+  - telemetry
+  - performance
+  - coverage
+
+# Artifacts to collect
+artifacts:
+  - trajectory
+  - video
+  - logs
+
+# Success criteria
+success_criteria:
+  # All drones must complete their missions
+  mission_completion: true
+  
+  # No collisions between drones
+  no_collisions: true
+  
+  # Maximum allowed deviation from planned path (meters)
+  max_path_deviation: 5.0
+  
+  # Minimum distance between drones (meters)
+  min_drone_distance: 3.0
+  
+  # Maximum mission completion time (seconds)
+  max_completion_time: 280.0
+
+# Failure conditions
+failure_conditions:
+  # Collision with buildings or other obstacles
+  collision: true
+  
+  # Drone flies outside the allowed area
+  out_of_bounds: true
+  
+  # Drone exceeds maximum allowed speed
+  max_speed_exceeded: 15.0
+  
+  # Drone exceeds maximum allowed acceleration
+  max_acceleration_exceeded: 5.0
+  
+  # Drone battery depleted before mission completion
+  battery_depleted: true

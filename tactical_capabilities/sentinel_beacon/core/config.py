@@ -39,9 +39,21 @@ class Settings(BaseSettings):
         )
 
     # JWT settings
-    JWT_SECRET: str = os.getenv("JWT_SECRET", "supersecretkey")
+    JWT_SECRET: str = os.getenv("JWT_SECRET", "")
     JWT_ALGORITHM: str = "HS256"
     JWT_EXPIRATION_MINUTES: int = 30
+
+    @field_validator("JWT_SECRET", mode="before")
+    def validate_jwt_secret(cls, v: str) -> str:
+        if not v:
+            if os.getenv("ENVIRONMENT", "development").lower() == "production":
+                raise ValueError("JWT_SECRET environment variable must be set in production")
+            else:
+                import secrets
+                import logging
+                v = secrets.token_hex(32)
+                logging.warning("Generated random JWT secret key for development. This will change on restart!")
+        return v
 
     # RabbitMQ settings
     RABBITMQ_HOST: str = os.getenv("RABBITMQ_HOST", "localhost")

@@ -1,0 +1,14 @@
+apiVersion: v2
+name: ignition-sim
+description: A Helm chart for Bulo.CloudSentinel Digital Twin & Simulation
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+keywords:
+  - simulation
+  - gazebo
+  - ros2
+  - digital-twin
+maintainers:
+  - name: Bulo.CloudSentinel Team
+    email: support@bulocloud.com

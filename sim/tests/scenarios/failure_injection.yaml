@@ -1,0 +1,150 @@
+# Failure Injection Test Scenario
+
+name: failure_injection
+description: Test drone resilience to various failure modes
+
+# World configuration
+world: urban_small
+
+# Drone configuration
+drones:
+  - id: drone_1
+    type: quadcopter
+    position: [-10, -10, 0.1]
+    orientation: [0, 0, 0]
+    mission:
+      type: waypoint
+      waypoints:
+        - [10, 10, 20]
+        - [30, 30, 30]
+        - [10, 10, 20]
+        - [-10, -10, 0.1]
+    failures:
+      - type: sensor
+        sensor_type: gps
+        time: 60.0
+        duration: 30.0
+  
+  - id: drone_2
+    type: quadcopter
+    position: [-5, -10, 0.1]
+    orientation: [0, 0, 0]
+    mission:
+      type: waypoint
+      waypoints:
+        - [10, 20, 25]
+        - [40, 20, 35]
+        - [10, 20, 25]
+        - [-5, -10, 0.1]
+    failures:
+      - type: motor
+        motor_id: 1
+        time: 90.0
+        duration: -1.0  # Permanent failure
+  
+  - id: drone_3
+    type: quadcopter
+    position: [0, -10, 0.1]
+    orientation: [0, 0, 0]
+    mission:
+      type: waypoint
+      waypoints:
+        - [20, 0, 30]
+        - [20, 40, 40]
+        - [20, 0, 30]
+        - [0, -10, 0.1]
+    failures:
+      - type: battery
+        failure_type: rapid_discharge
+        time: 120.0
+        rate: 0.05  # 5% per second
+  
+  - id: drone_4
+    type: quadcopter
+    position: [5, -10, 0.1]
+    orientation: [0, 0, 0]
+    mission:
+      type: waypoint
+      waypoints:
+        - [30, 10, 35]
+        - [10, 40, 45]
+        - [30, 10, 35]
+        - [5, -10, 0.1]
+    failures:
+      - type: communication
+        time: 150.0
+        duration: 60.0
+  
+  - id: drone_5
+    type: quadcopter
+    position: [10, -10, 0.1]
+    orientation: [0, 0, 0]
+    mission:
+      type: waypoint
+      waypoints:
+        - [0, 0, 40]
+        - [0, 50, 50]
+        - [0, 0, 40]
+        - [10, -10, 0.1]
+    failures:
+      - type: sensor
+        sensor_type: imu
+        time: 180.0
+        duration: 30.0
+
+# Test duration in seconds
+duration: 300.0
+
+# Environment configuration
+environment:
+  weather_type: clear
+  wind_speed: 0.0
+  wind_direction: 0.0
+  wind_gust_factor: 0.0
+  wind_turbulence_intensity: 0.0
+  rain_intensity: 0.0
+  fog_density: 0.0
+  time_of_day: 12.0
+  gps_multipath_factor: 0.0
+
+# Traffic configuration
+traffic:
+  vehicle_density: 0.0
+  pedestrian_density: 0.0
+
+# Metrics to collect
+metrics:
+  - telemetry
+  - performance
+  - coverage
+
+# Artifacts to collect
+artifacts:
+  - trajectory
+  - video
+  - logs
+
+# Success criteria
+success_criteria:
+  # At least 3 drones must complete their missions
+  mission_completion_count: 3
+  
+  # No collisions between drones
+  no_collisions: true
+  
+  # Maximum allowed deviation from planned path (meters)
+  max_path_deviation: 10.0
+  
+  # Minimum distance between drones (meters)
+  min_drone_distance: 3.0
+
+# Failure conditions
+failure_conditions:
+  # Collision with buildings or other obstacles
+  collision: true
+  
+  # Drone flies outside the allowed area
+  out_of_bounds: true
+  
+  # More than 2 drones fail to complete their missions
+  mission_failure_count: 3
