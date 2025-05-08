@@ -1,0 +1,130 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "dock-driver.fullname" . }}
+  labels:
+    {{- include "dock-driver.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "dock-driver.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "dock-driver.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "dock-driver.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          env:
+            - name: DOCK_DRIVER_CONFIG
+              value: "/app/config/config.yaml"
+            - name: LOG_LEVEL
+              value: {{ .Values.config.logging.level | quote }}
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "dock-driver.fullname" . }}-secrets
+                  key: jwt-secret
+            - name: DJI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "dock-driver.fullname" . }}-secrets
+                  key: dji-api-key
+            - name: DJI_API_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "dock-driver.fullname" . }}-secrets
+                  key: dji-api-secret
+            - name: DJI_DOCK_SN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "dock-driver.fullname" . }}-secrets
+                  key: dji-dock-sn
+            - name: HEISHA_DOCK_IP
+              value: {{ .Values.env.heisha_dock_ip | quote }}
+            - name: HEISHA_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "dock-driver.fullname" . }}-secrets
+                  key: heisha-username
+            - name: HEISHA_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "dock-driver.fullname" . }}-secrets
+                  key: heisha-password
+            - name: MQTT_BROKER
+              value: {{ .Values.env.mqtt_broker | quote }}
+            - name: MQTT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "dock-driver.fullname" . }}-secrets
+                  key: mqtt-username
+            - name: MQTT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "dock-driver.fullname" . }}-secrets
+                  key: mqtt-password
+            - name: POWER_MANAGEMENT_JWT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "dock-driver.fullname" . }}-secrets
+                  key: power-management-jwt-token
+          volumeMounts:
+            - name: config-volume
+              mountPath: /app/config
+            - name: logs-volume
+              mountPath: /app/logs
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ include "dock-driver.fullname" . }}-config
+        - name: logs-volume
+          emptyDir: {}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

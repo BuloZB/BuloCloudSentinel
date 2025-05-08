@@ -1,0 +1,179 @@
+{
+  "httpRequest": {
+    "method": "POST",
+    "path": "/v2/auth/token"
+  },
+  "httpResponse": {
+    "statusCode": 200,
+    "headers": {
+      "Content-Type": ["application/json"]
+    },
+    "body": {
+      "code": 0,
+      "data": {
+        "access_token": "test_token",
+        "expires_in": 7200
+      }
+    }
+  }
+},
+{
+  "httpRequest": {
+    "method": "GET",
+    "path": "/v2/dock/status"
+  },
+  "httpResponse": {
+    "statusCode": 200,
+    "headers": {
+      "Content-Type": ["application/json"]
+    },
+    "body": {
+      "code": 0,
+      "data": {
+        "status": 1,
+        "charging_status": 0,
+        "door_state": "closed",
+        "drone_connected": false,
+        "error_code": 0,
+        "error_message": ""
+      }
+    }
+  }
+},
+{
+  "httpRequest": {
+    "method": "GET",
+    "path": "/v2/dock/telemetry"
+  },
+  "httpResponse": {
+    "statusCode": 200,
+    "headers": {
+      "Content-Type": ["application/json"]
+    },
+    "body": {
+      "code": 0,
+      "data": {
+        "temperature": 25.0,
+        "humidity": 50.0,
+        "charging_voltage": 12.0,
+        "charging_current": 2.0,
+        "battery_level": 80,
+        "network_signal": 90
+      }
+    }
+  }
+},
+{
+  "httpRequest": {
+    "method": "POST",
+    "path": "/v2/dock/control"
+  },
+  "httpResponse": {
+    "statusCode": 200,
+    "headers": {
+      "Content-Type": ["application/json"]
+    },
+    "body": {
+      "code": 0,
+      "data": {}
+    }
+  }
+},
+{
+  "httpRequest": {
+    "method": "GET",
+    "path": "/api/status"
+  },
+  "httpResponse": {
+    "statusCode": 200,
+    "headers": {
+      "Content-Type": ["application/json"]
+    },
+    "body": {
+      "door_state": "closed",
+      "drone_connected": false,
+      "error_code": 0,
+      "error_message": ""
+    }
+  }
+},
+{
+  "httpRequest": {
+    "method": "GET",
+    "path": "/api/telemetry"
+  },
+  "httpResponse": {
+    "statusCode": 200,
+    "headers": {
+      "Content-Type": ["application/json"]
+    },
+    "body": {
+      "network_signal": 90
+    }
+  }
+},
+{
+  "httpRequest": {
+    "method": "GET",
+    "path": "/api/power-management/battery/fleet"
+  },
+  "httpResponse": {
+    "statusCode": 200,
+    "headers": {
+      "Content-Type": ["application/json"]
+    },
+    "body": {
+      "drone-1": {
+        "capacity_percent": 25,
+        "voltage": 11.5,
+        "current": 0.5,
+        "temperature": 30.0,
+        "discharge_rate": 0.1,
+        "estimated_time_remaining": 1800
+      },
+      "drone-2": {
+        "capacity_percent": 75,
+        "voltage": 12.5,
+        "current": 0.2,
+        "temperature": 25.0,
+        "discharge_rate": 0.05,
+        "estimated_time_remaining": 5400
+      }
+    }
+  }
+},
+{
+  "httpRequest": {
+    "method": "GET",
+    "path": "/api/power-management/battery/drone-1/current"
+  },
+  "httpResponse": {
+    "statusCode": 200,
+    "headers": {
+      "Content-Type": ["application/json"]
+    },
+    "body": {
+      "capacity_percent": 25,
+      "voltage": 11.5,
+      "current": 0.5,
+      "temperature": 30.0,
+      "discharge_rate": 0.1,
+      "estimated_time_remaining": 1800
+    }
+  }
+},
+{
+  "httpRequest": {
+    "method": "POST",
+    "path": "/api/power-management/battery/trigger-rth/drone-1"
+  },
+  "httpResponse": {
+    "statusCode": 200,
+    "headers": {
+      "Content-Type": ["application/json"]
+    },
+    "body": {
+      "message": "Return-to-home triggered for drone drone-1"
+    }
+  }
+}

@@ -1,0 +1,71 @@
+{{- if .Values.mqtt.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "dock-driver.fullname" . }}-mqtt
+  labels:
+    {{- include "dock-driver.labels" . | nindent 4 }}
+    app.kubernetes.io/component: mqtt
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "dock-driver.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: mqtt
+  template:
+    metadata:
+      labels:
+        {{- include "dock-driver.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: mqtt
+    spec:
+      containers:
+        - name: mqtt
+          image: "{{ .Values.mqtt.image.repository }}:{{ .Values.mqtt.image.tag }}"
+          ports:
+            - containerPort: 1883
+              name: mqtt
+            - containerPort: 9001
+              name: websocket
+          resources:
+            {{- toYaml .Values.mqtt.resources | nindent 12 }}
+          volumeMounts:
+            - name: config-volume
+              mountPath: /mosquitto/config/mosquitto.conf
+              subPath: mosquitto.conf
+            - name: data-volume
+              mountPath: /mosquitto/data
+            - name: log-volume
+              mountPath: /mosquitto/log
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ include "dock-driver.fullname" . }}-config
+            items:
+              - key: mosquitto.conf
+                path: mosquitto.conf
+        - name: data-volume
+          emptyDir: {}
+        - name: log-volume
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "dock-driver.fullname" . }}-mqtt
+  labels:
+    {{- include "dock-driver.labels" . | nindent 4 }}
+    app.kubernetes.io/component: mqtt
+spec:
+  ports:
+    - port: 1883
+      targetPort: 1883
+      protocol: TCP
+      name: mqtt
+    - port: 9001
+      targetPort: 9001
+      protocol: TCP
+      name: websocket
+  selector:
+    {{- include "dock-driver.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: mqtt
+{{- end }}

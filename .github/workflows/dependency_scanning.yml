@@ -1,0 +1,146 @@
+name: Dependency Scanning
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Run every day at midnight
+  workflow_dispatch:  # Allow manual triggering
+  push:
+    branches: [ main ]
+    paths:
+      - '**/requirements.txt'
+      - '**/pyproject.toml'
+      - '**/setup.py'
+      - '**/package.json'
+      - '**/package-lock.json'
+      - '**/yarn.lock'
+      - '.github/workflows/dependency_scanning.yml'
+
+jobs:
+  scan-python-dependencies:
+    name: Scan Python Dependencies
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install safety
+        run: pip install safety
+      
+      - name: Run safety check
+        run: |
+          find . -name "requirements.txt" -type f -exec safety check -r {} \;
+      
+      - name: Install pip-audit
+        run: pip install pip-audit
+      
+      - name: Run pip-audit
+        run: |
+          find . -name "requirements.txt" -type f -exec pip-audit -r {} \;
+  
+  scan-with-snyk:
+    name: Scan with Snyk
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Snyk
+        uses: snyk/actions/setup@master
+      
+      - name: Snyk Python scan
+        run: |
+          find . -name "requirements.txt" -type f -exec snyk test --file={} \;
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      
+      - name: Snyk JavaScript scan
+        run: |
+          find . -name "package.json" -type f -exec snyk test --file={} \;
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+  
+  scan-with-owasp-dependency-check:
+    name: Scan with OWASP Dependency Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      
+      - name: Run OWASP Dependency Check
+        uses: dependency-check/Dependency-Check_Action@main
+        with:
+          project: 'Bulo.CloudSentinel'
+          path: '.'
+          format: 'HTML'
+          out: 'reports'
+          args: >
+            --enableExperimental
+            --scan **/*.py
+            --scan **/requirements.txt
+            --scan **/package.json
+            --scan **/package-lock.json
+            --scan **/yarn.lock
+      
+      - name: Upload report
+        uses: actions/upload-artifact@v3
+        with:
+          name: dependency-check-report
+          path: reports
+  
+  generate-sbom:
+    name: Generate SBOM
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install CycloneDX
+        run: pip install cyclonedx-bom
+      
+      - name: Generate SBOM for Python dependencies
+        run: |
+          find . -name "requirements.txt" -type f -exec cyclonedx-py -r -i {} -o {}.bom.xml \;
+      
+      - name: Upload SBOM
+        uses: actions/upload-artifact@v3
+        with:
+          name: sbom-files
+          path: '**/*.bom.xml'
+  
+  notify-on-vulnerabilities:
+    name: Notify on Vulnerabilities
+    needs: [scan-python-dependencies, scan-with-snyk, scan-with-owasp-dependency-check]
+    runs-on: ubuntu-latest
+    if: failure()
+    
+    steps:
+      - name: Send notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_CHANNEL: security-alerts
+          SLACK_COLOR: danger
+          SLACK_ICON: https://github.com/rtCamp.png?size=48
+          SLACK_MESSAGE: 'Vulnerabilities found in dependencies! :rotating_light:'
+          SLACK_TITLE: Dependency Scanning Alert
+          SLACK_USERNAME: GitHub Actions

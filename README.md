@@ -50,6 +50,7 @@ Sentinel AI provides advanced artificial intelligence capabilities for the Bulo.
 - **🚀 Lightweight ML Runtime**: TinyGrad integration for efficient on-board inference
 - **🔌 Multiple ML Backends**: Support for TinyGrad, PyTorch, and TensorFlow Lite
 - **💻 Hardware Acceleration**: Automatic detection and utilization of CUDA, OpenCL, and CPU
+- **📦 Model Hub**: Versioned model management with blue/green deployments and automatic rollback
 
 ### 🌐 SentinelWeb
 
@@ -144,6 +145,18 @@ The Digital Twin & Simulation environment provides a deterministic, software-in-
 - **☁️ Kubernetes Deployment**: Helm charts for easy deployment to Kubernetes clusters
 - **🔒 Security Hardened**: Non-root containers with read-only filesystem and parameter validation
 
+### 🔌 Dock Stations
+
+The Dock Stations integration enables automated charging and protection for drones:
+
+- **🏠 Multi-Vendor Support**: Integration with DJI Dock 2, Heisha Charging Pad, and DIY ESP32-powered docks
+- **🔄 Automated Charging**: Automatic charging when battery levels are low
+- **🌡️ Environmental Control**: Temperature and humidity monitoring and control
+- **📊 Telemetry**: Real-time telemetry data from docking stations
+- **🔌 Power Management Integration**: Seamless integration with the Power Management module
+- **🔒 Secure Communication**: Encrypted communication with docking stations
+- **🧩 Modular Design**: Adapter pattern for easy addition of new dock types
+
 ### 🔒 Security Module
 
 The Security Module provides comprehensive security features for the Bulo.Cloud Sentinel platform:
@@ -167,6 +180,19 @@ The Security Module provides comprehensive security features for the Bulo.Cloud 
 - **🛡️ CORS Protection**: Strict Cross-Origin Resource Sharing configuration
 - **🔐 Secure Password Handling**: Argon2id password hashing with proper salting
 - **📝 Secure Logging**: Logging utilities that mask sensitive data automatically
+
+### 📦 Model Hub
+
+The Model Hub provides versioned model management for the Bulo.Cloud Sentinel platform:
+
+- **🗄️ Model Registry**: Store and version AI models with MLflow + MinIO backend
+- **📊 Metadata Tracking**: Track model accuracy, hash, size, and hardware compatibility
+- **🔄 Blue/Green Deployments**: Deploy models with zero downtime using Argo Rollouts
+- **🔙 Automatic Rollback**: Automatically roll back to previous version if performance degrades
+- **🔒 Security**: Signed models with hash verification and seccomp confinement
+- **🔌 Edge Integration**: Seamless integration with Edge Kit for over-the-air updates
+- **🛠️ CLI & UI**: Command-line and web interfaces for model management
+- **🔄 CI/CD**: GitHub Actions for automated model uploads and deployments
 
 ### 🌐 Edge Kit
 
@@ -207,8 +233,9 @@ The platform also includes an enhanced inference engine with advanced capabiliti
 - **Model Management**: Convert, visualize, and analyze models
 - **Model Optimization**: Optimize models for improved performance
 - **Model Quantization**: Quantize models for reduced size and faster inference
+- **Model Hub**: Versioned model management with blue/green deployments and automatic rollback
 
-See [Enhanced Inference Engine](docs/enhanced_inference.md) for more details.
+See [Enhanced Inference Engine](docs/enhanced_inference.md) and [Model Hub](model_hub_service/docs/model_hub.md) for more details.
 
 You can select the backend to use via the `ML_BACKEND` environment variable or the `--ml-backend` command-line option:
 
@@ -348,6 +375,16 @@ bulo-cloud-sentinel/
 │   ├── services/         # Business logic services
 │   └── utils/            # Utility functions
 ├── drone_swarm_system/   # Drone Swarm System microservice
+├── dock_driver/          # Dock Stations microservice
+│   ├── adapters/         # Adapters for different dock types
+│   │   ├── dji/          # DJI Dock 2 adapter
+│   │   ├── heisha/       # Heisha Charging Pad adapter
+│   │   ├── esp32/        # DIY ESP32-powered dock adapter
+│   │   └── interface.py  # Common adapter interface
+│   ├── api/              # API endpoints
+│   ├── models/           # Data models
+│   ├── services/         # Business logic services
+│   └── utils/            # Utility functions
 ├── edge_kit/             # Edge Kit for low-latency inference at the perimeter
 │   ├── inference/        # Edge Inference container with Triton Server
 │   ├── rtsp_relay/       # RTSP Relay container for video streaming
@@ -371,6 +408,17 @@ bulo-cloud-sentinel/
 │       ├── store/        # State management
 │       └── App.js        # Main application component
 ├── indoor_drone_system/  # Indoor drone navigation system
+├── model_hub_service/    # Model Hub for versioned model management
+│   ├── app/              # FastAPI application
+│   │   ├── api/          # API endpoints
+│   │   ├── core/         # Core functionality
+│   │   ├── db/           # Database models and connections
+│   │   ├── models/       # Data models
+│   │   ├── services/     # Business logic services
+│   │   └── utils/        # Utility functions
+│   ├── docs/             # Documentation
+│   ├── kubernetes/       # Kubernetes deployment manifests
+│   └── tests/            # Test files
 ├── rtmp_server/          # RTMP server for video streaming
 ├── security/             # Security Module for comprehensive protection
 ├── sentinelweb/          # Web interface based on OpenWebUI

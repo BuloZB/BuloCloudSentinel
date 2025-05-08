@@ -1,0 +1,111 @@
+name: Upload Nightly Model
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Run at midnight every day
+  workflow_dispatch:  # Allow manual triggering
+
+jobs:
+  upload-model:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r model_hub_service/requirements.txt
+          pip install requests
+
+      - name: Set model version
+        id: set-version
+        run: |
+          echo "MODEL_VERSION=$(date +%Y%m%d)" >> $GITHUB_ENV
+
+      - name: Download latest model
+        run: |
+          # This is a placeholder for downloading the latest model
+          # In a real implementation, you would download the model from your training pipeline
+          
+          # For demonstration purposes, we'll create a dummy model file
+          mkdir -p models
+          python -c "
+          import torch
+          import torch.nn as nn
+          
+          # Create a simple model
+          class SimpleModel(nn.Module):
+              def __init__(self):
+                  super(SimpleModel, self).__init__()
+                  self.conv1 = nn.Conv2d(3, 16, kernel_size=3, stride=1, padding=1)
+                  self.relu1 = nn.ReLU()
+                  self.pool1 = nn.MaxPool2d(kernel_size=2, stride=2)
+                  self.conv2 = nn.Conv2d(16, 32, kernel_size=3, stride=1, padding=1)
+                  self.relu2 = nn.ReLU()
+                  self.pool2 = nn.MaxPool2d(kernel_size=2, stride=2)
+                  self.fc = nn.Linear(32 * 56 * 56, 10)
+              
+              def forward(self, x):
+                  x = self.pool1(self.relu1(self.conv1(x)))
+                  x = self.pool2(self.relu2(self.conv2(x)))
+                  x = x.view(-1, 32 * 56 * 56)
+                  x = self.fc(x)
+                  return x
+          
+          # Create and save model
+          model = SimpleModel()
+          torch.save(model.state_dict(), 'models/yolov10-nightly.pt')
+          "
+
+      - name: Calculate model metrics
+        run: |
+          # This is a placeholder for calculating model metrics
+          # In a real implementation, you would calculate metrics like mAP, FPS, etc.
+          
+          # For demonstration purposes, we'll create dummy metrics
+          echo "{\"mAP\": 0.85, \"FPS\": 30, \"size_bytes\": $(stat -c%s models/yolov10-nightly.pt)}" > models/metrics.json
+          
+          # Print metrics
+          cat models/metrics.json
+
+      - name: Push model to Model Hub
+        run: |
+          # Push model using the CLI
+          python model_hub_service/cli.py push models/yolov10-nightly.pt \
+            --name yolov10 \
+            --version ${{ env.MODEL_VERSION }} \
+            --description "Nightly retrained YOLOv10 model" \
+            --model-type yolo \
+            --framework pytorch \
+            --stage staging \
+            --tags "source=nightly" "mAP=0.85" "FPS=30"
+        env:
+          MODEL_HUB_API_URL: ${{ secrets.MODEL_HUB_API_URL }}
+
+      - name: Notify team
+        if: success()
+        run: |
+          # This is a placeholder for notifying the team
+          # In a real implementation, you would send a notification to Slack, email, etc.
+          
+          echo "Model yolov10 version ${{ env.MODEL_VERSION }} uploaded successfully"
+          
+          # For demonstration purposes, we'll just print a message
+          echo "Notification sent to team"
+
+      - name: Handle failure
+        if: failure()
+        run: |
+          # This is a placeholder for handling failure
+          # In a real implementation, you would send a notification to Slack, email, etc.
+          
+          echo "Failed to upload model yolov10 version ${{ env.MODEL_VERSION }}"
+          
+          # For demonstration purposes, we'll just print a message
+          echo "Failure notification sent to team"

@@ -1,0 +1,121 @@
+version: '3.8'
+
+services:
+  # Model Hub API service
+  model-hub-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: model-hub-api
+    restart: unless-stopped
+    ports:
+      - "8070:8070"
+    environment:
+      - PORT=8070
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_DB=${POSTGRES_DB:-model_hub}
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+      - MLFLOW_S3_ENDPOINT_URL=http://minio:9000
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-minioadmin}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-minioadmin}
+      - COSIGN_PRIVATE_KEY=${COSIGN_PRIVATE_KEY:-}
+      - COSIGN_PASSWORD=${COSIGN_PASSWORD:-}
+    volumes:
+      - ./app:/app
+    depends_on:
+      - postgres
+      - mlflow
+      - minio
+    networks:
+      - model-hub-network
+      - bulocloud-network
+
+  # PostgreSQL database
+  postgres:
+    image: postgres:15-alpine
+    container_name: model-hub-postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_DB=${POSTGRES_DB:-model_hub}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - model-hub-network
+
+  # MLflow tracking server
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:v2.8.0
+    container_name: model-hub-mlflow
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - MLFLOW_S3_ENDPOINT_URL=http://minio:9000
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-minioadmin}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-minioadmin}
+      - MLFLOW_TRACKING_URI=http://localhost:5000
+    command: >
+      mlflow server 
+      --host 0.0.0.0 
+      --port 5000 
+      --backend-store-uri postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-model_hub} 
+      --default-artifact-root s3://mlflow/
+    depends_on:
+      - postgres
+      - minio
+    networks:
+      - model-hub-network
+
+  # MinIO object storage
+  minio:
+    image: minio/minio:RELEASE.2023-09-30T07-02-29Z
+    container_name: model-hub-minio
+    restart: unless-stopped
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - MINIO_ROOT_USER=${AWS_ACCESS_KEY_ID:-minioadmin}
+      - MINIO_ROOT_PASSWORD=${AWS_SECRET_ACCESS_KEY:-minioadmin}
+    volumes:
+      - minio-data:/data
+    command: server /data --console-address ":9001"
+    networks:
+      - model-hub-network
+
+  # MinIO setup
+  minio-setup:
+    image: minio/mc:RELEASE.2023-09-30T07-02-29Z
+    container_name: model-hub-minio-setup
+    depends_on:
+      - minio
+    environment:
+      - MINIO_ROOT_USER=${AWS_ACCESS_KEY_ID:-minioadmin}
+      - MINIO_ROOT_PASSWORD=${AWS_SECRET_ACCESS_KEY:-minioadmin}
+    entrypoint: >
+      /bin/sh -c "
+      sleep 5;
+      /usr/bin/mc config host add myminio http://minio:9000 ${AWS_ACCESS_KEY_ID:-minioadmin} ${AWS_SECRET_ACCESS_KEY:-minioadmin};
+      /usr/bin/mc mb myminio/mlflow;
+      /usr/bin/mc policy set public myminio/mlflow;
+      exit 0;
+      "
+    networks:
+      - model-hub-network
+
+volumes:
+  postgres-data:
+  minio-data:
+
+networks:
+  model-hub-network:
+    driver: bridge
+  bulocloud-network:
+    external: true

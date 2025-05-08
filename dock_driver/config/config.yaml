@@ -1,0 +1,54 @@
+server:
+  host: "0.0.0.0"
+  port: 8060
+  debug: false
+
+security:
+  jwt_secret: "${JWT_SECRET}"
+  jwt_algorithm: "HS256"
+  jwt_expiration: 3600  # Seconds
+
+dji_dock:
+  enabled: true
+  api_key: "${DJI_API_KEY}"
+  api_secret: "${DJI_API_SECRET}"
+  dock_sn: "${DJI_DOCK_SN}"
+  region: "us-east-1"  # Available regions: us-east-1, eu-central-1, ap-southeast-1
+  refresh_interval: 30  # Seconds
+
+heisha_dock:
+  enabled: true
+  rest_api_url: "http://${HEISHA_DOCK_IP}:8080/api"
+  modbus_host: "${HEISHA_DOCK_IP}"
+  modbus_port: 502
+  modbus_unit_id: 1
+  refresh_interval: 15  # Seconds
+  username: "${HEISHA_USERNAME}"
+  password: "${HEISHA_PASSWORD}"
+
+esp32_dock:
+  enabled: true
+  mqtt_broker: "${MQTT_BROKER}"
+  mqtt_port: 1883
+  mqtt_username: "${MQTT_USERNAME}"
+  mqtt_password: "${MQTT_PASSWORD}"
+  mqtt_topic_prefix: "esp32_dock"
+  refresh_interval: 10  # Seconds
+
+power_management:
+  integration_enabled: true
+  api_url: "http://bulocloud-sentinel-api:8000/api/power-management"
+  auto_charge_threshold: 30  # Percentage
+  charge_complete_threshold: 90  # Percentage
+  jwt_token: "${POWER_MANAGEMENT_JWT_TOKEN}"
+
+redis:
+  url: "redis://redis:6379/0"
+  prefix: "dock_driver:"
+  ttl: 3600  # Seconds
+
+logging:
+  level: "${LOG_LEVEL}"
+  file: "/app/logs/dock_driver.log"
+  max_size: 10  # MB
+  backup_count: 5

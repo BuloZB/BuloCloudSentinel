@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  dock_driver:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: bulocloud-sentinel/dock-driver:latest
+    container_name: dock-driver
+    restart: unless-stopped
+    volumes:
+      - ./config:/app/config
+      - ./logs:/app/logs
+    ports:
+      - "8060:8060"
+    environment:
+      - DOCK_DRIVER_CONFIG=/app/config/config.yaml
+      - LOG_LEVEL=INFO
+      - JWT_SECRET=${JWT_SECRET:-your-jwt-secret}
+    networks:
+      - bulocloud-network
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:7-alpine
+    container_name: dock-driver-redis
+    restart: unless-stopped
+    volumes:
+      - redis-data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - bulocloud-network
+
+  # Mock services for testing
+  mqtt-broker:
+    image: eclipse-mosquitto:2
+    container_name: dock-driver-mqtt
+    restart: unless-stopped
+    volumes:
+      - ./config/mosquitto.conf:/mosquitto/config/mosquitto.conf
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    networks:
+      - bulocloud-network
+
+  modbus-simulator:
+    image: oitc/modbus-server:latest
+    container_name: dock-driver-modbus
+    restart: unless-stopped
+    ports:
+      - "502:502"
+    networks:
+      - bulocloud-network
+
+networks:
+  bulocloud-network:
+    driver: bridge
+
+volumes:
+  redis-data:

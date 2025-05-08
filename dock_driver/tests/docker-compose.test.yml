@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: dock-driver-test-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - test-network
+
+  mqtt-broker:
+    image: eclipse-mosquitto:2
+    container_name: dock-driver-test-mqtt
+    volumes:
+      - ../config/mosquitto.conf:/mosquitto/config/mosquitto.conf
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    networks:
+      - test-network
+
+  modbus-simulator:
+    image: oitc/modbus-server:latest
+    container_name: dock-driver-test-modbus
+    ports:
+      - "502:502"
+    networks:
+      - test-network
+
+  mock-api:
+    image: mockserver/mockserver:latest
+    container_name: dock-driver-test-mock-api
+    ports:
+      - "1080:1080"
+    environment:
+      - MOCKSERVER_INITIALIZATION_JSON_PATH=/config/mockserver.json
+    volumes:
+      - ./mock/mockserver.json:/config/mockserver.json
+    networks:
+      - test-network
+
+networks:
+  test-network:
+    driver: bridge

@@ -1,0 +1,60 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "dock-driver.fullname" . }}-config
+  labels:
+    {{- include "dock-driver.labels" . | nindent 4 }}
+data:
+  config.yaml: |
+    server:
+      host: {{ .Values.config.server.host | quote }}
+      port: {{ .Values.config.server.port }}
+      debug: {{ .Values.config.server.debug }}
+
+    security:
+      jwt_algorithm: {{ .Values.config.security.jwt_algorithm | quote }}
+      jwt_expiration: {{ .Values.config.security.jwt_expiration }}
+
+    dji_dock:
+      enabled: {{ .Values.config.dji_dock.enabled }}
+      region: {{ .Values.config.dji_dock.region | quote }}
+      refresh_interval: {{ .Values.config.dji_dock.refresh_interval }}
+
+    heisha_dock:
+      enabled: {{ .Values.config.heisha_dock.enabled }}
+      rest_api_url: "http://${HEISHA_DOCK_IP}:8080/api"
+      modbus_host: "${HEISHA_DOCK_IP}"
+      modbus_port: {{ .Values.config.heisha_dock.modbus_port }}
+      modbus_unit_id: {{ .Values.config.heisha_dock.modbus_unit_id }}
+      refresh_interval: {{ .Values.config.heisha_dock.refresh_interval }}
+      username: "${HEISHA_USERNAME}"
+      password: "${HEISHA_PASSWORD}"
+
+    esp32_dock:
+      enabled: {{ .Values.config.esp32_dock.enabled }}
+      mqtt_broker: "${MQTT_BROKER}"
+      mqtt_port: {{ .Values.config.esp32_dock.mqtt_port }}
+      mqtt_username: "${MQTT_USERNAME}"
+      mqtt_password: "${MQTT_PASSWORD}"
+      mqtt_topic_prefix: {{ .Values.config.esp32_dock.mqtt_topic_prefix | quote }}
+      refresh_interval: {{ .Values.config.esp32_dock.refresh_interval }}
+
+    power_management:
+      integration_enabled: {{ .Values.config.power_management.integration_enabled }}
+      api_url: {{ .Values.config.power_management.api_url | quote }}
+      auto_charge_threshold: {{ .Values.config.power_management.auto_charge_threshold }}
+      charge_complete_threshold: {{ .Values.config.power_management.charge_complete_threshold }}
+      jwt_token: "${POWER_MANAGEMENT_JWT_TOKEN}"
+
+    redis:
+      url: {{ .Values.config.redis.url | quote }}
+      prefix: {{ .Values.config.redis.prefix | quote }}
+      ttl: {{ .Values.config.redis.ttl }}
+
+    logging:
+      level: {{ .Values.config.logging.level | quote }}
+      file: {{ .Values.config.logging.file | quote }}
+      max_size: {{ .Values.config.logging.max_size }}
+      backup_count: {{ .Values.config.logging.backup_count }}
+
+  mosquitto.conf: {{ .Values.config.mosquitto.config | nindent 4 }}

@@ -1,0 +1,315 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dock-driver-config
+  namespace: bulocloud-sentinel
+data:
+  config.yaml: |
+    server:
+      host: "0.0.0.0"
+      port: 8060
+      debug: false
+
+    security:
+      jwt_algorithm: "HS256"
+      jwt_expiration: 3600  # Seconds
+
+    dji_dock:
+      enabled: true
+      region: "us-east-1"  # Available regions: us-east-1, eu-central-1, ap-southeast-1
+      refresh_interval: 30  # Seconds
+
+    heisha_dock:
+      enabled: true
+      modbus_port: 502
+      modbus_unit_id: 1
+      refresh_interval: 15  # Seconds
+
+    esp32_dock:
+      enabled: true
+      mqtt_port: 1883
+      mqtt_topic_prefix: "esp32_dock"
+      refresh_interval: 10  # Seconds
+
+    power_management:
+      integration_enabled: true
+      api_url: "http://bulocloud-sentinel-api:8000/api/power-management"
+      auto_charge_threshold: 30  # Percentage
+      charge_complete_threshold: 90  # Percentage
+
+    redis:
+      url: "redis://dock-driver-redis:6379/0"
+      prefix: "dock_driver:"
+      ttl: 3600  # Seconds
+
+    logging:
+      level: "INFO"
+      file: "/app/logs/dock_driver.log"
+      max_size: 10  # MB
+      backup_count: 5
+
+  mosquitto.conf: |
+    listener 1883
+    allow_anonymous true
+    persistence true
+    persistence_location /mosquitto/data/
+    log_dest file /mosquitto/log/mosquitto.log
+    log_dest stdout
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: dock-driver-secrets
+  namespace: bulocloud-sentinel
+type: Opaque
+data:
+  jwt-secret: ${JWT_SECRET_BASE64}
+  dji-api-key: ${DJI_API_KEY_BASE64}
+  dji-api-secret: ${DJI_API_SECRET_BASE64}
+  dji-dock-sn: ${DJI_DOCK_SN_BASE64}
+  heisha-username: ${HEISHA_USERNAME_BASE64}
+  heisha-password: ${HEISHA_PASSWORD_BASE64}
+  mqtt-username: ${MQTT_USERNAME_BASE64}
+  mqtt-password: ${MQTT_PASSWORD_BASE64}
+  power-management-jwt-token: ${POWER_MANAGEMENT_JWT_TOKEN_BASE64}
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dock-driver
+  namespace: bulocloud-sentinel
+  labels:
+    app: dock-driver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dock-driver
+  template:
+    metadata:
+      labels:
+        app: dock-driver
+    spec:
+      containers:
+      - name: dock-driver
+        image: bulocloud-sentinel/dock-driver:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8060
+        env:
+        - name: DOCK_DRIVER_CONFIG
+          value: "/app/config/config.yaml"
+        - name: LOG_LEVEL
+          value: "INFO"
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: dock-driver-secrets
+              key: jwt-secret
+        - name: DJI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: dock-driver-secrets
+              key: dji-api-key
+        - name: DJI_API_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: dock-driver-secrets
+              key: dji-api-secret
+        - name: DJI_DOCK_SN
+          valueFrom:
+            secretKeyRef:
+              name: dock-driver-secrets
+              key: dji-dock-sn
+        - name: HEISHA_DOCK_IP
+          value: "heisha-dock-ip"
+        - name: HEISHA_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: dock-driver-secrets
+              key: heisha-username
+        - name: HEISHA_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: dock-driver-secrets
+              key: heisha-password
+        - name: MQTT_BROKER
+          value: "dock-driver-mqtt"
+        - name: MQTT_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: dock-driver-secrets
+              key: mqtt-username
+        - name: MQTT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: dock-driver-secrets
+              key: mqtt-password
+        - name: POWER_MANAGEMENT_JWT_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: dock-driver-secrets
+              key: power-management-jwt-token
+        volumeMounts:
+        - name: config-volume
+          mountPath: /app/config
+        - name: logs-volume
+          mountPath: /app/logs
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8060
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8060
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      volumes:
+      - name: config-volume
+        configMap:
+          name: dock-driver-config
+      - name: logs-volume
+        emptyDir: {}
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dock-driver-redis
+  namespace: bulocloud-sentinel
+  labels:
+    app: dock-driver-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dock-driver-redis
+  template:
+    metadata:
+      labels:
+        app: dock-driver-redis
+    spec:
+      containers:
+      - name: redis
+        image: redis:7-alpine
+        ports:
+        - containerPort: 6379
+        resources:
+          limits:
+            cpu: "200m"
+            memory: "256Mi"
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+        volumeMounts:
+        - name: redis-data
+          mountPath: /data
+      volumes:
+      - name: redis-data
+        emptyDir: {}
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dock-driver-mqtt
+  namespace: bulocloud-sentinel
+  labels:
+    app: dock-driver-mqtt
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dock-driver-mqtt
+  template:
+    metadata:
+      labels:
+        app: dock-driver-mqtt
+    spec:
+      containers:
+      - name: mqtt
+        image: eclipse-mosquitto:2
+        ports:
+        - containerPort: 1883
+        - containerPort: 9001
+        volumeMounts:
+        - name: config-volume
+          mountPath: /mosquitto/config/mosquitto.conf
+          subPath: mosquitto.conf
+        - name: data-volume
+          mountPath: /mosquitto/data
+        - name: log-volume
+          mountPath: /mosquitto/log
+        resources:
+          limits:
+            cpu: "200m"
+            memory: "256Mi"
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+      volumes:
+      - name: config-volume
+        configMap:
+          name: dock-driver-config
+      - name: data-volume
+        emptyDir: {}
+      - name: log-volume
+        emptyDir: {}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dock-driver
+  namespace: bulocloud-sentinel
+spec:
+  selector:
+    app: dock-driver
+  ports:
+  - port: 8060
+    targetPort: 8060
+  type: ClusterIP
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dock-driver-redis
+  namespace: bulocloud-sentinel
+spec:
+  selector:
+    app: dock-driver-redis
+  ports:
+  - port: 6379
+    targetPort: 6379
+  type: ClusterIP
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dock-driver-mqtt
+  namespace: bulocloud-sentinel
+spec:
+  selector:
+    app: dock-driver-mqtt
+  ports:
+  - port: 1883
+    targetPort: 1883
+    name: mqtt
+  - port: 9001
+    targetPort: 9001
+    name: websocket
+  type: ClusterIP

@@ -25,6 +25,7 @@ from sentinel_web.routers.drones import router as drones_router
 from sentinel_web.routers.missions import router as missions_router
 from sentinel_web.routers.telemetry import router as telemetry_router
 from sentinel_web.routers.video import router as video_router
+from sentinel_web.routers.model_hub import router as model_hub_router
 
 # Setup logging
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
@@ -643,6 +644,7 @@ app.include_router(
     evaluations.router, prefix="/api/v1/evaluations", tags=["evaluations"]
 )
 app.include_router(utils.router, prefix="/api/v1/utils", tags=["utils"])
+app.include_router(model_hub_router, prefix="/api/model-hub", tags=["model-hub"])
 
 
 try:

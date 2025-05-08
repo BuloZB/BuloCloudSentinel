@@ -1,0 +1,171 @@
+# Default values for dock-driver.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: bulocloud-sentinel/dock-driver
+  pullPolicy: Always
+  tag: "latest"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 8060
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: dock-driver.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+config:
+  server:
+    host: "0.0.0.0"
+    port: 8060
+    debug: false
+
+  security:
+    jwt_algorithm: "HS256"
+    jwt_expiration: 3600  # Seconds
+
+  dji_dock:
+    enabled: true
+    region: "us-east-1"  # Available regions: us-east-1, eu-central-1, ap-southeast-1
+    refresh_interval: 30  # Seconds
+
+  heisha_dock:
+    enabled: true
+    modbus_port: 502
+    modbus_unit_id: 1
+    refresh_interval: 15  # Seconds
+
+  esp32_dock:
+    enabled: true
+    mqtt_port: 1883
+    mqtt_topic_prefix: "esp32_dock"
+    refresh_interval: 10  # Seconds
+
+  power_management:
+    integration_enabled: true
+    api_url: "http://bulocloud-sentinel-api:8000/api/power-management"
+    auto_charge_threshold: 30  # Percentage
+    charge_complete_threshold: 90  # Percentage
+
+  redis:
+    url: "redis://dock-driver-redis:6379/0"
+    prefix: "dock_driver:"
+    ttl: 3600  # Seconds
+
+  logging:
+    level: "INFO"
+    file: "/app/logs/dock_driver.log"
+    max_size: 10  # MB
+    backup_count: 5
+
+  mosquitto:
+    config: |
+      listener 1883
+      allow_anonymous true
+      persistence true
+      persistence_location /mosquitto/data/
+      log_dest file /mosquitto/log/mosquitto.log
+      log_dest stdout
+
+secrets:
+  jwt_secret: ""
+  dji_api_key: ""
+  dji_api_secret: ""
+  dji_dock_sn: ""
+  heisha_username: ""
+  heisha_password: ""
+  mqtt_username: ""
+  mqtt_password: ""
+  power_management_jwt_token: ""
+
+env:
+  heisha_dock_ip: "heisha-dock-ip"
+  mqtt_broker: "dock-driver-mqtt"
+
+redis:
+  enabled: true
+  image:
+    repository: redis
+    tag: 7-alpine
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+mqtt:
+  enabled: true
+  image:
+    repository: eclipse-mosquitto
+    tag: 2
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
