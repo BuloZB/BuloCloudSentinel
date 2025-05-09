@@ -60,7 +60,7 @@ colbert-ai==0.2.21
 einops==0.8.1
 tinygrad==0.9.0  # Lightweight ML runtime
 safetensors==0.4.3  # For loading safetensors models
-torch==2.2.2  # PyTorch for ML inference
+torch==2.7.0  # PyTorch for ML inference
 onnx==1.17.0  # ONNX model format support, updated to fix CVE-2024-7776
 # WARNING: ONNX has a known vulnerability (CVE-2024-5187) in download_model_with_test_data function.
 # Mitigation: Do not use download_model_with_test_data function with untrusted sources.
