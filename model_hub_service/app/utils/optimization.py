@@ -30,7 +30,7 @@ def optimize_model(
 ) -> Tuple[str, Dict[str, Any]]:
     """
     Optimize a model for deployment.
-    
+
     Args:
         model_path: Path to the model file
         output_path: Path to save the optimized model
@@ -39,7 +39,7 @@ def optimize_model(
         quantize: Whether to quantize the model
         int8: Whether to use INT8 quantization
         fp16: Whether to use FP16 precision
-        
+
     Returns:
         Tuple of (path to optimized model, optimization metadata)
     """
@@ -85,7 +85,7 @@ def optimize_pytorch_model(
 ) -> Tuple[str, Dict[str, Any]]:
     """
     Optimize a PyTorch model for deployment.
-    
+
     Args:
         model_path: Path to the model file
         output_path: Path to save the optimized model
@@ -93,14 +93,15 @@ def optimize_pytorch_model(
         quantize: Whether to quantize the model
         int8: Whether to use INT8 quantization
         fp16: Whether to use FP16 precision
-        
+
     Returns:
         Tuple of (path to optimized model, optimization metadata)
     """
     try:
-        # Load model
-        model = torch.load(model_path, map_location="cpu")
-        
+        # Load model with security measures
+        # Use weights_only=True for better security when loading models
+        model = torch.load(model_path, map_location="cpu", weights_only=True)
+
         # Check if model is a state_dict or a full model
         if isinstance(model, dict) and "state_dict" in model:
             state_dict = model["state_dict"]
@@ -108,7 +109,7 @@ def optimize_pytorch_model(
             state_dict = model
         else:
             state_dict = model.state_dict()
-        
+
         # Create metadata
         metadata = {
             "optimized": True,
@@ -119,7 +120,7 @@ def optimize_pytorch_model(
             "fp16": fp16,
             "original_size": os.path.getsize(model_path),
         }
-        
+
         # Apply optimizations
         if quantize:
             if int8:
@@ -135,17 +136,17 @@ def optimize_pytorch_model(
                     if isinstance(state_dict[key], torch.Tensor) and state_dict[key].dtype == torch.float32:
                         state_dict[key] = state_dict[key].half()
                 metadata["quantization_method"] = "fp16"
-        
+
         # Save optimized model
         torch.save(state_dict, output_path)
-        
+
         # Update metadata
         metadata["optimized_size"] = os.path.getsize(output_path)
         metadata["size_reduction"] = 1.0 - (metadata["optimized_size"] / metadata["original_size"])
-        
+
         logger.info(f"Optimized PyTorch model saved to: {output_path}")
         logger.info(f"Size reduction: {metadata['size_reduction']:.2%}")
-        
+
         return output_path, metadata
     except Exception as e:
         logger.error(f"Error optimizing PyTorch model: {e}")
@@ -161,7 +162,7 @@ def optimize_onnx_model(
 ) -> Tuple[str, Dict[str, Any]]:
     """
     Optimize an ONNX model for deployment.
-    
+
     Args:
         model_path: Path to the model file
         output_path: Path to save the optimized model
@@ -169,7 +170,7 @@ def optimize_onnx_model(
         quantize: Whether to quantize the model
         int8: Whether to use INT8 quantization
         fp16: Whether to use FP16 precision
-        
+
     Returns:
         Tuple of (path to optimized model, optimization metadata)
     """
@@ -188,10 +189,10 @@ def optimize_onnx_model(
                 "optimized": False,
                 "reason": "onnxruntime not available",
             }
-        
+
         # Load model
         model = onnx.load(model_path)
-        
+
         # Create metadata
         metadata = {
             "optimized": True,
@@ -202,7 +203,7 @@ def optimize_onnx_model(
             "fp16": fp16,
             "original_size": os.path.getsize(model_path),
         }
-        
+
         # Apply optimizations
         if quantize:
             if int8:
@@ -225,14 +226,14 @@ def optimize_onnx_model(
         else:
             # Save model without quantization
             onnx.save(model, output_path)
-        
+
         # Update metadata
         metadata["optimized_size"] = os.path.getsize(output_path)
         metadata["size_reduction"] = 1.0 - (metadata["optimized_size"] / metadata["original_size"])
-        
+
         logger.info(f"Optimized ONNX model saved to: {output_path}")
         logger.info(f"Size reduction: {metadata['size_reduction']:.2%}")
-        
+
         return output_path, metadata
     except Exception as e:
         logger.error(f"Error optimizing ONNX model: {e}")
@@ -248,7 +249,7 @@ def optimize_tflite_model(
 ) -> Tuple[str, Dict[str, Any]]:
     """
     Optimize a TFLite model for deployment.
-    
+
     Args:
         model_path: Path to the model file
         output_path: Path to save the optimized model
@@ -256,7 +257,7 @@ def optimize_tflite_model(
         quantize: Whether to quantize the model
         int8: Whether to use INT8 quantization
         fp16: Whether to use FP16 precision
-        
+
     Returns:
         Tuple of (path to optimized model, optimization metadata)
     """
@@ -273,7 +274,7 @@ def optimize_tflite_model(
                 "optimized": False,
                 "reason": "tensorflow not available",
             }
-        
+
         # Create metadata
         metadata = {
             "optimized": True,
@@ -284,16 +285,16 @@ def optimize_tflite_model(
             "fp16": fp16,
             "original_size": os.path.getsize(model_path),
         }
-        
+
         # Load model
         interpreter = tf.lite.Interpreter(model_path=model_path)
         interpreter.allocate_tensors()
-        
+
         # Apply optimizations
         if quantize:
             # Convert model to TFLite with quantization
             converter = tf.lite.TFLiteConverter.from_saved_model(model_path)
-            
+
             if int8:
                 # Apply INT8 quantization
                 logger.info(f"Applying INT8 quantization to model: {model_path}")
@@ -308,10 +309,10 @@ def optimize_tflite_model(
                 converter.optimizations = [tf.lite.Optimize.DEFAULT]
                 converter.target_spec.supported_types = [tf.float16]
                 metadata["quantization_method"] = "fp16"
-            
+
             # Convert model
             tflite_model = converter.convert()
-            
+
             # Save model
             with open(output_path, "wb") as f:
                 f.write(tflite_model)
@@ -319,14 +320,14 @@ def optimize_tflite_model(
             # Just copy the model file
             import shutil
             shutil.copy(model_path, output_path)
-        
+
         # Update metadata
         metadata["optimized_size"] = os.path.getsize(output_path)
         metadata["size_reduction"] = 1.0 - (metadata["optimized_size"] / metadata["original_size"])
-        
+
         logger.info(f"Optimized TFLite model saved to: {output_path}")
         logger.info(f"Size reduction: {metadata['size_reduction']:.2%}")
-        
+
         return output_path, metadata
     except Exception as e:
         logger.error(f"Error optimizing TFLite model: {e}")
@@ -341,14 +342,14 @@ def benchmark_model(
 ) -> Dict[str, Any]:
     """
     Benchmark a model for performance.
-    
+
     Args:
         model_path: Path to the model file
         framework: Framework of the model (e.g., "pytorch", "onnx", "tflite")
         target_device: Target device for benchmarking (e.g., "cpu", "cuda", "jetson")
         num_iterations: Number of iterations to run
         input_shape: Input shape for the model (e.g., [1, 3, 224, 224])
-        
+
     Returns:
         Benchmark results
     """
@@ -388,13 +389,13 @@ def benchmark_pytorch_model(
 ) -> Dict[str, Any]:
     """
     Benchmark a PyTorch model for performance.
-    
+
     Args:
         model_path: Path to the model file
         target_device: Target device for benchmarking (e.g., "cpu", "cuda", "jetson")
         num_iterations: Number of iterations to run
         input_shape: Input shape for the model (e.g., [1, 3, 224, 224])
-        
+
     Returns:
         Benchmark results
     """
@@ -418,13 +419,13 @@ def benchmark_onnx_model(
 ) -> Dict[str, Any]:
     """
     Benchmark an ONNX model for performance.
-    
+
     Args:
         model_path: Path to the model file
         target_device: Target device for benchmarking (e.g., "cpu", "cuda", "jetson")
         num_iterations: Number of iterations to run
         input_shape: Input shape for the model (e.g., [1, 3, 224, 224])
-        
+
     Returns:
         Benchmark results
     """
@@ -448,13 +449,13 @@ def benchmark_tflite_model(
 ) -> Dict[str, Any]:
     """
     Benchmark a TFLite model for performance.
-    
+
     Args:
         model_path: Path to the model file
         target_device: Target device for benchmarking (e.g., "cpu", "cuda", "jetson")
         num_iterations: Number of iterations to run
         input_shape: Input shape for the model (e.g., [1, 3, 224, 224])
-        
+
     Returns:
         Benchmark results
     """

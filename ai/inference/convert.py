@@ -42,8 +42,9 @@ def convert_torch_to_tinygrad(input_path: str, output_path: str) -> None:
 
         logger.info(f"Converting PyTorch model from {input_path} to TinyGrad format at {output_path}")
 
-        # Load PyTorch model
-        model = torch.load(input_path, map_location="cpu")
+        # Load PyTorch model with security measures
+        # Use weights_only=True for better security when loading models
+        model = torch.load(input_path, map_location="cpu", weights_only=True)
 
         # Extract state dict if needed
         if hasattr(model, "state_dict"):
@@ -278,8 +279,9 @@ def convert_torch_to_onnx(input_path: str, output_path: str, input_shape: Option
         if input_shape is None:
             input_shape = [1, 3, 224, 224]
 
-        # Load PyTorch model
-        model = torch.load(input_path, map_location="cpu")
+        # Load PyTorch model with security measures
+        # Use weights_only=True for better security when loading models
+        model = torch.load(input_path, map_location="cpu", weights_only=True)
 
         # Handle different model formats
         if isinstance(model, dict):
@@ -645,8 +647,9 @@ def print_model_info(model_path: str) -> None:
 
             logger.info(f"Loading PyTorch model from {model_path}")
 
-            # Load PyTorch model
-            model = torch.load(model_path, map_location="cpu")
+            # Load PyTorch model with security measures
+            # Use weights_only=True for better security when loading models
+            model = torch.load(model_path, map_location="cpu", weights_only=True)
 
             # Print model info
             print("\nPyTorch Model Information:")
