@@ -1,0 +1,141 @@
+version: '3.8'
+
+services:
+  fl_server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: fl_server
+    restart: unless-stopped
+    ports:
+      - "8080:8080"  # Flower server
+      - "8000:8000"  # API server
+    volumes:
+      - ./config:/app/config
+      - ./models:/models
+      - ./certs:/certs
+    environment:
+      - FL_SERVER_MIN_CLIENTS=2
+      - FL_SERVER_ROUNDS=50
+      - FL_MODEL_HUB_API_URL=http://model-hub-service:8000/api/v1
+    networks:
+      - fl_network
+      - model_hub_network
+    depends_on:
+      - mqtt_broker
+      - model-hub-service
+
+  mqtt_broker:
+    image: eclipse-mosquitto:2.0.15
+    container_name: mqtt_broker
+    restart: unless-stopped
+    ports:
+      - "1883:1883"  # MQTT
+      - "8883:8883"  # MQTT over TLS
+    volumes:
+      - ./mqtt/config:/mosquitto/config
+      - ./mqtt/data:/mosquitto/data
+      - ./mqtt/log:/mosquitto/log
+      - ./certs:/mosquitto/certs
+    networks:
+      - fl_network
+
+  model-hub-service:
+    build:
+      context: ../model_hub_service
+      dockerfile: Dockerfile
+    container_name: model-hub-service
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      - ../model_hub_service:/app
+      - ./models:/app/models
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@model-hub-db:5432/model_hub
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+      - MLFLOW_S3_ENDPOINT_URL=http://minio:9000
+      - AWS_ACCESS_KEY_ID=minioadmin
+      - AWS_SECRET_ACCESS_KEY=minioadmin
+    networks:
+      - model_hub_network
+    depends_on:
+      - model-hub-db
+      - mlflow
+      - minio
+
+  model-hub-db:
+    image: postgres:15-alpine
+    container_name: model-hub-db
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=model_hub
+    volumes:
+      - model_hub_db_data:/var/lib/postgresql/data
+    networks:
+      - model_hub_network
+
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:v2.8.0
+    container_name: mlflow
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - MLFLOW_S3_ENDPOINT_URL=http://minio:9000
+      - AWS_ACCESS_KEY_ID=minioadmin
+      - AWS_SECRET_ACCESS_KEY=minioadmin
+    command: mlflow server --host 0.0.0.0 --backend-store-uri postgresql://postgres:postgres@model-hub-db:5432/model_hub --default-artifact-root s3://mlflow/
+    networks:
+      - model_hub_network
+    depends_on:
+      - model-hub-db
+      - minio
+
+  minio:
+    image: minio/minio:RELEASE.2023-09-30T07-02-29Z
+    container_name: minio
+    restart: unless-stopped
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+    networks:
+      - model_hub_network
+
+  # This service is used for integration testing
+  integration-test:
+    build:
+      context: ./integration_test
+      dockerfile: Dockerfile
+    container_name: integration-test
+    volumes:
+      - ./integration_test:/app
+      - ./certs:/certs
+    environment:
+      - FL_SERVER_ADDRESS=fl_server:8080
+      - FL_SERVER_API_URL=http://fl_server:8000
+      - FL_CLIENT_COUNT=3
+    networks:
+      - fl_network
+    depends_on:
+      - fl_server
+
+networks:
+  fl_network:
+    driver: bridge
+  model_hub_network:
+    driver: bridge
+
+volumes:
+  model_hub_db_data:
+  minio_data:

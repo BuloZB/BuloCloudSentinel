@@ -193,6 +193,19 @@ The Model Hub provides versioned model management for the Bulo.Cloud Sentinel pl
 - **🔌 Edge Integration**: Seamless integration with Edge Kit for over-the-air updates
 - **🛠️ CLI & UI**: Command-line and web interfaces for model management
 - **🔄 CI/CD**: GitHub Actions for automated model uploads and deployments
+- **🧠 Federated Learning**: Train models across edge devices while preserving data privacy
+
+### 🔄 Federated Learning
+
+The Federated Learning system enables privacy-preserving distributed training across edge devices:
+
+- **🔒 Privacy Preservation**: Train models locally, share only gradients, raw data never leaves devices
+- **🔐 Differential Privacy**: Implemented with Opacus, configurable privacy budget (ε ≤ 8)
+- **🔄 Efficient Training**: Lightweight model head training on locally extracted embeddings
+- **🌐 Secure Communication**: TLS over MQTT with client certificates, device identifiers removed
+- **⚡ Bandwidth Efficient**: < 50 MB upload per round, optimized for constrained networks
+- **🔄 Fail-Safe**: Handles client disconnections and stragglers automatically
+- **🧪 Integration Testing**: CI pipeline with synthetic COCO subset for validation
 
 ### 🌐 Edge Kit
 
@@ -391,6 +404,13 @@ bulo-cloud-sentinel/
 │   ├── edge_agent/       # Edge Agent container for OTA updates
 │   ├── models/           # Pre-trained models for edge inference
 │   └── config/           # Configuration files for edge deployment
+├── federated_learning/   # Federated Learning system for privacy-preserving training
+│   ├── edge_client/      # Edge Trainer Client with Flower and PyTorch
+│   ├── server/           # Federated Learning Server with model aggregation
+│   ├── integration_test/ # Integration tests with synthetic data
+│   ├── mqtt/             # MQTT configuration for secure communication
+│   ├── config/           # Configuration files
+│   └── certs/            # Certificates for secure communication
 ├── sim/                  # Digital Twin & Simulation environment
 │   ├── bazel/            # Bazel build configuration
 │   ├── docker/           # Docker configuration files

@@ -1,0 +1,28 @@
+client:
+  local_epochs: 3
+  batch_size: 32
+  learning_rate: 0.01
+  optimizer: adam
+  device: auto  # auto, cpu, cuda
+  embedding_dim: 512
+  num_classes: 80  # COCO dataset classes
+  model_head_type: mlp
+  embeddings_path: /data/embeddings
+  labels_path: /data/labels
+
+privacy:
+  differential_privacy: true
+  epsilon: 8.0
+  delta: 0.00001
+  max_grad_norm: 1.0
+  noise_multiplier: 1.0
+
+server:
+  address: fl_server:8080
+  mqtt_broker: mqtt_broker
+  mqtt_port: 8883
+  mqtt_topic: fl/model_updates
+  tls_enabled: true
+  ca_cert_path: /certs/ca.crt
+  client_cert_path: /certs/client.crt
+  client_key_path: /certs/client.key
