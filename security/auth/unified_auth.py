@@ -205,13 +205,30 @@ def decode_token(token: str) -> Dict[str, Any]:
         HTTPException: If the token is invalid
     """
     try:
-        # Decode token
+        # Decode token with full validation
         payload = jwt.decode(
             token,
             JWT_SECRET_KEY,
             algorithms=[JWT_ALGORITHM],
-            options={"verify_signature": True}
+            options={
+                "verify_signature": True,
+                "verify_exp": True,
+                "verify_iat": True,
+                "require": ["sub", "exp", "iat", "jti", "type"]
+            }
         )
+
+        # Check if token was issued in the future (clock skew)
+        if "iat" in payload:
+            iat_timestamp = payload.get("iat")
+            if isinstance(iat_timestamp, datetime):
+                iat_timestamp = iat_timestamp.timestamp()
+            if iat_timestamp > datetime.now(timezone.utc).timestamp() + 30:  # Allow 30 seconds of clock skew
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail="Token issued in the future",
+                    headers={"WWW-Authenticate": "Bearer"},
+                )
 
         return payload
     except jwt.ExpiredSignatureError:

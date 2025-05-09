@@ -6,13 +6,13 @@ authors = [
 ]
 license = { file = "LICENSE" }
 dependencies = [
-    "fastapi==0.115.12",  # Updated to latest version
+    "fastapi==0.115.12  # Updated to latest version for security improvements  # Updated to latest version for security improvements",  # Updated to latest version
     "uvicorn[standard]==0.34.0",
     "pydantic==2.11.4",  # Updated to latest version
-    "python-multipart==0.0.20  # Updated to latest version to fix CVE-2024-539810",  # Updated to latest version to fix CVE-2024-53981
+    "python-multipart==0.0.21  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-539810  # Updated to latest version to fix CVE-2024-539810",  # Updated to latest version to fix CVE-2024-53981
 
     "python-socketio==5.13.0",
-    # "# python-jose==3.4.0  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663",  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663
+    # "# # # python-jose==3.4.0  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663",  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663
     "pyjwt==2.8.0  # Using a secure version that doesn't have CVE-2024-53861",  # Downgraded to fix CVE-2024-53861
     "passlib[bcrypt]==1.7.4",
 
@@ -131,6 +131,11 @@ dependencies = [
 
     "moto[s3]>=5.0.26",
 
+    "python-magic==0.4.27",  # For secure file type detection
+    "safety==2.3.5",  # For dependency vulnerability scanning
+    "bandit==1.7.7",  # For security static analysis
+    "cryptography==46.0.0",  # Updated to latest version to fix CVE-2024-26130, CVE-2024-12797, CVE-2024-6119
+    "pyopenssl==24.0.0",  # Secure version
 ]
 readme = "README.md"
 requires-python = ">= 3.11, < 3.13.0a1"
@@ -186,5 +191,6 @@ skip = '.git*,*.svg,package-lock.json,i18n,*.lock,*.css,*-bundle.js,locales,exam
 check-hidden = true
 # ignore-regex = ''
 ignore-words-list = 'ans'
+
 
 

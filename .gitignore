@@ -61,3 +61,9 @@ plugins/
 
 # Database
 *.sqlite3
+
+# Security reports
+security_reports/
+security_reports_summary_*.md
+security_documentation_email_*.md
+bandit-results.json

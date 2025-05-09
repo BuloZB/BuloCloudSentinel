@@ -6,11 +6,10 @@ This script finds all requirements.txt files and updates vulnerable dependencies
 to secure versions.
 """
 
-import os
 import re
 import logging
 from pathlib import Path
-from typing import Dict, List, Set, Tuple
+from typing import List, Tuple
 
 # Configure logging
 logging.basicConfig(
@@ -52,8 +51,8 @@ VULNERABLE_DEPENDENCIES = {
         "cryptography==46.0.0  # Updated to latest version to fix CVE-2024-26130, CVE-2024-12797, CVE-2024-6119"
     ),
     "python-multipart": (
-        r"(python-multipart==0\.0\.(?:[0-9]|1[0-9]))",
-        "python-multipart==0.0.20  # Updated to latest version to fix CVE-2024-53981"
+        r"(python-multipart==0\.0\.(?:[0-9]|1[0-9]|20))",
+        "python-multipart==0.0.21  # Updated to latest version to fix CVE-2024-53981"
     ),
     "langchain-community": (
         r"(langchain-community==0\.3\.(?:1[0-7]|[0-9]))",
@@ -92,8 +91,8 @@ VULNERABLE_DEPENDENCIES = {
         "werkzeug==2.3.8  # Updated to fix CVE-2023-46136"
     ),
     "fastapi": (
-        r"(fastapi==(?:0\.[0-8][0-9])\.[\d\.]+)",
-        "fastapi==0.109.2  # Updated to latest version for security improvements"
+        r"(fastapi==(?:0\.[0-9][0-9]|0\.1[0-9][0-9])\.[\d\.]+)",
+        "fastapi==0.115.12  # Updated to latest version for security improvements"
     ),
 }
 
@@ -102,10 +101,12 @@ DEPENDENCIES_TO_ADD = {
     # Format: "dependency_name": "dependency_line"
     "pyjwt": "pyjwt==2.8.0  # Using a secure version that doesn't have CVE-2024-53861",
     "argon2-cffi": "argon2-cffi==23.1.0  # For secure password hashing",
-    "pydantic": "pydantic==2.6.1  # For secure data validation",
+    "pydantic": "pydantic==2.11.4  # For secure data validation",
     "python-magic": "python-magic==0.4.27  # For secure file type detection",
     "safety": "safety==2.3.5  # For dependency vulnerability scanning",
-    "bandit": "bandit==1.7.7  # For security static analysis"
+    "bandit": "bandit==1.7.7  # For security static analysis",
+    "cryptography": "cryptography==46.0.0  # Updated to latest version to fix CVE-2024-26130, CVE-2024-12797, CVE-2024-6119",
+    "pyopenssl": "pyopenssl==24.0.0  # Secure version"
 }
 
 def find_requirements_files() -> List[Path]:

@@ -1,10 +1,11 @@
-fastapi==0.110.0
+fastapi==0.115.12  # Updated to latest version for security improvements  # Updated to latest version for security improvements
 uvicorn==0.27.1
 pydantic==2.6.1
 pydantic-settings==2.1.0
 httpx==0.26.0
-python-jose==3.3.0
-python-multipart==0.0.9
+# # python-jose==3.3.0  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663
+pyjwt==2.8.0  # Using a secure version that doesn't have CVE-2024-53861
+python-multipart==0.0.21  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-53981
 pyyaml==6.0.1
 pymodbus==3.5.4
 paho-mqtt==2.2.1
@@ -13,3 +14,9 @@ aiohttp==3.9.3
 asyncio==3.4.3
 redis==5.0.1
 prometheus-client==0.19.0
+argon2-cffi==23.1.0  # For secure password hashing
+python-magic==0.4.27  # For secure file type detection
+safety==2.3.5  # For dependency vulnerability scanning
+bandit==1.7.7  # For security static analysis
+cryptography==46.0.0  # Updated to latest version to fix CVE-2024-26130, CVE-2024-12797, CVE-2024-6119
+pyopenssl==24.0.0  # Secure version

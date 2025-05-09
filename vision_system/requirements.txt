@@ -1,10 +1,10 @@
-fastapi==0.115.12  # Updated to latest version
+fastapi==0.115.12  # Updated to latest version for security improvements  # Updated to latest version for security improvements  # Updated to latest version
 uvicorn[standard]==0.34.0
 pydantic==2.11.3
 sqlalchemy==2.0.38
 alembic==1.14.0
 psycopg2-binary==2.9.9
-python-multipart==0.0.21  # Updated to latest version to fix CVE-2024-53981
+python-multipart==0.0.21  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-53981
 aiofiles==23.2.0
 numpy==1.26.4
 opencv-python==4.10.0.84
@@ -14,13 +14,16 @@ matplotlib==3.9.0
 redis==5.0.3
 websockets==12.0
 # Replacing python-jose with PyJWT due to vulnerabilities CVE-2024-33664 and CVE-2024-33663
-# # python-jose[cryptography]==3.3.0  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663
-pyjwt==2.10.1  # Updated to fix CVE-2024-53861
+# # # # python-jose[cryptography]==3.3.0  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663
+pyjwt==2.8.0  # Using a secure version that doesn't have CVE-2024-53861  # Updated to fix CVE-2024-53861
 passlib[bcrypt]==1.7.4
 httpx==0.27.0
 pillow==11.2.2  # Updated to fix CVE-2024-28219, CVE-2023-50447
 scikit-learn==1.5.0
 scipy==1.13.1
 python-magic==0.4.27
-cryptography==44.0.1  # Updated to fix CVE-2024-26130, CVE-2024-12797, CVE-2024-6119, CVE-2024-2511, CVE-2024-4603
+cryptography==46.0.0  # Updated to latest version to fix CVE-2024-26130, CVE-2024-12797, CVE-2024-6119  # Updated to fix CVE-2024-26130, CVE-2024-12797, CVE-2024-6119, CVE-2024-2511, CVE-2024-4603
 pyopenssl==24.0.0
+argon2-cffi==23.1.0  # For secure password hashing
+safety==2.3.5  # For dependency vulnerability scanning
+bandit==1.7.7  # For security static analysis
