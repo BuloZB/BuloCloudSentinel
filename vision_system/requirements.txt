@@ -8,7 +8,7 @@ python-multipart==0.0.21  # Updated to latest version to fix CVE-2024-539811  # 
 aiofiles==23.2.0
 numpy==1.26.4
 opencv-python==4.10.0.84
-torch==2.7.0
+torch>=2.1.0
 torchvision==0.18.1
 matplotlib==3.9.0
 redis==5.0.3

@@ -45,7 +45,7 @@ pyqtgraph>=0.13.3
 pyopengl>=3.1.7
 
 # Machine learning (optional)
-torch>=2.2.2
+torch>=2.1.0
 torchvision>=0.17.0
 tinygrad>=0.9.0
 argon2-cffi==23.1.0  # For secure password hashing
