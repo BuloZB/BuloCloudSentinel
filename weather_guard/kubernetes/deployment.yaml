@@ -1,0 +1,140 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: weather-guard-config
+  namespace: bulocloud-sentinel
+data:
+  config.yaml: |
+    service:
+      host: "0.0.0.0"
+      port: 8090
+      log_level: "INFO"
+
+    weather:
+      default_provider: "open-meteo"
+      update_interval: 30  # minutes
+      cache_duration: 30   # minutes
+      wind_threshold: 9.0  # m/s
+      rain_threshold: 0.5  # mm/h
+
+    open_meteo:
+      api_url: "https://api.open-meteo.com/v1/forecast"
+      timeout: 10  # seconds
+
+    redis:
+      url: "redis://redis:6379/0"
+      prefix: "weather_guard:"
+      ttl: 1800  # seconds (30 minutes)
+
+    mqtt:
+      enabled: false
+      broker: "mqtt-broker"
+      port: 1883
+      username: ""
+      password: ""
+      topic_prefix: "meteo_shield"
+      qos: 1
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: weather-guard
+  namespace: bulocloud-sentinel
+  labels:
+    app: weather-guard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: weather-guard
+  template:
+    metadata:
+      labels:
+        app: weather-guard
+    spec:
+      containers:
+      - name: weather-guard
+        image: bulocloud-sentinel/weather-guard:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8090
+        env:
+        - name: REDIS_URL
+          value: "redis://redis:6379/0"
+        - name: LOG_LEVEL
+          value: "INFO"
+        - name: WIND_THRESHOLD
+          value: "9.0"
+        - name: RAIN_THRESHOLD
+          value: "0.5"
+        - name: SENTINEL_API_URL
+          value: "http://bulocloud-sentinel-api:8000"
+        - name: SENTINEL_API_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: sentinel-api-tokens
+              key: weather-guard-token
+              optional: true
+        - name: MQTT_ENABLED
+          value: "false"
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8090
+          initialDelaySeconds: 30
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8090
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        volumeMounts:
+        - name: config-volume
+          mountPath: /app/config
+      volumes:
+      - name: config-volume
+        configMap:
+          name: weather-guard-config
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: weather-guard
+  namespace: bulocloud-sentinel
+spec:
+  selector:
+    app: weather-guard
+  ports:
+  - port: 8090
+    targetPort: 8090
+  type: ClusterIP
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: weather-guard-ingress
+  namespace: bulocloud-sentinel
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /api/weather(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: weather-guard
+            port:
+              number: 8090

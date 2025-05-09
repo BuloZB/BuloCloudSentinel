@@ -207,6 +207,20 @@ The Federated Learning system enables privacy-preserving distributed training ac
 - **🔄 Fail-Safe**: Handles client disconnections and stragglers automatically
 - **🧪 Integration Testing**: CI pipeline with synthetic COCO subset for validation
 
+### 🌦️ Weather Guard
+
+The Weather Guard module provides comprehensive weather awareness capabilities for the platform:
+
+- **🌤️ Weather Data Integration**: Pull forecasts from Open-Meteo API with hourly wind and rain data
+- **📡 Local Weather Station**: Optional integration with MeteoShield (ESP32 + BME280) via MQTT
+- **🚫 Mission Blocking**: Automatically blocks mission launch if wind > 9 m/s or rain > 0.5 mm/h
+- **🏠 Indoor Fallback**: Triggers indoor mission alternatives when outdoor conditions are unfavorable
+- **📊 Dashboard Integration**: 24-hour forecast graph and GO/NO-GO indicators
+- **🔔 Alert System**: Notifies when weather windows open for mission execution
+- **💾 Efficient Caching**: Redis-based caching with 30-minute TTL
+- **🔄 Fault Tolerance**: Fallback to last good data when API is unavailable
+- **🔌 Microservice Architecture**: Standalone service with FastAPI and Python 3.12
+
 ### 🌐 Edge Kit
 
 The Edge Kit is a plug-and-play Docker bundle for deploying Bulo.CloudSentinel capabilities at the edge:
@@ -450,7 +464,8 @@ bulo-cloud-sentinel/
 │   └── tacs/             # Target Acquisition and Coordination System
 ├── tests/                # Test files
 │   └── test_tinygrad_backend.py # Tests for TinyGrad inference backend
-└── vision_system/        # Vision System for crowd and vehicle analysis
+├── vision_system/        # Vision System for crowd and vehicle analysis
+└── weather_guard/        # Smart Weather Awareness service
 ```
 
 ### Security

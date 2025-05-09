@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  weather_guard:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: bulocloud-sentinel/weather-guard:latest
+    container_name: weather-guard
+    restart: unless-stopped
+    ports:
+      - "8090:8090"
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - LOG_LEVEL=INFO
+      - WIND_THRESHOLD=9.0
+      - RAIN_THRESHOLD=0.5
+      - SENTINEL_API_URL=http://bulocloud-sentinel-api:8000
+      - SENTINEL_API_TOKEN=${SENTINEL_API_TOKEN:-}
+      - MQTT_ENABLED=${MQTT_ENABLED:-false}
+      - MQTT_BROKER=${MQTT_BROKER:-mqtt-broker}
+      - MQTT_PORT=${MQTT_PORT:-1883}
+      - MQTT_USERNAME=${MQTT_USERNAME:-}
+      - MQTT_PASSWORD=${MQTT_PASSWORD:-}
+    volumes:
+      - ./logs:/app/logs
+    networks:
+      - bulocloud-network
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:7-alpine
+    container_name: weather-guard-redis
+    restart: unless-stopped
+    volumes:
+      - redis-data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - bulocloud-network
+
+volumes:
+  redis-data:
+
+networks:
+  bulocloud-network:
+    external: true
