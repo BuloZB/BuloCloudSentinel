@@ -1,104 +1,108 @@
 # Core dependencies
-typer==0.9.0
-fastapi==0.115.12  # Updated to latest version for security improvements  # Updated to latest version for security improvements  # Updated to latest version for security improvements  # Updated to latest version for security improvements  # Updated to latest version
-uvicorn[standard]==0.34.0
+typer==0.15.3  # Updated to latest version
+fastapi==0.115.12  # Updated to latest version for security improvements
+uvicorn[standard]==0.34.2  # Updated to latest version
 pydantic==2.11.4  # Updated to latest version
-email-validator==2.1.1
-python-multipart==0.0.21  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-53981
+email-validator==2.2.0  # Updated to latest version
+python-multipart==0.0.21  # Updated to latest version to fix CVE-2024-53981
 asgiref==3.8.1
 
 # Database
-sqlalchemy==2.0.38
-alembic==1.14.0
-peewee==3.17.9
-peewee-migrate==1.12.2
-psycopg2-binary==2.9.9
-pgvector==0.4.0
+sqlalchemy==2.0.40  # Updated to latest version
+alembic==1.15.2  # Updated to latest version
+peewee==3.18.1  # Updated to latest version
+peewee-migrate==1.13.0  # Updated to latest version
+psycopg2-binary==2.9.10  # Updated to latest version
+pgvector==0.4.1  # Updated to latest version
 PyMySQL==1.1.1
-pymongo==4.7.1
-redis==5.0.4  # Updated to latest version
+pymongo==4.12.1  # Updated to latest version
+redis==6.0.0  # Updated to latest version
 
 # Authentication
 # Replacing python-jose with PyJWT due to vulnerabilities CVE-2024-33664 and CVE-2024-33663
 # # # # # # # python-jose[cryptography]==3.3.0  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663
-pyjwt==2.8.0  # Using a secure version that doesn't have CVE-2024-53861  # Updated to fix CVE-2024-53861
+# pyjwt moved to security section with version 2.10.1 to fix CVE-2024-53861
 passlib[bcrypt]==1.7.4
 bcrypt==4.3.0
 argon2-cffi==23.1.0
 
 # Networking
-httpx==0.27.0
-websockets==12.0
-boto3==1.35.53
-aiohttp==3.9.5
+httpx==0.28.1
+websockets==15.0.1
+boto3==1.38.14
+aiohttp==3.10.11  # Updated to fix CVE-2024-52303, CVE-2024-52304, CVE-2024-42367
 aiomqtt==1.2.1
 
 # Security
-cryptography==46.0.0  # Updated to latest version to fix CVE-2024-26130, CVE-2024-12797, CVE-2024-6119  # Updated to fix CVE-2024-26130, CVE-2024-12797, CVE-2024-6119, CVE-2024-2511, CVE-2024-4603
-pyopenssl==24.0.0
+cryptography==44.0.3  # Updated to latest version to fix CVE-2024-26130, CVE-2024-12797, CVE-2024-6119
+pyopenssl==25.0.0
+pyjwt==2.10.1  # Updated to fix CVE-2024-53861
 certifi==2024.10.5  # Updated to latest version
 python-magic==0.4.27
-argon2-cffi==23.1.0  # Added for secure password hashing
+# argon2-cffi already included in authentication section
 
 # Utils
-python-dotenv==1.0.1  # Latest version
-aiofiles==23.2.1  # Updated to latest version
-aiocache==0.12.2
-APScheduler==3.10.4
-loguru==0.7.2
+python-dotenv==1.1.0  # Updated to latest version
+aiofiles==24.1.0  # Updated to latest version
+aiocache==0.12.3  # Updated to latest version
+APScheduler==3.11.0  # Updated to latest version
+loguru==0.7.3  # Updated to latest version
 RestrictedPython==8.0
 
 # AI and ML
-openai==1.30.1
-anthropic==0.23.0
-google-generativeai==0.8.4
-tiktoken==0.6.0
-langchain==0.3.20  # Updated to latest version
-langchain-community==0.4.0  # Updated to fix CVE-2024-8309, CVE-2024-2965, CVE-2024-46946
-transformers==4.50.0
-sentence-transformers==3.3.1
-accelerate==0.30.1
+openai==1.78.1  # Updated to latest version
+anthropic==0.51.0  # Updated to latest version
+google-generativeai==0.8.5  # Updated to latest version
+tiktoken==0.9.0  # Updated to latest version
+langchain==0.3.25  # Updated to latest version
+langchain-community==0.3.24  # Updated to latest version, fixes CVE-2024-8309, CVE-2024-2965, CVE-2024-46946
+transformers==4.51.3  # Updated to latest version
+sentence-transformers==4.1.0  # Updated to latest version
+accelerate==1.6.0  # Updated to latest version
 colbert-ai==0.2.21
 einops==0.8.1
 tinygrad==0.9.0  # Lightweight ML runtime
 safetensors==0.4.3  # For loading safetensors models
-torch>=2.1.0
+torch==2.7.0  # Pinned to specific version for better security
 onnx==1.17.0  # ONNX model format support, updated to fix CVE-2024-7776
 # WARNING: ONNX has a known vulnerability (CVE-2024-5187) in download_model_with_test_data function.
 # Mitigation: Do not use download_model_with_test_data function with untrusted sources.
-onnxruntime==1.20.1  # ONNX runtime for inference
-tensorflow-lite==2.15.0  # TFLite for lightweight inference
+onnxruntime==1.22.0  # Updated to latest version
+tensorflow==2.19.0  # Updated to latest version
 
 # Vector databases
-chromadb==0.6.3
-pymilvus==2.5.0
-qdrant-client==1.12.0
+chromadb==1.0.9  # Updated to latest version
+pymilvus==2.5.8  # Updated to latest version
+qdrant-client==1.14.2  # Updated to latest version
 opensearch-py==2.8.0
-elasticsearch==8.17.1
+elasticsearch==9.0.1  # Updated to latest version
 
 # Document processing
-fake-useragent==2.1.0
-playwright==1.49.1
-ftfy==6.2.3
-pypdf==4.3.1
-fpdf2==2.8.2
-pymdown-extensions==10.14.2
-docx2txt==0.8
-python-pptx==0.6.23
-python-docx==1.1.0
+fake-useragent==2.2.0  # Updated to latest version
+playwright==1.52.0  # Updated to latest version
+ftfy==6.3.1  # Updated to latest version
+pypdf==5.5.0  # Updated to latest version
+fpdf2==2.8.3  # Updated to latest version
+pymdown-extensions==10.15  # Updated to latest version
+docx2txt==0.9  # Updated to latest version
+python-pptx==1.0.2  # Updated to latest version
+python-docx==1.1.2  # Updated to latest version
 
 # Computer vision
-opencv-python==4.10.0.84
+opencv-python==4.11.0.86  # Updated to latest version
 pillow==11.2.2  # Updated to fix CVE-2024-28219, CVE-2023-50447
-numpy==1.26.4
-scipy==1.13.1
-scikit-learn==1.5.0
-matplotlib==3.9.0
+numpy==2.2.5  # Updated to latest version
+scipy==1.15.3  # Updated to latest version
+scikit-learn==1.6.1  # Updated to latest version
+matplotlib==3.10.3  # Updated to latest version
 
 # Testing
 pytest==8.0.2
 pytest-asyncio==0.23.5  # For testing async functions
 pytest-mock==3.14.0  # For mocking in tests
 pytest-cov==4.1.0  # For test coverage
-safety==2.3.5  # For dependency vulnerability scanning
+safety==3.5.0  # Updated to latest version for dependency vulnerability scanning
 bandit==1.7.7  # For security static analysis
+semgrep==1.71.0  # Added for code security scanning
+mypy==1.9.0  # Added for type checking
+ruff==0.4.7  # Added for linting

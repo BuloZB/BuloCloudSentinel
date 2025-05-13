@@ -26,12 +26,12 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: '3.11'
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install safety bandit
+          pip install safety==3.5.0 bandit==1.7.7 pip-audit==2.7.0
           if [ -f requirements-secure.txt ]; then
             pip install -r requirements-secure.txt
           else
@@ -43,11 +43,28 @@ jobs:
           safety check --full-report --output text > safety-report.txt || true
           echo "Safety check completed. See safety-report.txt for details."
 
+      - name: Run pip-audit check
+        run: |
+          pip-audit -r requirements.txt -f json -o pip-audit-results.json || true
+          echo "Pip-audit check completed. See pip-audit-results.json for details."
+
       - name: Upload safety report
         uses: actions/upload-artifact@v4
         with:
           name: safety-report
           path: safety-report.txt
+
+      - name: Upload pip-audit report
+        uses: actions/upload-artifact@v4
+        with:
+          name: pip-audit-report
+          path: pip-audit-results.json
+
+      - name: Upload pip-audit report
+        uses: actions/upload-artifact@v4
+        with:
+          name: pip-audit-report
+          path: pip-audit-results.json
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -97,7 +114,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: '3.11'
 
       - name: Install dependencies
         run: |
@@ -201,7 +218,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: '3.11'
 
       - name: Install dependencies
         run: |
@@ -229,7 +246,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: '3.11'
 
       - name: Install dependencies
         run: |
@@ -275,9 +292,14 @@ jobs:
           echo "" >> security-report.md
 
           echo "## Dependency Check" >> security-report.md
+          echo "### Safety Check" >> security-report.md
           echo "```" >> security-report.md
           cat artifacts/safety-report/safety-report.txt >> security-report.md || echo "No safety report found" >> security-report.md
           echo "```" >> security-report.md
+          echo "" >> security-report.md
+
+          echo "### Pip-Audit Check" >> security-report.md
+          echo "Pip-audit results are available in the artifacts." >> security-report.md
           echo "" >> security-report.md
 
           echo "## Code Scanning" >> security-report.md

@@ -13,40 +13,98 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-          
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install safety
+          pip install pip-tools safety pip-audit
           if [ -f requirements.txt ]; then
             pip install -r requirements.txt
           fi
-          
-      - name: Run dependency update script
+
+      - name: Check for outdated dependencies
+        id: outdated
         run: |
-          python scripts/update_dependencies.py
-        
+          pip list --outdated --format=json > outdated.json
+          echo "OUTDATED_COUNT=$(jq length outdated.json)" >> $GITHUB_ENV
+          if [ -s outdated.json ]; then
+            cat outdated.json | jq -r '.[] | "* \(.name): \(.version) -> \(.latest_version)"' > outdated.md
+            echo "Found $(jq length outdated.json) outdated packages"
+          else
+            echo "No outdated packages found"
+            echo "No outdated packages found" > outdated.md
+          fi
+
+      - name: Run safety check
+        run: |
+          safety check -r requirements.txt --output text > safety-report.txt || true
+          echo "Safety check completed. See safety-report.txt for details."
+
+      - name: Run pip-audit check
+        run: |
+          pip-audit -r requirements.txt -f json -o pip-audit-results.json || true
+          echo "Pip-audit check completed. See pip-audit-results.json for details."
+
+      - name: Update dependencies
+        if: env.OUTDATED_COUNT != '0'
+        run: |
+          # Create a temporary requirements file with updated versions
+          jq -r '.[] | "\(.name)==\(.latest_version)"' outdated.json > updates.txt
+
+          # Read current requirements
+          cp requirements.txt requirements.bak
+
+          # Update requirements with new versions
+          while IFS= read -r line; do
+            package=$(echo "$line" | cut -d '=' -f 1)
+            if grep -q "^$package==" requirements.txt; then
+              sed -i "s/^$package==.*/$line/" requirements.txt
+            fi
+          done < updates.txt
+
       - name: Check for changes
         id: git-check
         run: |
           git diff --exit-code || echo "changes=true" >> $GITHUB_OUTPUT
-          
+
       - name: Commit changes
         if: steps.git-check.outputs.changes == 'true'
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add .
-          git commit -m "Update dependencies to fix security vulnerabilities"
-          
+          git commit -m "deps: update dependencies to fix security vulnerabilities
+
+          Updated $(cat outdated.md | wc -l) packages to their latest versions.
+
+          Security scan results are available in the workflow artifacts."
+
       - name: Push changes
         if: steps.git-check.outputs.changes == 'true'
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ github.ref }}
+
+      - name: Upload outdated dependencies report
+        uses: actions/upload-artifact@v4
+        with:
+          name: outdated-dependencies
+          path: outdated.md
+
+      - name: Upload safety report
+        uses: actions/upload-artifact@v4
+        with:
+          name: safety-report
+          path: safety-report.txt
+
+      - name: Upload pip-audit report
+        uses: actions/upload-artifact@v4
+        with:
+          name: pip-audit-report
+          path: pip-audit-results.json

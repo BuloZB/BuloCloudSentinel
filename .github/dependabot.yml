@@ -11,7 +11,7 @@ updates:
       - "dependencies"
       - "security"
     commit-message:
-      prefix: "pip"
+      prefix: "deps"
       include: "scope"
     # Specify reviewers for pull requests
     reviewers:
@@ -19,19 +19,69 @@ updates:
     # Specify assignees for pull requests
     assignees:
       - "BuloZB"
+    # Group dependencies to reduce PR noise
+    groups:
+      # Group all AI/ML dependencies together
+      ai-dependencies:
+        patterns:
+          - "openai"
+          - "anthropic"
+          - "google-generativeai"
+          - "tiktoken"
+          - "langchain*"
+          - "transformers"
+          - "sentence-transformers"
+          - "accelerate"
+          - "torch*"
+          - "tensorflow*"
+          - "onnx*"
+      # Group all database dependencies together
+      db-dependencies:
+        patterns:
+          - "sqlalchemy"
+          - "alembic"
+          - "peewee*"
+          - "psycopg2*"
+          - "pgvector"
+          - "pymysql"
+          - "pymongo"
+          - "redis"
+      # Group all security dependencies together
+      security-dependencies:
+        patterns:
+          - "cryptography"
+          - "pyopenssl"
+          - "pyjwt"
+          - "certifi"
+          - "passlib"
+          - "bcrypt"
+          - "argon2-cffi"
+      # Group all testing dependencies together
+      testing-dependencies:
+        patterns:
+          - "pytest*"
+          - "safety"
+          - "bandit"
+          - "semgrep"
+          - "mypy"
+          - "ruff"
     # Allow up-to-date dependencies to be maintained
     allow:
       # Allow updates for dependencies with security issues
       - dependency-type: "all"
-        update-type: "security"
     # Ignore certain dependencies
     ignore:
       # Ignore updates to packages that start with 'dev-'
-      # These are development dependencies that don't need to be updated
       - dependency-name: "dev-*"
+      # Ignore major updates to onnx due to compatibility issues
+      - dependency-name: "onnx"
+        versions: [">=2.0.0"]
+      # Ignore major updates to torch due to compatibility issues
+      - dependency-name: "torch"
+        versions: [">=3.0.0"]
     # Apply security updates to vulnerable dependencies
     vulnerability-alerts: true
-    
+
   # Enable version updates for JavaScript
   - package-ecosystem: "npm"
     directory: "/frontend"
@@ -55,10 +105,9 @@ updates:
     allow:
       # Allow updates for dependencies with security issues
       - dependency-type: "all"
-        update-type: "security"
     # Apply security updates to vulnerable dependencies
     vulnerability-alerts: true
-    
+
   # Enable version updates for GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
