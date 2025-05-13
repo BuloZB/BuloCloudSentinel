@@ -30,6 +30,8 @@ argon2-cffi==23.1.0
 httpx==0.27.0
 websockets==12.0
 boto3==1.35.53
+aiohttp==3.9.5
+aiomqtt==1.2.1
 
 # Security
 cryptography==46.0.0  # Updated to latest version to fix CVE-2024-26130, CVE-2024-12797, CVE-2024-6119  # Updated to fix CVE-2024-26130, CVE-2024-12797, CVE-2024-6119, CVE-2024-2511, CVE-2024-4603
@@ -95,5 +97,8 @@ matplotlib==3.9.0
 
 # Testing
 pytest==8.0.2
+pytest-asyncio==0.23.5  # For testing async functions
+pytest-mock==3.14.0  # For mocking in tests
+pytest-cov==4.1.0  # For test coverage
 safety==2.3.5  # For dependency vulnerability scanning
 bandit==1.7.7  # For security static analysis

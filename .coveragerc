@@ -1,0 +1,90 @@
+[run]
+source = backend,weather_guard,common
+omit =
+    */tests/*
+    */migrations/*
+    */alembic/*
+    */venv/*
+    */.venv/*
+    */node_modules/*
+    */dist/*
+    */build/*
+    */docs/*
+    */scripts/*
+    */setup.py
+    */conftest.py
+    */__init__.py
+    */__main__.py
+    */__pycache__/*
+    */.pytest_cache/*
+    */.coverage
+    */.coveragerc
+    */.git/*
+    */.github/*
+    */.gitignore
+    */.dockerignore
+    */Dockerfile
+    */docker-compose.yml
+    */README.md
+    */LICENSE
+    */CHANGELOG.md
+    */CONTRIBUTING.md
+    */CODE_OF_CONDUCT.md
+    */pyproject.toml
+    */poetry.lock
+    */requirements.txt
+    */requirements-dev.txt
+    */.ruff.toml
+    */.pre-commit-config.yaml
+    */mypy.ini
+    */pytest.ini
+    */tox.ini
+    */.flake8
+    */.editorconfig
+    */.vscode/*
+    */.idea/*
+    */.DS_Store
+
+[report]
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    raise NotImplementedError
+    if __name__ == .__main__.:
+    pass
+    raise ImportError
+    except ImportError
+    raise AssertionError
+    except AssertionError
+    raise ValueError
+    except ValueError
+    raise TypeError
+    except TypeError
+    raise KeyError
+    except KeyError
+    raise IndexError
+    except IndexError
+    raise AttributeError
+    except AttributeError
+    raise NotImplementedError
+    except NotImplementedError
+    raise StopIteration
+    except StopIteration
+    raise SystemExit
+    except SystemExit
+    except Exception as e
+    except Exception
+    except:
+    if TYPE_CHECKING:
+    if typing.TYPE_CHECKING:
+    if t.TYPE_CHECKING:
+    class .*\bProtocol\):
+    @(abc\.)?abstractmethod
+    @(typing\.)?overload
+    @(t\.)?overload
+    @(abc\.)?abstractproperty
+    @(abc\.)?abstractclassmethod
+    @(abc\.)?abstractstaticmethod
+
+[html]
+directory = coverage_html_report
