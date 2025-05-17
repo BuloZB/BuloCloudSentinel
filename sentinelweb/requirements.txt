@@ -10,7 +10,7 @@ pyjwt==2.8.0  # Using a secure version that doesn't have CVE-2024-53861  # Downg
 passlib[bcrypt]==1.7.4
 
 requests==2.32.3
-aiohttp==3.11.11
+aiohttp==3.11.18
 async-timeout==4.0.3
 aiocache==0.12.2
 aiofiles==23.2.1

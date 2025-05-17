@@ -61,9 +61,6 @@
 		"@pyscript/core": "^0.6.46",
 		"@sveltejs/adapter-node": "^2.0.0",
 		"@sveltejs/svelte-virtual-list": "^3.0.1",
-		"@tiptap/core": "^2.11.7",
-		"@tiptap/extension-code-block-lowlight": "^2.10.0",
-		"@tiptap/extension-highlight": "^2.10.0",
 		"@tiptap/extension-placeholder": "^2.10.0",
 		"@tiptap/extension-typography": "^2.10.0",
 		"@tiptap/pm": "^2.11.7",
@@ -111,7 +108,7 @@
 		"svelte-sonner": "^0.3.19",
 		"tippy.js": "^6.3.7",
 		"turndown": "^7.2.0",
-		"undici": "^7.3.0",
+		"undici": "^7.5.0",
 		"uuid": "^9.0.1",
 		"vite-plugin-static-copy": "^2.2.0",
 		"yaml": "^2.7.1"
