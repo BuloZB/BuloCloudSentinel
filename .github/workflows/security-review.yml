@@ -1,128 +1,141 @@
 name: Security Review
-
-on:
+true:
   schedule:
-    - cron: '0 8 * * 1'  # Run every Monday at 8:00 AM
-    - cron: '0 8 1 * *'  # Run on the first day of every month at 8:00 AM
-  workflow_dispatch:  # Allow manual triggering
-
+  - cron: 0 8 * * 1
+  - cron: 0 8 1 * *
+  workflow_dispatch: null
 jobs:
   weekly-security-review:
     runs-on: ubuntu-latest
     if: github.event.schedule == '0 8 * * 1'
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-          
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install gitpython
-          
-      - name: Create security reviews directory
-        run: mkdir -p security_reviews
-          
-      - name: Generate weekly security review template
-        run: |
-          python scripts/security_review.py --weekly
-          
-      - name: Upload weekly review template
-        uses: actions/upload-artifact@v4
-        with:
-          name: weekly-security-review
-          path: security_reviews/weekly_review_*.md
-          
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
+        restore-keys: ${{ runner.os }}-pip-
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    - name: Install dependencies
+      run: 'python -m pip install --upgrade pip
+
+        pip install gitpython
+
+        '
+    - name: Create security reviews directory
+      run: mkdir -p security_reviews
+    - name: Generate weekly security review template
+      run: 'python scripts/security_review.py --weekly
+
+        '
+    - name: Upload weekly review template
+      uses: actions/upload-artifact@v4
+      with:
+        name: weekly-security-review
+        path: security_reviews/weekly_review_*.md
   monthly-security-review:
     runs-on: ubuntu-latest
     if: github.event.schedule == '0 8 1 * *'
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-          
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install gitpython
-          
-      - name: Create security reviews directory
-        run: mkdir -p security_reviews
-          
-      - name: Generate monthly security review template
-        run: |
-          python scripts/security_review.py --monthly
-          
-      - name: Upload monthly review template
-        uses: actions/upload-artifact@v4
-        with:
-          name: monthly-security-review
-          path: security_reviews/monthly_review_*.md
-          
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
+        restore-keys: ${{ runner.os }}-pip-
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    - name: Install dependencies
+      run: 'python -m pip install --upgrade pip
+
+        pip install gitpython
+
+        '
+    - name: Create security reviews directory
+      run: mkdir -p security_reviews
+    - name: Generate monthly security review template
+      run: 'python scripts/security_review.py --monthly
+
+        '
+    - name: Upload monthly review template
+      uses: actions/upload-artifact@v4
+      with:
+        name: monthly-security-review
+        path: security_reviews/monthly_review_*.md
   quarterly-security-review:
     runs-on: ubuntu-latest
-    if: github.event.schedule == '0 8 1 * *' && (github.event.schedule_month == 1 || github.event.schedule_month == 4 || github.event.schedule_month == 7 || github.event.schedule_month == 10)
+    if: github.event.schedule == '0 8 1 * *' && (github.event.schedule_month == 1
+      || github.event.schedule_month == 4 || github.event.schedule_month == 7 || github.event.schedule_month
+      == 10)
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-          
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install gitpython
-          
-      - name: Create security reviews directory
-        run: mkdir -p security_reviews
-          
-      - name: Generate quarterly security review template
-        run: |
-          python scripts/security_review.py --quarterly
-          
-      - name: Upload quarterly review template
-        uses: actions/upload-artifact@v4
-        with:
-          name: quarterly-security-review
-          path: security_reviews/quarterly_review_*.md
-          
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
+        restore-keys: ${{ runner.os }}-pip-
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    - name: Install dependencies
+      run: 'python -m pip install --upgrade pip
+
+        pip install gitpython
+
+        '
+    - name: Create security reviews directory
+      run: mkdir -p security_reviews
+    - name: Generate quarterly security review template
+      run: 'python scripts/security_review.py --quarterly
+
+        '
+    - name: Upload quarterly review template
+      uses: actions/upload-artifact@v4
+      with:
+        name: quarterly-security-review
+        path: security_reviews/quarterly_review_*.md
   manual-security-review:
     runs-on: ubuntu-latest
     if: github.event_name == 'workflow_dispatch'
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-          
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install gitpython
-          
-      - name: Create security reviews directory
-        run: mkdir -p security_reviews
-          
-      - name: Generate all security review templates
-        run: |
-          python scripts/security_review.py --daily --weekly --monthly --quarterly
-          
-      - name: Upload all review templates
-        uses: actions/upload-artifact@v4
-        with:
-          name: security-reviews
-          path: security_reviews/*.md
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
+        restore-keys: ${{ runner.os }}-pip-
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    - name: Install dependencies
+      run: 'python -m pip install --upgrade pip
+
+        pip install gitpython
+
+        '
+    - name: Create security reviews directory
+      run: mkdir -p security_reviews
+    - name: Generate all security review templates
+      run: 'python scripts/security_review.py --daily --weekly --monthly --quarterly
+
+        '
+    - name: Upload all review templates
+      uses: actions/upload-artifact@v4
+      with:
+        name: security-reviews
+        path: security_reviews/*.md

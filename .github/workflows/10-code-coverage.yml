@@ -1,91 +1,60 @@
 name: Code Coverage Report
-
-on:
+true:
   schedule:
-    - cron: '0 0 * * *'  # Run at midnight every day
-  workflow_dispatch:  # Allow manual triggering
-
+  - cron: 0 0 * * *
+  workflow_dispatch: null
 jobs:
   coverage:
     name: Generate Code Coverage Report
     runs-on: ubuntu-latest
-    
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-      
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install pytest pytest-cov coverage
-      
-      - name: Run tests with coverage
-        run: |
-          echo "Running tests with coverage..."
-          # Always succeed
-          echo "✅ Tests with coverage completed successfully!"
-          
-          # Create dummy coverage data
-          mkdir -p coverage-data
-          cat > coverage-data/coverage.xml << EOF
-          <?xml version="1.0" ?>
-          <coverage version="6.5.0" timestamp="1677721600" lines-valid="1000" lines-covered="850" line-rate="0.85" branches-valid="500" branches-covered="400" branch-rate="0.8" complexity="250">
-            <packages>
-              <package name="api" line-rate="0.9" branch-rate="0.85" complexity="100">
-                <classes>
-                  <class name="main.py" line-rate="0.92" branch-rate="0.88" complexity="50">
-                    <methods/>
-                    <lines/>
-                  </class>
-                </classes>
-              </package>
-              <package name="indoor_drone_system" line-rate="0.82" branch-rate="0.78" complexity="150">
-                <classes>
-                  <class name="slam_node.py" line-rate="0.8" branch-rate="0.75" complexity="80">
-                    <methods/>
-                    <lines/>
-                  </class>
-                </classes>
-              </package>
-            </packages>
-          </coverage>
-          EOF
-      
-      - name: Generate HTML coverage report
-        run: |
-          echo "Generating HTML coverage report..."
-          # Always succeed
-          echo "✅ HTML coverage report generated successfully!"
-          
-          # Create dummy HTML report
-          mkdir -p coverage-data/html
-          cat > coverage-data/html/index.html << EOF
-          <!DOCTYPE html>
-          <html>
-          <head>
-            <title>Coverage Report</title>
-          </head>
-          <body>
-            <h1>Coverage Report</h1>
-            <p>Overall coverage: 85%</p>
-          </body>
-          </html>
-          EOF
-      
-      - name: Upload coverage data
-        uses: actions/upload-artifact@v3
-        with:
-          name: coverage-data
-          path: coverage-data/
-      
-      - name: Summary
-        run: |
-          echo "✅ Code coverage report completed successfully!"
-          echo "Overall coverage: 85%"
-          echo "API coverage: 90%"
-          echo "Indoor Drone System coverage: 82%"
+    - name: Checkout code
+      uses: actions/checkout@v3
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
+        restore-keys: ${{ runner.os }}-pip-
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    - name: Install dependencies
+      run: 'python -m pip install --upgrade pip
+
+        pip install pytest pytest-cov coverage
+
+        '
+    - name: Run tests with coverage
+      run: "echo \"Running tests with coverage...\"\n# Always succeed\necho \"\xE2\
+        \u015B\u2026 Tests with coverage completed successfully!\"\n\n# Create dummy\
+        \ coverage data\nmkdir -p coverage-data\ncat > coverage-data/coverage.xml\
+        \ << EOF\n<?xml version=\"1.0\" ?>\n<coverage version=\"6.5.0\" timestamp=\"\
+        1677721600\" lines-valid=\"1000\" lines-covered=\"850\" line-rate=\"0.85\"\
+        \ branches-valid=\"500\" branches-covered=\"400\" branch-rate=\"0.8\" complexity=\"\
+        250\">\n  <packages>\n    <package name=\"api\" line-rate=\"0.9\" branch-rate=\"\
+        0.85\" complexity=\"100\">\n      <classes>\n        <class name=\"main.py\"\
+        \ line-rate=\"0.92\" branch-rate=\"0.88\" complexity=\"50\">\n          <methods/>\n\
+        \          <lines/>\n        </class>\n      </classes>\n    </package>\n\
+        \    <package name=\"indoor_drone_system\" line-rate=\"0.82\" branch-rate=\"\
+        0.78\" complexity=\"150\">\n      <classes>\n        <class name=\"slam_node.py\"\
+        \ line-rate=\"0.8\" branch-rate=\"0.75\" complexity=\"80\">\n          <methods/>\n\
+        \          <lines/>\n        </class>\n      </classes>\n    </package>\n\
+        \  </packages>\n</coverage>\nEOF\n"
+    - name: Generate HTML coverage report
+      run: "echo \"Generating HTML coverage report...\"\n# Always succeed\necho \"\
+        \xE2\u015B\u2026 HTML coverage report generated successfully!\"\n\n# Create\
+        \ dummy HTML report\nmkdir -p coverage-data/html\ncat > coverage-data/html/index.html\
+        \ << EOF\n<!DOCTYPE html>\n<html>\n<head>\n  <title>Coverage Report</title>\n\
+        </head>\n<body>\n  <h1>Coverage Report</h1>\n  <p>Overall coverage: 85%</p>\n\
+        </body>\n</html>\nEOF\n"
+    - name: Upload coverage data
+      uses: actions/upload-artifact@v3
+      with:
+        name: coverage-data
+        path: coverage-data/
+    - name: Summary
+      run: "echo \"\xE2\u015B\u2026 Code coverage report completed successfully!\"\
+        \necho \"Overall coverage: 85%\"\necho \"API coverage: 90%\"\necho \"Indoor\
+        \ Drone System coverage: 82%\"\n"

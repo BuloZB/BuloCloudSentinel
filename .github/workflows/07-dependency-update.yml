@@ -1,59 +1,48 @@
 name: Dependency Update Check
-
-on:
+true:
   schedule:
-    - cron: '0 0 * * *'  # Run at midnight every day
-  workflow_dispatch:  # Allow manual triggering
-
-# Define minimal permissions required for this workflow
+  - cron: 0 0 * * *
+  workflow_dispatch: null
 permissions:
-  contents: read  # Only need read access to repository contents
-  actions: read   # For reading workflow runs
-
+  contents: read
+  actions: read
 jobs:
   dependencies:
     name: Check Dependencies
     runs-on: ubuntu-latest
-    
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-      
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install pip-tools
-      
-      - name: Check for dependency updates
-        run: |
-          echo "Checking for dependency updates..."
-          # Always succeed
-          echo "✅ All dependencies are up to date!"
-          
-          # Create dummy dependency report
-          mkdir -p dependency-reports
-          cat > dependency-reports/dependencies.txt << EOF
-          Package         Current     Latest    Status
-          --------------- ----------- --------- ----------------
-          fastapi         0.95.0      0.95.0    Up to date
-          uvicorn         0.21.1      0.21.1    Up to date
-          pydantic        2.0.0       2.0.0     Up to date
-          sqlalchemy      2.0.0       2.0.0     Up to date
-          pytest          7.3.1       7.3.1     Up to date
-          EOF
-      
-      - name: Upload dependency reports
-        uses: actions/upload-artifact@v3
-        with:
-          name: dependency-reports
-          path: dependency-reports/
-      
-      - name: Summary
-        run: |
-          echo "✅ Dependency check completed successfully!"
-          echo "All dependencies are up to date."
+    - name: Checkout code
+      uses: actions/checkout@v3
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
+        restore-keys: ${{ runner.os }}-pip-
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    - name: Install dependencies
+      run: 'python -m pip install --upgrade pip
+
+        pip install pip-tools
+
+        '
+    - name: Check for dependency updates
+      run: "echo \"Checking for dependency updates...\"\n# Always succeed\necho \"\
+        \xE2\u015B\u2026 All dependencies are up to date!\"\n\n# Create dummy dependency\
+        \ report\nmkdir -p dependency-reports\ncat > dependency-reports/dependencies.txt\
+        \ << EOF\nPackage         Current     Latest    Status\n--------------- -----------\
+        \ --------- ----------------\nfastapi         0.95.0      0.95.0    Up to\
+        \ date\nuvicorn         0.21.1      0.21.1    Up to date\npydantic       \
+        \ 2.0.0       2.0.0     Up to date\nsqlalchemy      2.0.0       2.0.0    \
+        \ Up to date\npytest          7.3.1       7.3.1     Up to date\nEOF\n"
+    - name: Upload dependency reports
+      uses: actions/upload-artifact@v3
+      with:
+        name: dependency-reports
+        path: dependency-reports/
+    - name: Summary
+      run: "echo \"\xE2\u015B\u2026 Dependency check completed successfully!\"\necho\
+        \ \"All dependencies are up to date.\"\n"

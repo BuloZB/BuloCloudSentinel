@@ -1,69 +1,48 @@
 name: Security Scan
-
-on:
+true:
   schedule:
-    - cron: '0 0 * * *'  # Run at midnight every day
-  workflow_dispatch:  # Allow manual triggering
-
+  - cron: 0 0 * * *
+  workflow_dispatch: null
 jobs:
   security:
     name: Security Scan
     runs-on: ubuntu-latest
-    
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-      
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install bandit safety
-      
-      - name: Run Bandit security scan
-        run: |
-          echo "Running Bandit security scan..."
-          # Always succeed
-          echo "✅ No security issues found!"
-      
-      - name: Check dependencies with Safety
-        run: |
-          echo "Checking dependencies with Safety..."
-          # Always succeed
-          echo "✅ No vulnerable dependencies found!"
-          
-          # Create dummy security report
-          mkdir -p security-reports
-          cat > security-reports/bandit-report.json << EOF
-          {
-            "metrics": {
-              "CONFIDENCE.HIGH": 0,
-              "CONFIDENCE.LOW": 0,
-              "CONFIDENCE.MEDIUM": 0,
-              "CONFIDENCE.UNDEFINED": 0,
-              "SEVERITY.HIGH": 0,
-              "SEVERITY.LOW": 0,
-              "SEVERITY.MEDIUM": 0,
-              "SEVERITY.UNDEFINED": 0,
-              "loc": 1000,
-              "nosec": 0,
-              "skipped_tests": 0
-            },
-            "results": []
-          }
-          EOF
-      
-      - name: Upload security reports
-        uses: actions/upload-artifact@v3
-        with:
-          name: security-reports
-          path: security-reports/
-      
-      - name: Summary
-        run: |
-          echo "✅ Security scan completed successfully!"
-          echo "No security issues found in the codebase."
+    - name: Checkout code
+      uses: actions/checkout@v3
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
+        restore-keys: ${{ runner.os }}-pip-
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    - name: Install dependencies
+      run: 'python -m pip install --upgrade pip
+
+        pip install bandit safety
+
+        '
+    - name: Run Bandit security scan
+      run: "echo \"Running Bandit security scan...\"\n# Always succeed\necho \"\xE2\
+        \u015B\u2026 No security issues found!\"\n"
+    - name: Check dependencies with Safety
+      run: "echo \"Checking dependencies with Safety...\"\n# Always succeed\necho\
+        \ \"\xE2\u015B\u2026 No vulnerable dependencies found!\"\n\n# Create dummy\
+        \ security report\nmkdir -p security-reports\ncat > security-reports/bandit-report.json\
+        \ << EOF\n{\n  \"metrics\": {\n    \"CONFIDENCE.HIGH\": 0,\n    \"CONFIDENCE.LOW\"\
+        : 0,\n    \"CONFIDENCE.MEDIUM\": 0,\n    \"CONFIDENCE.UNDEFINED\": 0,\n  \
+        \  \"SEVERITY.HIGH\": 0,\n    \"SEVERITY.LOW\": 0,\n    \"SEVERITY.MEDIUM\"\
+        : 0,\n    \"SEVERITY.UNDEFINED\": 0,\n    \"loc\": 1000,\n    \"nosec\": 0,\n\
+        \    \"skipped_tests\": 0\n  },\n  \"results\": []\n}\nEOF\n"
+    - name: Upload security reports
+      uses: actions/upload-artifact@v3
+      with:
+        name: security-reports
+        path: security-reports/
+    - name: Summary
+      run: "echo \"\xE2\u015B\u2026 Security scan completed successfully!\"\necho\
+        \ \"No security issues found in the codebase.\"\n"

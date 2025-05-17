@@ -1,137 +1,100 @@
 name: Dock Stations Test
-
-on:
+true:
   schedule:
-    - cron: '0 0 * * *'  # Run every day at midnight
-  workflow_dispatch:  # Allow manual triggering
-
+  - cron: 0 0 * * *
+  workflow_dispatch: null
 jobs:
   test:
     name: Test Dock Stations
     runs-on: ubuntu-latest
-    
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install pytest pytest-asyncio pytest-cov
-          pip install -r dock_driver/requirements.txt
-      
-      - name: Run unit tests
-        run: |
-          pytest dock_driver/tests/ --cov=dock_driver --cov-report=xml
-      
-      - name: Run integration tests
-        run: |
-          # Start mock services
-          docker-compose -f dock_driver/tests/docker-compose.test.yml up -d
-          
-          # Run integration tests
-          pytest dock_driver/tests/integration/ --cov=dock_driver --cov-append --cov-report=xml
-          
-          # Stop mock services
-          docker-compose -f dock_driver/tests/docker-compose.test.yml down
-      
-      - name: Upload coverage report
-        uses: codecov/codecov-action@v3
-        with:
-          file: ./coverage.xml
-          flags: dock_stations
-          name: dock-stations-coverage
-      
-      - name: Test DJI Dock adapter
-        run: |
-          echo "Testing DJI Dock adapter..."
-          python -m dock_driver.tests.manual.test_dji_adapter
-          echo "✅ DJI Dock adapter test passed"
-      
-      - name: Test Heisha Charging Pad adapter
-        run: |
-          echo "Testing Heisha Charging Pad adapter..."
-          python -m dock_driver.tests.manual.test_heisha_adapter
-          echo "✅ Heisha Charging Pad adapter test passed"
-      
-      - name: Test ESP32 Dock adapter
-        run: |
-          echo "Testing ESP32 Dock adapter..."
-          python -m dock_driver.tests.manual.test_esp32_adapter
-          echo "✅ ESP32 Dock adapter test passed"
-      
-      - name: Test Power Management integration
-        run: |
-          echo "Testing Power Management integration..."
-          python -m dock_driver.tests.manual.test_power_management
-          echo "✅ Power Management integration test passed"
-      
-      - name: Build Docker image
-        run: |
-          echo "Building Docker image..."
-          docker build -t bulocloud-sentinel/dock-driver:test -f dock_driver/Dockerfile dock_driver/
-          echo "✅ Docker image built successfully"
-      
-      - name: Test Docker image
-        run: |
-          echo "Testing Docker image..."
-          docker run --rm bulocloud-sentinel/dock-driver:test python -m pytest /app/tests/unit/
-          echo "✅ Docker image test passed"
-      
-      - name: Generate test report
-        run: |
-          echo "Generating test report..."
-          mkdir -p test-reports
-          
-          cat > test-reports/dock_stations_test_report.md << EOF
-          # Dock Stations Test Report
-          
-          ## Test Results
-          
-          | Test | Status |
-          |------|--------|
-          | Unit Tests | ✅ Passed |
-          | Integration Tests | ✅ Passed |
-          | DJI Dock Adapter | ✅ Passed |
-          | Heisha Charging Pad Adapter | ✅ Passed |
-          | ESP32 Dock Adapter | ✅ Passed |
-          | Power Management Integration | ✅ Passed |
-          | Docker Image | ✅ Passed |
-          
-          ## Coverage Report
-          
-          - Total Coverage: 95%
-          - Adapter Coverage: 98%
-          - Service Coverage: 92%
-          - API Coverage: 96%
-          
-          ## Notes
-          
-          - All tests passed successfully
-          - No issues found
-          - Docker image built and tested successfully
-          
-          ## Recommendations
-          
-          - Continue monitoring for any issues
-          - Consider adding more test cases for edge conditions
-          - Update documentation as needed
-          
-          EOF
-          
-          echo "✅ Test report generated successfully"
-      
-      - name: Upload test report
-        uses: actions/upload-artifact@v3
-        with:
-          name: dock-stations-test-report
-          path: test-reports/dock_stations_test_report.md
-      
-      - name: Notify on success
-        run: |
-          echo "✅ All dock stations tests passed successfully!"
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
+        restore-keys: ${{ runner.os }}-pip-
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    - name: Install dependencies
+      run: 'python -m pip install --upgrade pip
+
+        pip install pytest pytest-asyncio pytest-cov
+
+        if [ -f dock_driver/requirements.txt ]; then pip install -r dock_driver/requirements.txt;
+        else echo ''Warning: dock_driver/requirements.txt not found''; fi
+
+        '
+    - name: Run unit tests
+      run: 'pytest dock_driver/tests/ --cov=dock_driver --cov-report=xml
+
+        '
+    - name: Run integration tests
+      run: '# Start mock services
+
+        docker-compose -f dock_driver/tests/docker-compose.test.yml up -d
+
+
+        # Run integration tests
+
+        pytest dock_driver/tests/integration/ --cov=dock_driver --cov-append --cov-report=xml
+
+
+        # Stop mock services
+
+        docker-compose -f dock_driver/tests/docker-compose.test.yml down
+
+        '
+    - name: Upload coverage report
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
+        flags: dock_stations
+        name: dock-stations-coverage
+    - name: Test DJI Dock adapter
+      run: "echo \"Testing DJI Dock adapter...\"\npython -m dock_driver.tests.manual.test_dji_adapter\n\
+        echo \"\xE2\u015B\u2026 DJI Dock adapter test passed\"\n"
+    - name: Test Heisha Charging Pad adapter
+      run: "echo \"Testing Heisha Charging Pad adapter...\"\npython -m dock_driver.tests.manual.test_heisha_adapter\n\
+        echo \"\xE2\u015B\u2026 Heisha Charging Pad adapter test passed\"\n"
+    - name: Test ESP32 Dock adapter
+      run: "echo \"Testing ESP32 Dock adapter...\"\npython -m dock_driver.tests.manual.test_esp32_adapter\n\
+        echo \"\xE2\u015B\u2026 ESP32 Dock adapter test passed\"\n"
+    - name: Test Power Management integration
+      run: "echo \"Testing Power Management integration...\"\npython -m dock_driver.tests.manual.test_power_management\n\
+        echo \"\xE2\u015B\u2026 Power Management integration test passed\"\n"
+    - name: Build Docker image
+      run: "echo \"Building Docker image...\"\ndocker build -t bulocloud-sentinel/dock-driver:test\
+        \ -f dock_driver/Dockerfile dock_driver/\necho \"\xE2\u015B\u2026 Docker image\
+        \ built successfully\"\n"
+    - name: Test Docker image
+      run: "echo \"Testing Docker image...\"\ndocker run --rm bulocloud-sentinel/dock-driver:test\
+        \ python -m pytest /app/tests/unit/\necho \"\xE2\u015B\u2026 Docker image\
+        \ test passed\"\n"
+    - name: Generate test report
+      run: "echo \"Generating test report...\"\nmkdir -p test-reports\n\ncat > test-reports/dock_stations_test_report.md\
+        \ << EOF\n# Dock Stations Test Report\n\n## Test Results\n\n| Test | Status\
+        \ |\n|------|--------|\n| Unit Tests | \xE2\u015B\u2026 Passed |\n| Integration\
+        \ Tests | \xE2\u015B\u2026 Passed |\n| DJI Dock Adapter | \xE2\u015B\u2026\
+        \ Passed |\n| Heisha Charging Pad Adapter | \xE2\u015B\u2026 Passed |\n| ESP32\
+        \ Dock Adapter | \xE2\u015B\u2026 Passed |\n| Power Management Integration\
+        \ | \xE2\u015B\u2026 Passed |\n| Docker Image | \xE2\u015B\u2026 Passed |\n\
+        \n## Coverage Report\n\n- Total Coverage: 95%\n- Adapter Coverage: 98%\n-\
+        \ Service Coverage: 92%\n- API Coverage: 96%\n\n## Notes\n\n- All tests passed\
+        \ successfully\n- No issues found\n- Docker image built and tested successfully\n\
+        \n## Recommendations\n\n- Continue monitoring for any issues\n- Consider adding\
+        \ more test cases for edge conditions\n- Update documentation as needed\n\n\
+        EOF\n\necho \"\xE2\u015B\u2026 Test report generated successfully\"\n"
+    - name: Upload test report
+      uses: actions/upload-artifact@v3
+      with:
+        name: dock-stations-test-report
+        path: test-reports/dock_stations_test_report.md
+    - name: Notify on success
+      run: "echo \"\xE2\u015B\u2026 All dock stations tests passed successfully!\"\
+        \n"
+      continue-on-error: true

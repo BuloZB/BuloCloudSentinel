@@ -1,52 +1,43 @@
 name: Build Check
-
-on:
+true:
   schedule:
-    - cron: '0 0 * * *'  # Run at midnight every day
-  workflow_dispatch:  # Allow manual triggering
-
-# Define minimal permissions required for this workflow
+  - cron: 0 0 * * *
+  workflow_dispatch: null
 permissions:
-  contents: read  # Only need read access to repository contents
-  actions: read   # For reading workflow runs
-
+  contents: read
+  actions: read
 jobs:
   build:
     name: Build Check
     runs-on: ubuntu-latest
-    
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-      
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install build wheel setuptools
-      
-      - name: Build Python package
-        run: |
-          echo "Building Python package..."
-          # Always succeed
-          echo "✅ Package built successfully!"
-          
-          # Create dummy build artifacts
-          mkdir -p dist
-          touch dist/bulo-cloud-sentinel-1.0.0.tar.gz
-          touch dist/bulo_cloud_sentinel-1.0.0-py3-none-any.whl
-      
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: build-artifacts
-          path: dist/
-      
-      - name: Summary
-        run: |
-          echo "✅ Build check completed successfully!"
-          echo "Built package: bulo-cloud-sentinel-1.0.0"
+    - name: Checkout code
+      uses: actions/checkout@v3
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
+        restore-keys: ${{ runner.os }}-pip-
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    - name: Install dependencies
+      run: 'python -m pip install --upgrade pip
+
+        pip install build wheel setuptools
+
+        '
+    - name: Build Python package
+      run: "echo \"Building Python package...\"\n# Always succeed\necho \"\xE2\u015B\
+        \u2026 Package built successfully!\"\n\n# Create dummy build artifacts\nmkdir\
+        \ -p dist\ntouch dist/bulo-cloud-sentinel-1.0.0.tar.gz\ntouch dist/bulo_cloud_sentinel-1.0.0-py3-none-any.whl\n"
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-artifacts
+        path: dist/
+    - name: Summary
+      run: "echo \"\xE2\u015B\u2026 Build check completed successfully!\"\necho \"\
+        Built package: bulo-cloud-sentinel-1.0.0\"\n"

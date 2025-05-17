@@ -1,15 +1,11 @@
 name: Daily Tests
-
-on:
+true:
   schedule:
-    - cron: '0 0 * * *'  # Run daily at midnight
-  workflow_dispatch:  # Allow manual triggering
-
-# Define minimal permissions required for this workflow
+  - cron: 0 0 * * *
+  workflow_dispatch: null
 permissions:
-  contents: read  # Only need read access to repository contents
-  actions: read   # For reading workflow runs
-
+  contents: read
+  actions: read
 jobs:
   backend-tests:
     runs-on: ubuntu-latest
@@ -21,181 +17,154 @@ jobs:
           POSTGRES_PASSWORD: postgres
           POSTGRES_DB: test_db
         ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
+        - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s
           --health-retries 5
       redis:
         image: redis:6
         ports:
-          - 6379:6379
-        options: >-
-          --health-cmd "redis-cli ping"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
+        - 6379:6379
+        options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout
+          5s --health-retries 5
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          if [ -f requirements-secure.txt ]; then
-            pip install -r requirements-secure.txt
-          else
-            pip install -r requirements.txt
-            pip install pytest pytest-cov
-          fi
-
-      - name: Run backend tests
-        run: |
-          cd backend
-          if [ -d tests ] || [ -f pytest.ini ] || find . -name "test_*.py" | grep -q .; then
-            echo "Running backend tests..."
-            pytest --cov=app --cov-report=xml || true
-          else
-            echo "No tests found in backend directory. Creating empty coverage report."
-            mkdir -p coverage
-            echo '<?xml version="1.0" ?><coverage version="7.4.0"></coverage>' > coverage.xml
-          fi
-
-      - name: Upload coverage report
-        uses: actions/upload-artifact@v4
-        with:
-          name: backend-coverage-report
-          path: backend/coverage.xml
-
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
+        restore-keys: ${{ runner.os }}-pip-
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+    - name: Install dependencies
+      run: "python -m pip install --upgrade pip\nif [ -f requirements-secure.txt ];\
+        \ then\n  pip install -r requirements-secure.txt\nelse\n  pip install -r requirements.txt\n\
+        \  pip install pytest pytest-cov\nfi\n"
+    - name: Run backend tests
+      run: "cd backend\nif [ -d tests ] || [ -f pytest.ini ] || find . -name \"test_*.py\"\
+        \ | grep -q .; then\n  echo \"Running backend tests...\"\n  pytest --cov=app\
+        \ --cov-report=xml || true\nelse\n  echo \"No tests found in backend directory.\
+        \ Creating empty coverage report.\"\n  mkdir -p coverage\n  echo '<?xml version=\"\
+        1.0\" ?><coverage version=\"7.4.0\"></coverage>' > coverage.xml\nfi\n"
+    - name: Upload coverage report
+      uses: actions/upload-artifact@v4
+      with:
+        name: backend-coverage-report
+        path: backend/coverage.xml
   frontend-tests:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Cache npm dependencies
+      uses: actions/cache@v3
+      with:
+        path: '**/node_modules'
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: ${{ runner.os }}-node-
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+    - name: Install dependencies
+      run: 'cd frontend
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
+        npm ci
 
-      - name: Install dependencies
-        run: |
-          cd frontend
-          npm ci
-
-      - name: Run frontend tests
-        run: |
-          cd frontend
-          if grep -q '"test":' package.json; then
-            echo "Running frontend tests..."
-            npm test -- --coverage || true
-          else
-            echo "No test script found in package.json. Creating empty coverage report."
-            mkdir -p coverage
-            echo '{}' > coverage/coverage-summary.json
-          fi
-
-      - name: Upload coverage report
-        uses: actions/upload-artifact@v4
-        with:
-          name: frontend-coverage-report
-          path: frontend/coverage
-
+        '
+    - name: Run frontend tests
+      run: "cd frontend\nif grep -q '\"test\":' package.json; then\n  echo \"Running\
+        \ frontend tests...\"\n  npm test -- --coverage || true\nelse\n  echo \"No\
+        \ test script found in package.json. Creating empty coverage report.\"\n \
+        \ mkdir -p coverage\n  echo '{}' > coverage/coverage-summary.json\nfi\n"
+    - name: Upload coverage report
+      uses: actions/upload-artifact@v4
+      with:
+        name: frontend-coverage-report
+        path: frontend/coverage
   anti-jamming-service-tests:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          if [ -f anti_jamming_service/requirements.txt ]; then
-            pip install -r anti_jamming_service/requirements.txt
-          fi
-          pip install pytest pytest-cov
-
-      - name: Run anti-jamming service tests
-        run: |
-          cd anti_jamming_service
-          if [ -d tests ] || [ -f pytest.ini ] || find . -name "test_*.py" | grep -q .; then
-            echo "Running anti-jamming service tests..."
-            pytest --cov=. --cov-report=xml || true
-          else
-            echo "No tests found in anti_jamming_service directory. Creating empty coverage report."
-            mkdir -p coverage
-            echo '<?xml version="1.0" ?><coverage version="7.4.0"></coverage>' > coverage.xml
-          fi
-
-      - name: Upload coverage report
-        uses: actions/upload-artifact@v4
-        with:
-          name: anti-jamming-service-coverage-report
-          path: anti_jamming_service/coverage.xml
-
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
+        restore-keys: ${{ runner.os }}-pip-
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+    - name: Install dependencies
+      run: "python -m pip install --upgrade pip\nif [ -f anti_jamming_service/requirements.txt\
+        \ ]; then\n  pip install -r anti_jamming_service/requirements.txt\nfi\npip\
+        \ install pytest pytest-cov\n"
+    - name: Run anti-jamming service tests
+      run: "cd anti_jamming_service\nif [ -d tests ] || [ -f pytest.ini ] || find\
+        \ . -name \"test_*.py\" | grep -q .; then\n  echo \"Running anti-jamming service\
+        \ tests...\"\n  pytest --cov=. --cov-report=xml || true\nelse\n  echo \"No\
+        \ tests found in anti_jamming_service directory. Creating empty coverage report.\"\
+        \n  mkdir -p coverage\n  echo '<?xml version=\"1.0\" ?><coverage version=\"\
+        7.4.0\"></coverage>' > coverage.xml\nfi\n"
+    - name: Upload coverage report
+      uses: actions/upload-artifact@v4
+      with:
+        name: anti-jamming-service-coverage-report
+        path: anti_jamming_service/coverage.xml
   vision-system-tests:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          if [ -f vision_system/requirements.txt ]; then
-            pip install -r vision_system/requirements.txt
-          fi
-          pip install pytest pytest-cov
-
-      - name: Run vision system tests
-        run: |
-          cd vision_system
-          if [ -d tests ] || [ -f pytest.ini ] || find . -name "test_*.py" | grep -q .; then
-            echo "Running vision system tests..."
-            pytest --cov=. --cov-report=xml || true
-          else
-            echo "No tests found in vision_system directory. Creating empty coverage report."
-            mkdir -p coverage
-            echo '<?xml version="1.0" ?><coverage version="7.4.0"></coverage>' > coverage.xml
-          fi
-
-      - name: Upload coverage report
-        uses: actions/upload-artifact@v4
-        with:
-          name: vision-system-coverage-report
-          path: vision_system/coverage.xml
-
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
+        restore-keys: ${{ runner.os }}-pip-
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+    - name: Install dependencies
+      run: "python -m pip install --upgrade pip\nif [ -f vision_system/requirements.txt\
+        \ ]; then\n  pip install -r vision_system/requirements.txt\nfi\npip install\
+        \ pytest pytest-cov\n"
+    - name: Run vision system tests
+      run: "cd vision_system\nif [ -d tests ] || [ -f pytest.ini ] || find . -name\
+        \ \"test_*.py\" | grep -q .; then\n  echo \"Running vision system tests...\"\
+        \n  pytest --cov=. --cov-report=xml || true\nelse\n  echo \"No tests found\
+        \ in vision_system directory. Creating empty coverage report.\"\n  mkdir -p\
+        \ coverage\n  echo '<?xml version=\"1.0\" ?><coverage version=\"7.4.0\"></coverage>'\
+        \ > coverage.xml\nfi\n"
+    - name: Upload coverage report
+      uses: actions/upload-artifact@v4
+      with:
+        name: vision-system-coverage-report
+        path: vision_system/coverage.xml
   notification:
-    needs: [backend-tests, frontend-tests, anti-jamming-service-tests, vision-system-tests]
+    needs:
+    - backend-tests
+    - frontend-tests
+    - anti-jamming-service-tests
+    - vision-system-tests
     runs-on: ubuntu-latest
     if: always()
     steps:
-      - name: Send notification
-        uses: rtCamp/action-slack-notify@v2
-        env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          SLACK_CHANNEL: ci-alerts
-          SLACK_COLOR: ${{ job.status }}
-          SLACK_ICON: https://github.com/rtCamp.png?size=48
-          SLACK_MESSAGE: 'Daily tests completed'
-          SLACK_TITLE: Daily Tests Results
-          SLACK_USERNAME: GitHub Actions
-        if: ${{ secrets.SLACK_WEBHOOK != '' }}
-        continue-on-error: true
+    - name: Send notification
+      uses: rtCamp/action-slack-notify@v2
+      env:
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        SLACK_CHANNEL: ci-alerts
+        SLACK_COLOR: ${{ job.status }}
+        SLACK_ICON: https://github.com/rtCamp.png?size=48
+        SLACK_MESSAGE: Daily tests completed
+        SLACK_TITLE: Daily Tests Results
+        SLACK_USERNAME: GitHub Actions
+      if: ${{ secrets.SLACK_WEBHOOK != '' }}
+      continue-on-error: true

@@ -1,92 +1,58 @@
 name: Performance Benchmark
-
-on:
+true:
   schedule:
-    - cron: '0 0 * * *'  # Run at midnight every day
-  workflow_dispatch:  # Allow manual triggering
-
+  - cron: 0 0 * * *
+  workflow_dispatch: null
 jobs:
   benchmark:
     name: Run Performance Benchmarks
     runs-on: ubuntu-latest
-    
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-      
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install pytest pytest-benchmark
-      
-      - name: Run API performance benchmarks
-        run: |
-          echo "Running API performance benchmarks..."
-          # Always succeed
-          echo "✅ API benchmarks completed successfully!"
-      
-      - name: Run SLAM algorithm benchmarks
-        run: |
-          echo "Running SLAM algorithm benchmarks..."
-          # Always succeed
-          echo "✅ SLAM benchmarks completed successfully!"
-      
-      - name: Run path planning benchmarks
-        run: |
-          echo "Running path planning benchmarks..."
-          # Always succeed
-          echo "✅ Path planning benchmarks completed successfully!"
-          
-          # Create dummy benchmark results
-          mkdir -p benchmark-results
-          cat > benchmark-results/api-benchmarks.json << EOF
-          {
-            "machine_info": {
-              "node": "runner",
-              "processor": "x86_64",
-              "machine": "x86_64",
-              "python_implementation": "CPython",
-              "python_version": "3.10.0"
-            },
-            "benchmarks": [
-              {
-                "name": "test_api_get_drones",
-                "stats": {
-                  "min": 0.0012,
-                  "max": 0.0015,
-                  "mean": 0.00135,
-                  "stddev": 0.0001,
-                  "rounds": 100
-                }
-              },
-              {
-                "name": "test_api_get_missions",
-                "stats": {
-                  "min": 0.0018,
-                  "max": 0.0022,
-                  "mean": 0.00195,
-                  "stddev": 0.0001,
-                  "rounds": 100
-                }
-              }
-            ]
-          }
-          EOF
-      
-      - name: Upload benchmark results
-        uses: actions/upload-artifact@v3
-        with:
-          name: benchmark-results
-          path: benchmark-results/
-      
-      - name: Summary
-        run: |
-          echo "✅ Performance benchmarks completed successfully!"
-          echo "API endpoint response time: 1.35ms (avg)"
-          echo "SLAM algorithm processing time: 15.2ms (avg)"
-          echo "Path planning algorithm time: 8.7ms (avg)"
+    - name: Checkout code
+      uses: actions/checkout@v3
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
+        restore-keys: ${{ runner.os }}-pip-
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    - name: Install dependencies
+      run: 'python -m pip install --upgrade pip
+
+        pip install pytest pytest-benchmark
+
+        '
+    - name: Run API performance benchmarks
+      run: "echo \"Running API performance benchmarks...\"\n# Always succeed\necho\
+        \ \"\xE2\u015B\u2026 API benchmarks completed successfully!\"\n"
+    - name: Run SLAM algorithm benchmarks
+      run: "echo \"Running SLAM algorithm benchmarks...\"\n# Always succeed\necho\
+        \ \"\xE2\u015B\u2026 SLAM benchmarks completed successfully!\"\n"
+    - name: Run path planning benchmarks
+      run: "echo \"Running path planning benchmarks...\"\n# Always succeed\necho \"\
+        \xE2\u015B\u2026 Path planning benchmarks completed successfully!\"\n\n# Create\
+        \ dummy benchmark results\nmkdir -p benchmark-results\ncat > benchmark-results/api-benchmarks.json\
+        \ << EOF\n{\n  \"machine_info\": {\n    \"node\": \"runner\",\n    \"processor\"\
+        : \"x86_64\",\n    \"machine\": \"x86_64\",\n    \"python_implementation\"\
+        : \"CPython\",\n    \"python_version\": \"3.10.0\"\n  },\n  \"benchmarks\"\
+        : [\n    {\n      \"name\": \"test_api_get_drones\",\n      \"stats\": {\n\
+        \        \"min\": 0.0012,\n        \"max\": 0.0015,\n        \"mean\": 0.00135,\n\
+        \        \"stddev\": 0.0001,\n        \"rounds\": 100\n      }\n    },\n \
+        \   {\n      \"name\": \"test_api_get_missions\",\n      \"stats\": {\n  \
+        \      \"min\": 0.0018,\n        \"max\": 0.0022,\n        \"mean\": 0.00195,\n\
+        \        \"stddev\": 0.0001,\n        \"rounds\": 100\n      }\n    }\n  ]\n\
+        }\nEOF\n"
+    - name: Upload benchmark results
+      uses: actions/upload-artifact@v3
+      with:
+        name: benchmark-results
+        path: benchmark-results/
+    - name: Summary
+      run: "echo \"\xE2\u015B\u2026 Performance benchmarks completed successfully!\"\
+        \necho \"API endpoint response time: 1.35ms (avg)\"\necho \"SLAM algorithm\
+        \ processing time: 15.2ms (avg)\"\necho \"Path planning algorithm time: 8.7ms\
+        \ (avg)\"\n"

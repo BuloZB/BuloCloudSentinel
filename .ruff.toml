@@ -1,0 +1,64 @@
+# Ruff configuration file
+
+# Same as Black
+line-length = 100
+
+# Assume Python 3.12
+target-version = "py312"
+
+[lint]
+# Enable all rules by default
+select = ["E", "F", "B", "S", "I", "N", "C", "W", "UP", "ANN", "FBT", "A", "COM", "C4", "DTZ", "T10", "EM", "EXE", "ISC", "ICN", "G", "INP", "PIE", "T20", "PT", "Q", "RSE", "RET", "SLF", "SIM", "TID", "TCH", "ARG", "PTH", "ERA", "PD", "PGH", "PL", "TRY", "NPY", "RUF"]
+
+# Ignore some rules
+ignore = [
+    "ANN401",  # Dynamically typed expressions (Any) are disallowed
+]
+
+# Allow autofix for all enabled rules (when `--fix`) is provided
+fixable = ["ALL"]
+unfixable = []
+
+# Exclude a variety of commonly ignored directories
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "venv",
+]
+
+# Allow unused variables when underscore-prefixed
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[lint.mccabe]
+# Unlike Flake8, default to a complexity level of 10
+max-complexity = 10
+
+[lint.per-file-ignores]
+# Tests can use assert
+"tests/**/*" = ["S101"]
+# Allow print in scripts
+"scripts/**/*" = ["T201"]
+
+[lint.pydocstyle]
+convention = "google"
+
+[lint.isort]
+known-first-party = ["backend", "frontend", "weather_guard", "drone_swarm_system"]

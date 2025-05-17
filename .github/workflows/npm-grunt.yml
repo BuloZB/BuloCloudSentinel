@@ -1,33 +1,36 @@
 name: NodeJS with Grunt
-
-on:
+true:
   schedule:
-    - cron: '0 0 * * *'  # Run at midnight every day
+  - cron: 0 0 * * *
   push:
-    branches: [ "main" ]
+    branches:
+    - main
   pull_request:
-    branches: [ "main" ]
-  workflow_dispatch:  # Allow manual triggering
-
+    branches:
+    - main
+  workflow_dispatch: null
 jobs:
   build:
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
-        node-version: [18.x, 20.x, 22.x]
-
+        node-version:
+        - 18.x
+        - 20.x
+        - 22.x
     steps:
     - uses: actions/checkout@v4
-
+    - name: Cache npm dependencies
+      uses: actions/cache@v3
+      with:
+        path: '**/node_modules'
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: ${{ runner.os }}-node-
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
-
     - name: Build
-      run: |
-        echo "Installing npm dependencies..."
-        echo "Running grunt tasks..."
-        # Always succeed
-        echo "✅ Build completed successfully!"
+      run: "echo \"Installing npm dependencies...\"\necho \"Running grunt tasks...\"\
+        \n# Always succeed\necho \"\xE2\u015B\u2026 Build completed successfully!\"\
+        \n"

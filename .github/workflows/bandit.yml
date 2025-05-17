@@ -1,91 +1,63 @@
 name: Bandit Security Scan
-
-on:
+true:
   push:
-    branches: [ main ]
+    branches:
+    - main
   pull_request:
-    branches: [ main ]
+    branches:
+    - main
   schedule:
-    - cron: '0 0 * * *'  # Run daily at midnight
-
-# Define required permissions for this workflow
+  - cron: 0 0 * * *
 permissions:
-  contents: read  # Need read access to repository contents
-  security-events: write  # Need write access to upload security scan results
-
+  contents: read
+  security-events: write
 jobs:
   bandit:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
-          
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install bandit
-          
-      - name: Run Bandit
-        run: |
-          # Run bandit with JSON output
-          bandit -r . -x ./tests,./venv -f json -o bandit-results.json
-          
-      - name: Convert JSON to SARIF
-        run: |
-          # Install sarif-tools
-          pip install sarif-tools
-          
-          # Convert JSON to SARIF format
-          python -c "
-          import json
-          import sarif_tools as sarif
-          
-          # Load bandit JSON results
-          with open('bandit-results.json', 'r') as f:
-              data = json.load(f)
-          
-          # Convert to SARIF
-          sarif_output = sarif.json_to_sarif(
-              tool_name='bandit',
-              tool_version='1.7.5',
-              results=data.get('results', []),
-              sarif_version='2.1.0'
-          )
-          
-          # Write SARIF output
-          with open('bandit-results.sarif', 'w') as f:
-              json.dump(sarif_output, f)
-          "
-          
-      - name: Upload Bandit scan results
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: bandit-results.sarif
-          category: bandit
-        if: always()
-        
-      - name: Check for high severity issues
-        run: |
-          # Parse JSON and check for high severity issues
-          python -c "
-          import json
-          import sys
-          
-          with open('bandit-results.json', 'r') as f:
-              data = json.load(f)
-          
-          high_severity_issues = [r for r in data.get('results', [])
-                                 if r.get('issue_severity') == 'HIGH']
-          
-          if high_severity_issues:
-              print('High severity security issues found:')
-              for issue in high_severity_issues:
-                  print(f'- {issue.get(\"test_name\")}: {issue.get(\"issue_text\")}')
-              sys.exit(1)
-          else:
-              print('No high severity issues found.')
-          "
+    - uses: actions/checkout@v4
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
+        restore-keys: ${{ runner.os }}-pip-
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+    - name: Install dependencies
+      run: 'python -m pip install --upgrade pip
+
+        pip install bandit
+
+        '
+    - name: Run Bandit
+      run: '# Run bandit with JSON output
+
+        bandit -r . -x ./tests,./venv -f json -o bandit-results.json
+
+        '
+    - name: Convert JSON to SARIF
+      run: "# Install sarif-tools\npip install sarif-tools\n\n# Convert JSON to SARIF\
+        \ format\npython -c \"\nimport json\nimport sarif_tools as sarif\n\n# Load\
+        \ bandit JSON results\nwith open('bandit-results.json', 'r') as f:\n    data\
+        \ = json.load(f)\n\n# Convert to SARIF\nsarif_output = sarif.json_to_sarif(\n\
+        \    tool_name='bandit',\n    tool_version='1.7.5',\n    results=data.get('results',\
+        \ []),\n    sarif_version='2.1.0'\n)\n\n# Write SARIF output\nwith open('bandit-results.sarif',\
+        \ 'w') as f:\n    json.dump(sarif_output, f)\n\"\n"
+    - name: Upload Bandit scan results
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: bandit-results.sarif
+        category: bandit
+      if: always()
+    - name: Check for high severity issues
+      run: "# Parse JSON and check for high severity issues\npython -c \"\nimport\
+        \ json\nimport sys\n\nwith open('bandit-results.json', 'r') as f:\n    data\
+        \ = json.load(f)\n\nhigh_severity_issues = [r for r in data.get('results',\
+        \ [])\n                       if r.get('issue_severity') == 'HIGH']\n\nif\
+        \ high_severity_issues:\n    print('High severity security issues found:')\n\
+        \    for issue in high_severity_issues:\n        print(f'- {issue.get(\\\"\
+        test_name\\\")}: {issue.get(\\\"issue_text\\\")}')\n    sys.exit(1)\nelse:\n\
+        \    print('No high severity issues found.')\n\"\n"

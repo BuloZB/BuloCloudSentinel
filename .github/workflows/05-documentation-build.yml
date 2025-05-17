@@ -1,61 +1,45 @@
 name: Documentation Build
-
-on:
+true:
   schedule:
-    - cron: '0 0 * * *'  # Run at midnight every day
-  workflow_dispatch:  # Allow manual triggering
-
-# Define minimal permissions required for this workflow
+  - cron: 0 0 * * *
+  workflow_dispatch: null
 permissions:
-  contents: read  # Only need read access to repository contents
-  actions: read   # For reading workflow runs
-
+  contents: read
+  actions: read
 jobs:
   docs:
     name: Build Documentation
     runs-on: ubuntu-latest
-    
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-      
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install sphinx sphinx_rtd_theme
-      
-      - name: Build documentation
-        run: |
-          echo "Building documentation..."
-          # Always succeed
-          echo "✅ Documentation built successfully!"
-          
-          # Create dummy documentation
-          mkdir -p docs/_build/html
-          cat > docs/_build/html/index.html << EOF
-          <!DOCTYPE html>
-          <html>
-          <head>
-            <title>Bulo.Cloud Sentinel Documentation</title>
-          </head>
-          <body>
-            <h1>Bulo.Cloud Sentinel Documentation</h1>
-            <p>This is a placeholder documentation page.</p>
-          </body>
-          </html>
-          EOF
-      
-      - name: Upload documentation
-        uses: actions/upload-artifact@v3
-        with:
-          name: documentation
-          path: docs/_build/html/
-      
-      - name: Summary
-        run: |
-          echo "✅ Documentation build completed successfully!"
+    - name: Checkout code
+      uses: actions/checkout@v3
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
+        restore-keys: ${{ runner.os }}-pip-
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    - name: Install dependencies
+      run: 'python -m pip install --upgrade pip
+
+        pip install sphinx sphinx_rtd_theme
+
+        '
+    - name: Build documentation
+      run: "echo \"Building documentation...\"\n# Always succeed\necho \"\xE2\u015B\
+        \u2026 Documentation built successfully!\"\n\n# Create dummy documentation\n\
+        mkdir -p docs/_build/html\ncat > docs/_build/html/index.html << EOF\n<!DOCTYPE\
+        \ html>\n<html>\n<head>\n  <title>Bulo.Cloud Sentinel Documentation</title>\n\
+        </head>\n<body>\n  <h1>Bulo.Cloud Sentinel Documentation</h1>\n  <p>This is\
+        \ a placeholder documentation page.</p>\n</body>\n</html>\nEOF\n"
+    - name: Upload documentation
+      uses: actions/upload-artifact@v3
+      with:
+        name: documentation
+        path: docs/_build/html/
+    - name: Summary
+      run: "echo \"\xE2\u015B\u2026 Documentation build completed successfully!\"\n"

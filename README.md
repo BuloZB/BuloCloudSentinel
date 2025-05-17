@@ -21,7 +21,10 @@ The core platform provides the foundation for building drone-based surveillance 
 - **🔄 Drone Fleet Management**: Centralized control and monitoring of multiple drones
 - **📡 Telemetry Processing**: Real-time processing of drone telemetry data
 - **🎥 Video Streaming**: Low-latency video streaming from drone cameras
-- **🗺️ Mission Planning**: Visual mission planning and execution
+- **🔌 Multi-Platform Support**: Support for ArduPilot, PX4, Betaflight, and DJI drones
+- **🔌 Multi-Platform Support**: Support for ArduPilot, PX4, Betaflight, and DJI drones
+- **� Multi-Platform Support**: Support for ArduPilot, PX4, Betaflight, and DJI drones
+- **�🗺️ Mission Planning**: Visual mission planning and execution
 - **📊 Data Visualization**: Real-time visualization of drone data
 - **🔌 API Integration**: RESTful API for integration with external systems
 - **🔒 Security**: End-to-end encryption and secure authentication
@@ -389,6 +392,11 @@ bulo-cloud-sentinel/
 ├── docker/               # Docker configuration files
 │   └── bulosentinel.Dockerfile # Docker configuration for tinygrad integration
 ├── dronecore/            # Core drone control libraries
+│   ├── ardupilot_adapter.py  # ArduPilot flight controller adapter
+│   ├── betaflight_adapter.py # Betaflight flight controller adapter
+│   ├── dji_adapter.py        # DJI SDK adapter for DJI drones
+│   ├── px4_adapter.py        # PX4 flight controller adapter
+│   └── flight_controller_adapter.py # Abstract adapter interface
 ├── examples/             # Example scripts and demos
 │   ├── tinygrad_demo.py  # Demo of TinyGrad inference backend
 │   ├── benchmark_backends.py # Benchmark different ML backends

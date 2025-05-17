@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bulo.Cloud Sentinel - DJI Mission Planner</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Bulo.Cloud Sentinel" height="30">
+                Bulo.Cloud Sentinel
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#" data-page="dashboard">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-page="mission-planner">Mission Planner</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-page="mission-list">Missions</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-page="settings">Settings</a>
+                    </li>
+                </ul>
+                <div class="ms-auto d-flex align-items-center">
+                    <span class="connection-status text-light me-2">Disconnected</span>
+                    <button id="connectBtn" class="btn btn-success btn-sm">Connect</button>
+                    <button id="disconnectBtn" class="btn btn-danger btn-sm ms-2" style="display: none;">Disconnect</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid mt-3">
+        <!-- Dashboard Page -->
+        <div class="page" id="dashboard-page">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <h5 class="card-title">Live Map</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="map" style="height: 400px;"></div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">Mission Status</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mission-info">
+                                        <p><strong>Current Mission:</strong> <span id="current-mission">None</span></p>
+                                        <p><strong>Status:</strong> <span id="mission-status">Idle</span></p>
+                                        <p><strong>Progress:</strong> <span id="mission-progress">0%</span></p>
+                                        <div class="progress mb-3">
+                                            <div id="mission-progress-bar" class="progress-bar" role="progressbar" style="width: 0%"></div>
+                                        </div>
+                                        <p><strong>Current Waypoint:</strong> <span id="current-waypoint">0/0</span></p>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mission-controls">
+                                        <button id="startMissionBtn" class="btn btn-primary mb-2" disabled>Start Mission</button>
+                                        <button id="pauseMissionBtn" class="btn btn-warning mb-2" disabled>Pause Mission</button>
+                                        <button id="resumeMissionBtn" class="btn btn-info mb-2" disabled>Resume Mission</button>
+                                        <button id="stopMissionBtn" class="btn btn-danger mb-2" disabled>Stop Mission</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <h5 class="card-title">Telemetry</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="telemetry-item">
+                                <div class="d-flex justify-content-between">
+                                    <span>Battery:</span>
+                                    <span id="battery-level">0%</span>
+                                </div>
+                                <div class="progress mb-3">
+                                    <div id="battery-progress" class="progress-bar" role="progressbar" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <div class="telemetry-item">
+                                <p><strong>Position:</strong></p>
+                                <p>Latitude: <span id="latitude">0.0</span></p>
+                                <p>Longitude: <span id="longitude">0.0</span></p>
+                                <p>Altitude: <span id="altitude">0.0</span> m</p>
+                            </div>
+                            <div class="telemetry-item">
+                                <p><strong>Attitude:</strong></p>
+                                <p>Roll: <span id="roll">0.0</span>°</p>
+                                <p>Pitch: <span id="pitch">0.0</span>°</p>
+                                <p>Yaw: <span id="yaw">0.0</span>°</p>
+                            </div>
+                            <div class="telemetry-item">
+                                <p><strong>Speed:</strong></p>
+                                <p>Horizontal: <span id="horizontal-speed">0.0</span> m/s</p>
+                                <p>Vertical: <span id="vertical-speed">0.0</span> m/s</p>
+                            </div>
+                            <div class="telemetry-item">
+                                <p><strong>Flight Mode:</strong> <span id="flight-mode">Unknown</span></p>
+                                <p><strong>GPS Satellites:</strong> <span id="gps-satellites">0</span></p>
+                                <p><strong>Home Distance:</strong> <span id="home-distance">0.0</span> m</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">Quick Controls</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                <button id="takeoffBtn" class="btn btn-primary" disabled>Takeoff</button>
+                                <button id="landBtn" class="btn btn-warning" disabled>Land</button>
+                                <button id="rthBtn" class="btn btn-danger" disabled>Return to Home</button>
+                                <button id="photoBtn" class="btn btn-info" disabled>Take Photo</button>
+                                <button id="videoBtn" class="btn btn-success" disabled>Start/Stop Recording</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mission Planner Page -->
+        <div class="page" id="mission-planner-page" style="display: none;">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <h5 class="card-title">Mission Map</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="mission-map" style="height: 500px;"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <h5 class="card-title">Mission Settings</h5>
+                        </div>
+                        <div class="card-body">
+                            <form id="mission-form">
+                                <div class="mb-3">
+                                    <label for="mission-name" class="form-label">Mission Name</label>
+                                    <input type="text" class="form-control" id="mission-name" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="mission-type" class="form-label">Mission Type</label>
+                                    <select class="form-select" id="mission-type" required>
+                                        <option value="waypoint">Waypoint Mission</option>
+                                        <option value="hotpoint">Hotpoint (Orbit) Mission</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="mission-speed" class="form-label">Speed (m/s)</label>
+                                    <input type="number" class="form-control" id="mission-speed" min="1" max="15" value="5" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="finish-action" class="form-label">Finish Action</label>
+                                    <select class="form-select" id="finish-action">
+                                        <option value="no_action">No Action</option>
+                                        <option value="go_home">Return to Home</option>
+                                        <option value="auto_land">Auto Land</option>
+                                        <option value="return_to_first_waypoint">Return to First Waypoint</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="heading-mode" class="form-label">Heading Mode</label>
+                                    <select class="form-select" id="heading-mode">
+                                        <option value="auto">Auto</option>
+                                        <option value="using_waypoint_heading">Using Waypoint Heading</option>
+                                        <option value="toward_point_of_interest">Toward Point of Interest</option>
+                                        <option value="using_initial_direction">Using Initial Direction</option>
+                                    </select>
+                                </div>
+                                <div class="d-grid gap-2">
+                                    <button type="button" id="add-waypoint-btn" class="btn btn-primary">Add Waypoint</button>
+                                    <button type="button" id="clear-waypoints-btn" class="btn btn-warning">Clear Waypoints</button>
+                                    <button type="submit" class="btn btn-success">Save Mission</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">Waypoints</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="waypoints-list" class="waypoints-list">
+                                <p class="text-muted">No waypoints added yet. Click on the map to add waypoints.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mission List Page -->
+        <div class="page" id="mission-list-page" style="display: none;">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Saved Missions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Waypoints</th>
+                                    <th>Created</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="missions-table-body">
+                                <tr>
+                                    <td colspan="5" class="text-center">Loading missions...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Page -->
+        <div class="page" id="settings-page" style="display: none;">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <h5 class="card-title">Connection Settings</h5>
+                        </div>
+                        <div class="card-body">
+                            <form id="connection-form">
+                                <div class="mb-3">
+                                    <label for="app-id" class="form-label">DJI App ID</label>
+                                    <input type="text" class="form-control" id="app-id">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="app-key" class="form-label">DJI App Key</label>
+                                    <input type="text" class="form-control" id="app-key">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="connection-type" class="form-label">Connection Type</label>
+                                    <select class="form-select" id="connection-type">
+                                        <option value="USB">USB</option>
+                                        <option value="WIFI">WiFi</option>
+                                        <option value="BRIDGE">Bridge</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="drone-model" class="form-label">Drone Model</label>
+                                    <select class="form-select" id="drone-model">
+                                        <option value="Mavic 3">Mavic 3</option>
+                                        <option value="Mavic Air 2">Mavic Air 2</option>
+                                        <option value="Mavic Mini">Mavic Mini</option>
+                                        <option value="Phantom 4">Phantom 4</option>
+                                        <option value="M300 RTK">M300 RTK</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="serial-number" class="form-label">Serial Number (Optional)</label>
+                                    <input type="text" class="form-control" id="serial-number">
+                                </div>
+                                <div class="bridge-settings" style="display: none;">
+                                    <div class="mb-3">
+                                        <label for="bridge-ip" class="form-label">Bridge IP</label>
+                                        <input type="text" class="form-control" id="bridge-ip">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="bridge-port" class="form-label">Bridge Port</label>
+                                        <input type="number" class="form-control" id="bridge-port">
+                                    </div>
+                                </div>
+                                <div class="d-grid gap-2">
+                                    <button type="submit" class="btn btn-primary">Save Settings</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">Dock Settings</h5>
+                        </div>
+                        <div class="card-body">
+                            <form id="dock-form">
+                                <div class="mb-3">
+                                    <label for="dock-api-key" class="form-label">DJI Dock API Key</label>
+                                    <input type="text" class="form-control" id="dock-api-key">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="dock-api-secret" class="form-label">DJI Dock API Secret</label>
+                                    <input type="text" class="form-control" id="dock-api-secret">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="dock-sn" class="form-label">Dock Serial Number</label>
+                                    <input type="text" class="form-control" id="dock-sn">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="dock-region" class="form-label">Region</label>
+                                    <select class="form-select" id="dock-region">
+                                        <option value="us-east-1">US East (N. Virginia)</option>
+                                        <option value="us-west-1">US West (N. California)</option>
+                                        <option value="eu-central-1">EU (Frankfurt)</option>
+                                        <option value="ap-northeast-1">Asia Pacific (Tokyo)</option>
+                                    </select>
+                                </div>
+                                <div class="d-grid gap-2">
+                                    <button type="submit" class="btn btn-primary">Save Dock Settings</button>
+                                    <button type="button" id="test-dock-btn" class="btn btn-info">Test Dock Connection</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Connection Modal -->
+    <div class="modal fade" id="connectionModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Connecting to Drone</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex justify-content-center">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                    <p class="text-center mt-3">Connecting to DJI drone...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Waypoint Edit Modal -->
+    <div class="modal fade" id="waypointModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Waypoint</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="waypoint-form">
+                        <input type="hidden" id="waypoint-index">
+                        <div class="mb-3">
+                            <label for="waypoint-latitude" class="form-label">Latitude</label>
+                            <input type="number" class="form-control" id="waypoint-latitude" step="0.000001" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="waypoint-longitude" class="form-label">Longitude</label>
+                            <input type="number" class="form-control" id="waypoint-longitude" step="0.000001" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="waypoint-altitude" class="form-label">Altitude (m)</label>
+                            <input type="number" class="form-control" id="waypoint-altitude" min="0" step="1" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="waypoint-heading" class="form-label">Heading (degrees)</label>
+                            <input type="number" class="form-control" id="waypoint-heading" min="0" max="359" step="1" value="0">
+                        </div>
+                        <div class="mb-3">
+                            <label for="waypoint-stay-time" class="form-label">Stay Time (seconds)</label>
+                            <input type="number" class="form-control" id="waypoint-stay-time" min="0" step="1" value="0">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Actions</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="action-take-photo">
+                                <label class="form-check-label" for="action-take-photo">Take Photo</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="action-start-recording">
+                                <label class="form-check-label" for="action-start-recording">Start Recording</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="action-stop-recording">
+                                <label class="form-check-label" for="action-stop-recording">Stop Recording</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="action-rotate-gimbal">
+                                <label class="form-check-label" for="action-rotate-gimbal">Rotate Gimbal</label>
+                            </div>
+                            <div class="gimbal-settings mt-2" style="display: none;">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label for="gimbal-pitch" class="form-label">Pitch</label>
+                                        <input type="number" class="form-control" id="gimbal-pitch" min="-90" max="30" value="-30">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="gimbal-roll" class="form-label">Roll</label>
+                                        <input type="number" class="form-control" id="gimbal-roll" min="-45" max="45" value="0">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="gimbal-yaw" class="form-label">Yaw</label>
+                                        <input type="number" class="form-control" id="gimbal-yaw" min="-320" max="320" value="0">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="delete-waypoint-btn">Delete</button>
+                    <button type="button" class="btn btn-primary" id="save-waypoint-btn">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
