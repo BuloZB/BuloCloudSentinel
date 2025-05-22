@@ -1,9 +1,9 @@
 name: Security Review
-true:
+on:
   schedule:
-  - cron: 0 8 * * 1
-  - cron: 0 8 1 * *
-  workflow_dispatch: null
+    - cron: '0 8 * * 1'  # Weekly on Monday at 8 AM
+    - cron: '0 8 1 * *'  # Monthly on the 1st at 8 AM
+  workflow_dispatch: # Allow manual triggering
 jobs:
   weekly-security-review:
     runs-on: ubuntu-latest

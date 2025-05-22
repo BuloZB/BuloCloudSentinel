@@ -25,9 +25,22 @@ When a security vulnerability is reported, the Bulo.Cloud Sentinel team will:
 4. Release a security update
 5. Publicly disclose the vulnerability after the fix has been released
 
+For more details on our incident response process, please refer to our [Security Incident Response Plan](docs/security/security_incident_response_plan.md).
+
 ## Supported Versions
 
 Only the latest version of Bulo.Cloud Sentinel is actively supported with security updates. We recommend always using the most recent version.
+
+## Automated Security Processes
+
+Bulo.Cloud Sentinel implements several automated security processes to ensure the security of the codebase:
+
+1. **Daily Dependency Updates**: Automated daily checks for vulnerable dependencies with immediate updates.
+2. **Security Scanning**: Comprehensive security scanning including SAST, DAST, SCA, and container scanning.
+3. **Secret Detection**: Automated detection of secrets and credentials in the codebase.
+4. **Security Reviews**: Scheduled security reviews (weekly, monthly, quarterly) to ensure ongoing security.
+
+For more information on our security automation, see the [Security Best Practices](docs/security/security_best_practices.md) documentation.
 
 ## Security Best Practices
 
@@ -48,6 +61,19 @@ When deploying Bulo.Cloud Sentinel, we recommend the following security best pra
 13. **Security headers**: Configure proper security headers for all HTTP responses.
 14. **Vulnerability scanning**: Regularly scan your application for vulnerabilities using automated tools.
 15. **Secure development practices**: Follow secure coding practices and conduct security-focused code reviews.
+
+For detailed guidance on secure coding practices, please refer to our [Security Code Review Checklist](docs/security/security_code_review_checklist.md).
+
+## Security Champions Program
+
+Bulo.Cloud Sentinel maintains a Security Champions Program to promote security awareness and practices throughout the development team. The program includes:
+
+1. **Designated Champions**: Each team has a designated security champion responsible for promoting security best practices.
+2. **Regular Training**: Security champions receive additional security training and share knowledge with their teams.
+3. **Security Reviews**: Champions participate in security reviews and help identify potential security issues early.
+4. **Vulnerability Triage**: Champions help prioritize and address security vulnerabilities.
+
+For more information on our Security Champions Program, see the [Security Champions Program](docs/security/security_champions_program.md) documentation.
 
 ## Security Features
 

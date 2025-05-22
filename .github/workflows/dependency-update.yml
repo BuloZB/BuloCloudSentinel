@@ -1,8 +1,8 @@
 name: Dependency Update
-true:
+on:
   schedule:
-  - cron: 0 0 * * *
-  workflow_dispatch: null
+    - cron: '0 0 * * *'  # Run daily at midnight
+  workflow_dispatch: # Allow manual triggering
 jobs:
   update-dependencies:
     runs-on: ubuntu-latest
@@ -11,88 +11,125 @@ jobs:
       uses: actions/checkout@v4
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
+        fetch-depth: 0  # Fetch all history for proper version tracking
+
     - name: Cache pip dependencies
       uses: actions/cache@v3
       with:
         path: ~/.cache/pip
         key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
         restore-keys: ${{ runner.os }}-pip-
+
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
         python-version: '3.11'
+
     - name: Install dependencies
-      run: "python -m pip install --upgrade pip\npip install pip-tools safety pip-audit\n\
-        if [ -f requirements.txt ]; then\n  pip install -r requirements.txt\nfi\n"
+      run: |
+        python -m pip install --upgrade pip
+        pip install pip-tools safety pip-audit semgrep
+        if [ -f requirements.txt ]; then
+          pip install -r requirements.txt
+        fi
+
+    - name: Find all requirements files
+      id: find-requirements
+      run: |
+        echo "REQUIREMENTS_FILES=$(find . -name "requirements*.txt" -not -path "*/\.*" -not -path "*/venv/*" | tr '\n' ' ')" >> $GITHUB_ENV
+        echo "Found requirements files: $(find . -name "requirements*.txt" -not -path "*/\.*" -not -path "*/venv/*" | tr '\n' ' ')"
+
     - name: Check for outdated dependencies
       id: outdated
-      run: "pip list --outdated --format=json > outdated.json\necho \"OUTDATED_COUNT=$(jq\
-        \ length outdated.json)\" >> $GITHUB_ENV\nif [ -s outdated.json ]; then\n\
-        \  cat outdated.json | jq -r '.[] | \"* \\(.name): \\(.version) -> \\(.latest_version)\"\
-        ' > outdated.md\n  echo \"Found $(jq length outdated.json) outdated packages\"\
-        \nelse\n  echo \"No outdated packages found\"\n  echo \"No outdated packages\
-        \ found\" > outdated.md\nfi\n"
-    - name: Run safety check
-      run: 'safety check -r requirements.txt --output text > safety-report.txt ||
-        true
+      run: |
+        pip list --outdated --format=json > outdated.json
+        echo "OUTDATED_COUNT=$(jq length outdated.json)" >> $GITHUB_ENV
+        if [ -s outdated.json ]; then
+          cat outdated.json | jq -r '.[] | "* \(.name): \(.version) -> \(.latest_version)"' > outdated.md
+          echo "Found $(jq length outdated.json) outdated packages"
+        else
+          echo "No outdated packages found"
+          echo "No outdated packages found" > outdated.md
+        fi
 
+    - name: Run safety check on all requirements files
+      run: |
+        mkdir -p reports
+        for req_file in $REQUIREMENTS_FILES; do
+          echo "Checking $req_file for security vulnerabilities..."
+          safety check -r "$req_file" --output text > "reports/safety-report-$(basename $req_file).txt" || true
+        done
+
+        # Combine all reports
+        cat reports/safety-report-*.txt > safety-report.txt
         echo "Safety check completed. See safety-report.txt for details."
 
-        '
-    - name: Run pip-audit check
-      run: 'pip-audit -r requirements.txt -f json -o pip-audit-results.json || true
+    - name: Run pip-audit check on all requirements files
+      run: |
+        mkdir -p reports
+        for req_file in $REQUIREMENTS_FILES; do
+          echo "Auditing $req_file for vulnerabilities..."
+          pip-audit -r "$req_file" -f json -o "reports/pip-audit-$(basename $req_file).json" || true
+        done
 
+        # Combine all reports (simplified version)
+        jq -s 'add' reports/pip-audit-*.json > pip-audit-results.json || echo "[]" > pip-audit-results.json
         echo "Pip-audit check completed. See pip-audit-results.json for details."
 
-        '
-    - name: Update dependencies
-      if: env.OUTDATED_COUNT != '0'
-      run: "# Create a temporary requirements file with updated versions\njq -r '.[]\
-        \ | \"\\(.name)==\\(.latest_version)\"' outdated.json > updates.txt\n\n# Read\
-        \ current requirements\ncp requirements.txt requirements.bak\n\n# Update requirements\
-        \ with new versions\nwhile IFS= read -r line; do\n  package=$(echo \"$line\"\
-        \ | cut -d '=' -f 1)\n  if grep -q \"^$package==\" requirements.txt; then\n\
-        \    sed -i \"s/^$package==.*/$line/\" requirements.txt\n  fi\ndone < updates.txt\n"
+    - name: Run custom dependency update script
+      run: |
+        python scripts/update_dependencies.py
+        echo "Custom dependency update script completed."
+
     - name: Check for changes
       id: git-check
-      run: 'git diff --exit-code || echo "changes=true" >> $GITHUB_OUTPUT
+      run: |
+        git diff --exit-code || echo "changes=true" >> $GITHUB_OUTPUT
 
-        '
     - name: Commit changes
       if: steps.git-check.outputs.changes == 'true'
-      run: 'git config --local user.email "github-actions[bot]@users.noreply.github.com"
-
+      run: |
+        git config --local user.email "github-actions[bot]@users.noreply.github.com"
         git config --local user.name "github-actions[bot]"
-
         git add .
+        git commit -m "security: update dependencies to fix vulnerabilities
 
-        git commit -m "deps: update dependencies to fix security vulnerabilities
-
-
-        Updated $(cat outdated.md | wc -l) packages to their latest versions.
-
+        Updated dependencies to their latest secure versions.
+        - Fixed vulnerable packages identified by safety and pip-audit
+        - Applied exact version pinning for better reproducibility
+        - Ensured compatibility across all requirements files
 
         Security scan results are available in the workflow artifacts."
 
-        '
     - name: Push changes
       if: steps.git-check.outputs.changes == 'true'
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         branch: ${{ github.ref }}
+
     - name: Upload outdated dependencies report
       uses: actions/upload-artifact@v4
       with:
         name: outdated-dependencies
         path: outdated.md
-    - name: Upload safety report
+
+    - name: Upload safety reports
       uses: actions/upload-artifact@v4
       with:
-        name: safety-report
-        path: safety-report.txt
-    - name: Upload pip-audit report
+        name: safety-reports
+        path: reports/safety-report-*.txt
+
+    - name: Upload pip-audit reports
       uses: actions/upload-artifact@v4
       with:
-        name: pip-audit-report
-        path: pip-audit-results.json
+        name: pip-audit-reports
+        path: reports/pip-audit-*.json
+
+    - name: Upload combined reports
+      uses: actions/upload-artifact@v4
+      with:
+        name: combined-security-reports
+        path: |
+          safety-report.txt
+          pip-audit-results.json

@@ -1,14 +1,14 @@
 name: Security Scan
-true:
+on:
   schedule:
-  - cron: 0 0 * * *
+    - cron: '0 0 * * *'  # Run daily at midnight
   push:
     branches:
-    - main
+      - main
   pull_request:
     branches:
-    - main
-  workflow_dispatch: null
+      - main
+  workflow_dispatch: # Allow manual triggering
 permissions:
   contents: read
   actions: read
@@ -37,9 +37,15 @@ jobs:
       with:
         python-version: '3.11'
     - name: Install dependencies
-      run: "python -m pip install --upgrade pip\npip install safety==3.5.0 bandit==1.7.7\
-        \ pip-audit==2.7.0\nif [ -f requirements-secure.txt ]; then\n  pip install\
-        \ -r requirements-secure.txt\nelse\n  pip install -r requirements.txt\nfi\n"
+      run: |
+        python -m pip install --upgrade pip
+        pip install safety==3.5.0 bandit==1.7.7 pip-audit==2.7.0 semgrep==1.71.0
+        pip install detect-secrets==1.4.0 trufflehog==3.63.2 cyclonedx-bom==3.11.0
+        if [ -f requirements-secure.txt ]; then
+          pip install -r requirements-secure.txt
+        else
+          pip install -r requirements.txt
+        fi
     - name: Run safety check
       run: 'safety check --full-report --output text > safety-report.txt || true
 
@@ -149,12 +155,45 @@ jobs:
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install detect-secrets==1.4.0 trufflehog==3.63.2
+
     - name: Run Gitleaks
       uses: gitleaks/gitleaks-action@v2
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}
       continue-on-error: true
+
+    - name: Run detect-secrets
+      run: |
+        detect-secrets scan --all-files > detect-secrets-results.json
+        echo "Detect-secrets scan completed. See detect-secrets-results.json for details."
+
+    - name: Run TruffleHog
+      run: |
+        trufflehog filesystem --directory=. --json > trufflehog-results.json || true
+        echo "TruffleHog scan completed. See trufflehog-results.json for details."
+
+    - name: Upload detect-secrets results
+      uses: actions/upload-artifact@v4
+      with:
+        name: detect-secrets-results
+        path: detect-secrets-results.json
+
+    - name: Upload TruffleHog results
+      uses: actions/upload-artifact@v4
+      with:
+        name: trufflehog-results
+        path: trufflehog-results.json
   container-scanning:
     name: Container Security Scan
     runs-on: ubuntu-latest
@@ -201,34 +240,72 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+
     - name: Cache pip dependencies
       uses: actions/cache@v3
       with:
         path: ~/.cache/pip
         key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
         restore-keys: ${{ runner.os }}-pip-
+
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
         python-version: '3.11'
+
     - name: Install dependencies
-      run: 'python -m pip install --upgrade pip
+      run: |
+        python -m pip install --upgrade pip
+        pip install semgrep==1.71.0 bandit==1.7.7 flake8==7.0.0 mypy==1.9.0 ruff==0.4.7
+        if [ -f requirements-secure.txt ]; then
+          pip install -r requirements-secure.txt
+        else
+          pip install -r requirements.txt
+        fi
 
-        pip install semgrep
-
-        '
     - name: Run Semgrep scan
-      run: 'semgrep --config=p/owasp-top-ten --config=p/security-audit --json -o semgrep-results.json
-        || true
-
+      run: |
+        semgrep --config=p/owasp-top-ten --config=p/security-audit --json -o semgrep-results.json || true
         echo "Semgrep scan completed. See semgrep-results.json for details."
 
-        '
+    - name: Run Bandit scan (comprehensive)
+      run: |
+        bandit -r . -x "*/tests/*,*/node_modules/*,*/venv/*,.venv/*" -f json -o bandit-comprehensive-results.json || true
+        echo "Bandit comprehensive scan completed. See bandit-comprehensive-results.json for details."
+
+    - name: Run Ruff security linting
+      run: |
+        ruff check --select=S --output-format=json . > ruff-security-results.json || true
+        echo "Ruff security linting completed. See ruff-security-results.json for details."
+
+    - name: Run MyPy type checking
+      run: |
+        mypy --ignore-missing-imports --disallow-untyped-defs --disallow-incomplete-defs --json-report mypy-results.json . || true
+        echo "MyPy type checking completed. See mypy-results.json for details."
+
     - name: Upload Semgrep results
       uses: actions/upload-artifact@v4
       with:
         name: semgrep-results
         path: semgrep-results.json
+
+    - name: Upload Bandit results
+      uses: actions/upload-artifact@v4
+      with:
+        name: bandit-comprehensive-results
+        path: bandit-comprehensive-results.json
+
+    - name: Upload Ruff results
+      uses: actions/upload-artifact@v4
+      with:
+        name: ruff-security-results
+        path: ruff-security-results.json
+
+    - name: Upload MyPy results
+      uses: actions/upload-artifact@v4
+      with:
+        name: mypy-results
+        path: mypy-results.json
   custom-security-scan:
     name: Custom Security Scan
     runs-on: ubuntu-latest
