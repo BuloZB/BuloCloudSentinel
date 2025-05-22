@@ -1,10 +1,11 @@
 version: 2
 updates:
-  # Enable version updates for Python
+  # Enable version updates for Python (root directory)
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
       interval: "daily"
+      time: "00:00"
     open-pull-requests-limit: 10
     target-branch: "main"
     labels:
@@ -79,7 +80,109 @@ updates:
       # Ignore major updates to torch due to compatibility issues
       - dependency-name: "torch"
         versions: [">=3.0.0"]
+      # Ignore major version updates for all packages to reduce noise
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
     # Apply security updates to vulnerable dependencies
+    vulnerability-alerts: true
+
+  # Python dependencies in backend
+  - package-ecosystem: "pip"
+    directory: "/backend"
+    schedule:
+      interval: "daily"
+      time: "00:00"
+    open-pull-requests-limit: 10
+    target-branch: "main"
+    labels:
+      - "dependencies"
+      - "security"
+      - "backend"
+    commit-message:
+      prefix: "deps(backend)"
+      include: "scope"
+    reviewers:
+      - "BuloZB"
+    assignees:
+      - "BuloZB"
+    groups:
+      security-updates:
+        patterns:
+          - "cryptography"
+          - "pyopenssl"
+          - "pyjwt"
+          - "certifi"
+          - "passlib"
+          - "bcrypt"
+          - "argon2-cffi"
+    allow:
+      - dependency-type: "all"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+    vulnerability-alerts: true
+
+  # Python dependencies in ai_analytics
+  - package-ecosystem: "pip"
+    directory: "/ai_analytics"
+    schedule:
+      interval: "daily"
+      time: "00:00"
+    open-pull-requests-limit: 10
+    target-branch: "main"
+    labels:
+      - "dependencies"
+      - "security"
+      - "ai-analytics"
+    commit-message:
+      prefix: "deps(ai-analytics)"
+      include: "scope"
+    reviewers:
+      - "BuloZB"
+    assignees:
+      - "BuloZB"
+    groups:
+      security-updates:
+        patterns:
+          - "cryptography"
+          - "pyopenssl"
+          - "pyjwt"
+          - "certifi"
+    allow:
+      - dependency-type: "all"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+    vulnerability-alerts: true
+
+  # Python dependencies in security module
+  - package-ecosystem: "pip"
+    directory: "/security"
+    schedule:
+      interval: "daily"
+      time: "00:00"
+    open-pull-requests-limit: 10
+    target-branch: "main"
+    labels:
+      - "dependencies"
+      - "security"
+      - "security-module"
+    commit-message:
+      prefix: "deps(security)"
+      include: "scope"
+    reviewers:
+      - "BuloZB"
+    assignees:
+      - "BuloZB"
+    groups:
+      security-updates:
+        patterns:
+          - "*"
+    allow:
+      - dependency-type: "all"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
     vulnerability-alerts: true
 
   # Enable version updates for JavaScript
@@ -87,26 +190,56 @@ updates:
     directory: "/frontend"
     schedule:
       interval: "daily"
+      time: "00:00"
     open-pull-requests-limit: 10
     target-branch: "main"
     labels:
       - "dependencies"
       - "security"
+      - "frontend"
     commit-message:
-      prefix: "npm"
+      prefix: "deps(npm)"
       include: "scope"
-    # Specify reviewers for pull requests
     reviewers:
       - "BuloZB"
-    # Specify assignees for pull requests
     assignees:
       - "BuloZB"
-    # Allow up-to-date dependencies to be maintained
+    groups:
+      security-updates:
+        patterns:
+          - "*"
+        update-types:
+          - "patch"
+          - "minor"
     allow:
-      # Allow updates for dependencies with security issues
       - dependency-type: "all"
-    # Apply security updates to vulnerable dependencies
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
     vulnerability-alerts: true
+
+  # Docker dependencies
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "daily"
+      time: "00:00"
+    open-pull-requests-limit: 5
+    target-branch: "main"
+    labels:
+      - "dependencies"
+      - "security"
+      - "docker"
+    commit-message:
+      prefix: "deps(docker)"
+      include: "scope"
+    reviewers:
+      - "BuloZB"
+    assignees:
+      - "BuloZB"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
 
   # Enable version updates for GitHub Actions
   - package-ecosystem: "github-actions"
@@ -119,11 +252,9 @@ updates:
       - "dependencies"
       - "github-actions"
     commit-message:
-      prefix: "github-actions"
+      prefix: "deps(actions)"
       include: "scope"
-    # Specify reviewers for pull requests
     reviewers:
       - "BuloZB"
-    # Specify assignees for pull requests
     assignees:
       - "BuloZB"
