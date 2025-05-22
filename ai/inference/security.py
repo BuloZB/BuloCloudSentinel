@@ -275,12 +275,19 @@ def safe_load_model(file_path: str, model_type: str = None) -> Any:
             # Load model with safety measures
             if is_trusted:
                 # For trusted models, we can use weights_only=True for better security
+                # Validate file integrity before loading
+                if not validate_file_integrity(file_path):
+                    logger.error(f"File integrity check failed for: {file_path}")
+                    return None
+
                 model = torch.load(file_path, map_location="cpu", weights_only=True)
             else:
                 # For untrusted models, we should avoid loading them or implement additional validation
                 logger.warning(f"Loading model from untrusted source: {file_path}")
                 # You might want to implement additional validation here
-                model = torch.load(file_path, map_location="cpu", weights_only=True)
+                # Avoid loading untrusted models
+                logger.error(f"Refusing to load untrusted model: {file_path}")
+                return None
 
             return model
 
