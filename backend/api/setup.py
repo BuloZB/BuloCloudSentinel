@@ -36,3 +36,10 @@ app.include_router(missions_router, dependencies=[Depends(get_current_user)])
 from backend.api.ws_missions import router as ws_missions_router
 app.include_router(ws_missions_router, dependencies=[Depends(get_current_user)])
 app.include_router(analytics_router, dependencies=[Depends(get_current_user)])
+argon2-cffi==23.1.0  # For secure password hashing
+pydantic==2.11.4  # For secure data validation
+python-magic==0.4.27  # For secure file type detection
+safety==2.3.5  # For dependency vulnerability scanning
+bandit==1.7.7  # For security static analysis
+cryptography==46.0.0  # Updated to latest version to fix CVE-2024-26130, CVE-2024-12797, CVE-2024-6119
+pyopenssl==24.0.0  # Secure version

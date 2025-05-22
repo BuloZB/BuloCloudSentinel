@@ -1,11 +1,11 @@
-fastapi==0.115.12  # Updated to latest version for security improvements  # Updated to latest version for security improvements
+fastapi==0.115.12  # Updated to latest version for security improvements  # Updated to latest version for security improvements  # Updated to latest version for security improvements  # Updated to latest version for security improvements
 uvicorn==0.27.1
 pydantic==2.6.1
 pydantic-settings==2.1.0
 httpx==0.26.0
-# # python-jose==3.3.0  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663
+# # # # python-jose==3.3.0  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663
 pyjwt==2.8.0  # Using a secure version that doesn't have CVE-2024-53861
-python-multipart==0.0.21  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-53981
+python-multipart==0.0.21  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-53981
 pyyaml==6.0.1
 pymodbus==3.5.4
 paho-mqtt==2.2.1

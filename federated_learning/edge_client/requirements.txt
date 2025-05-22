@@ -4,7 +4,7 @@ flwr>=1.4.0
 opacus>=1.4.0
 paho-mqtt>=2.0.0
 numpy>=1.22.0
-pillow>=9.3.0
+pillow==11.2.2  # Updated to fix CVE-2024-28219, CVE-2023-50447, CVE-2024-4863
 tqdm>=4.64.0
 pyyaml>=6.0
 cryptography>=39.0.0

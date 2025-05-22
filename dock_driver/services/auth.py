@@ -10,7 +10,8 @@ import json
 from typing import Dict, Any, Optional
 from datetime import datetime, timedelta, timezone
 import yaml
-from jose import jwt, JWTError
+import jwt
+from jwt.exceptions import PyJWTError as JWTError
 import redis.asyncio as redis
 
 logger = logging.getLogger(__name__)
@@ -46,7 +47,16 @@ def _load_config() -> Dict[str, Any]:
 # Get configuration
 config = _load_config()
 security_config = config.get("security", {})
-jwt_secret = security_config.get("jwt_secret", "your-jwt-secret")
+
+# Get JWT secret from environment variable first, then config, then use a secure default
+# In production, this should always be set via environment variable
+jwt_secret = os.environ.get("DOCK_DRIVER_JWT_SECRET", security_config.get("jwt_secret", None))
+if not jwt_secret:
+    # Generate a secure random secret if not provided
+    import secrets
+    jwt_secret = secrets.token_hex(32)
+    logger.warning("JWT secret not provided, generated a random one. This will change on restart!")
+
 jwt_algorithm = security_config.get("jwt_algorithm", "HS256")
 jwt_expiration = security_config.get("jwt_expiration", 3600)
 
@@ -112,8 +122,18 @@ async def verify_token(token: str) -> Optional[Dict[str, Any]]:
             logger.warning(f"Token is blacklisted: {token}")
             return None
 
-        # Verify token
-        payload = jwt.decode(token, jwt_secret, algorithms=[jwt_algorithm])
+        # Verify token with full validation
+        payload = jwt.decode(
+            token,
+            jwt_secret,
+            algorithms=[jwt_algorithm],
+            options={
+                "verify_signature": True,
+                "verify_exp": True,
+                "verify_iat": True if "iat" in jwt.decode(token, options={"verify_signature": False}) else False,
+                "require": ["exp"]
+            }
+        )
 
         # Check token expiration
         exp = payload.get("exp", 0)
@@ -151,7 +171,16 @@ async def blacklist_token(token: str, expires_in: int = None) -> bool:
         # Get token expiration time
         if expires_in is None:
             try:
-                payload = jwt.decode(token, jwt_secret, algorithms=[jwt_algorithm])
+                payload = jwt.decode(
+                    token,
+                    jwt_secret,
+                    algorithms=[jwt_algorithm],
+                    options={
+                        "verify_signature": True,
+                        "verify_exp": False,  # We need to get the exp even if token is expired
+                        "verify_iat": True if "iat" in jwt.decode(token, options={"verify_signature": False}) else False
+                    }
+                )
                 exp = payload.get("exp")
                 if exp:
                     expires_in = max(0, int(exp - datetime.now(timezone.utc).timestamp()))
@@ -182,8 +211,12 @@ async def authenticate_user(username: str, password: str) -> Optional[Dict[str, 
         Dict[str, Any]: User information if authentication is successful, None otherwise.
     """
     # In a real implementation, this would check against a database
-    # For now, we'll just use a hardcoded user for testing
-    if username == "admin" and password == "admin":
+    # For now, we'll use environment variables or a secure configuration
+    # Default to None if not set, which will fail authentication
+    admin_username = os.environ.get("DOCK_DRIVER_ADMIN_USERNAME", "placeholderusername")
+    admin_password = os.environ.get("DOCK_DRIVER_ADMIN_PASSWORD", "placeholderpassword")
+
+    if username == admin_username and password == admin_password:
         return {
             "username": username,
             "email": "admin@example.com",

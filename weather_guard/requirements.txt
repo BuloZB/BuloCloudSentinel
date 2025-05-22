@@ -1,12 +1,13 @@
-fastapi>=0.104.0
+fastapi==0.115.12  # Updated to latest version for security improvements
 uvicorn>=0.23.2
 httpx>=0.25.0
 redis>=5.0.0
 pydantic>=2.4.2
 pydantic-settings>=2.0.3
 aiomqtt>=1.2.0
-python-jose>=3.3.0
-python-multipart>=0.0.6
+# python-jose>=3.3.0  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663
+pyjwt==2.8.0  # Using a secure version that doesn't have CVE-2024-53861
+python-multipart==0.0.21  # Updated to latest version to fix CVE-2024-53981
 prometheus-client>=0.17.0
 pytest>=7.4.0
 pytest-asyncio>=0.21.1

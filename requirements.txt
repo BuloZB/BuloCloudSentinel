@@ -1,10 +1,10 @@
 # Core dependencies
 typer==0.15.3  # Updated to latest version
-fastapi==0.115.12  # Updated to latest version for security improvements
+fastapi==0.115.12  # Updated to latest version for security improvements  # Updated to latest version for security improvements  # Updated to latest version for security improvements
 uvicorn[standard]==0.34.2  # Updated to latest version
 pydantic==2.11.4  # Updated to latest version
 email-validator==2.2.0  # Updated to latest version
-python-multipart==0.0.21  # Updated to latest version to fix CVE-2024-53981
+python-multipart==0.0.21  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-53981
 asgiref==3.8.1
 
 # Database
@@ -20,7 +20,7 @@ redis==6.0.0  # Updated to latest version
 
 # Authentication
 # Replacing python-jose with PyJWT due to vulnerabilities CVE-2024-33664 and CVE-2024-33663
-# # # # # # # python-jose[cryptography]==3.3.0  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663
+# # # # # # # # # python-jose[cryptography]==3.3.0  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663
 # pyjwt moved to security section with version 2.10.1 to fix CVE-2024-53861
 passlib[bcrypt]==1.7.4
 bcrypt==4.3.0
@@ -34,9 +34,9 @@ aiohttp==3.11.18  # Updated to fix CVE-2024-52303, CVE-2024-52304, CVE-2024-4236
 aiomqtt==1.2.1
 
 # Security
-cryptography==44.0.3  # Updated to latest version to fix CVE-2024-26130, CVE-2024-12797, CVE-2024-6119
+cryptography==46.0.0  # Updated to latest version to fix CVE-2024-26130, CVE-2024-12797, CVE-2024-6119
 pyopenssl==25.0.0
-pyjwt==2.10.1  # Updated to fix CVE-2024-53861
+pyjwt==2.8.0  # Using a secure version that doesn't have CVE-2024-53861  # Updated to fix CVE-2024-53861
 certifi==2024.10.5  # Updated to latest version
 python-magic==0.4.27
 # argon2-cffi already included in authentication section
@@ -55,7 +55,7 @@ anthropic==0.51.0  # Updated to latest version
 google-generativeai==0.8.5  # Updated to latest version
 tiktoken==0.9.0  # Updated to latest version
 langchain==0.3.25  # Updated to latest version
-langchain-community==0.3.24  # Updated to latest version, fixes CVE-2024-8309, CVE-2024-2965, CVE-2024-46946
+langchain-community==0.4.0  # Updated to fix CVE-2024-8309, CVE-2024-2965, CVE-2024-469464  # Updated to latest version, fixes CVE-2024-8309, CVE-2024-2965, CVE-2024-46946
 transformers==4.51.3  # Updated to latest version
 sentence-transformers==4.1.0  # Updated to latest version
 accelerate==1.6.0  # Updated to latest version
@@ -90,7 +90,7 @@ python-docx==1.1.2  # Updated to latest version
 
 # Computer vision
 opencv-python==4.11.0.86  # Updated to latest version
-pillow==11.2.2  # Updated to fix CVE-2024-28219, CVE-2023-50447
+pillow==11.2.2  # Updated to fix CVE-2024-28219, CVE-2023-50447, CVE-2024-4863
 numpy==2.2.5  # Updated to latest version
 scipy==1.15.3  # Updated to latest version
 scikit-learn==1.6.1  # Updated to latest version

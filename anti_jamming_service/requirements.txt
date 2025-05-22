@@ -1,5 +1,5 @@
 # FastAPI and web server
-fastapi==0.115.12  # Updated to latest version for security improvements  # Updated to latest version for security improvements  # Updated to latest version
+fastapi==0.115.12  # Updated to latest version for security improvements  # Updated to latest version for security improvements  # Updated to latest version for security improvements  # Updated to latest version for security improvements  # Updated to latest version
 uvicorn==0.34.0
 starlette==0.42.0  # Updated to fix CVE-2024-47874
 pydantic==2.11.4  # Updated to latest version
@@ -23,7 +23,7 @@ dronekit==2.9.2
 cryptography==46.0.0  # Updated to latest version to fix CVE-2024-26130, CVE-2024-12797, CVE-2024-6119  # Updated to fix CVE-2024-26130, CVE-2024-12797, CVE-2024-6119, CVE-2024-2511, CVE-2024-4603
 hvac==2.3.0  # Updated from 1.2.1 to fix CVE-2024-34069 and CVE-2024-37568
 # Replacing python-jose with PyJWT due to vulnerabilities CVE-2024-33664 and CVE-2024-33663
-# # # # python-jose==3.4.0  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # JWT
+# # # # # # python-jose==3.4.0  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # JWT
 pyjwt==2.8.0  # Using a secure version that doesn't have CVE-2024-53861  # Updated to fix CVE-2024-53861
 passlib==1.7.4  # Password hashing
 python-magic==0.4.27

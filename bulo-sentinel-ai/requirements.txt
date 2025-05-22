@@ -1,6 +1,6 @@
-fastapi
-uvicorn[standard]
-pydantic
+fastapi==0.115.12  # Updated to latest version for security improvements
+uvicorn[standard]==0.34.0  # Pinned version for security
+pydantic==2.11.4  # Pinned version for security
 httpx
 argon2-cffi==23.1.0  # For secure password hashing
 pydantic==2.11.4  # For secure data validation

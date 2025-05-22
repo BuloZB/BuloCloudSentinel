@@ -1,6 +1,6 @@
 # Pinned versions for security
 # Updated to address security vulnerabilities
-fastapi==0.115.12  # Updated to latest version for security improvements  # Updated to latest version for security improvements  # Updated to latest version
+fastapi==0.115.12  # Updated to latest version for security improvements  # Updated to latest version for security improvements  # Updated to latest version for security improvements  # Updated to latest version for security improvements  # Updated to latest version
 uvicorn==0.27.1
 pydantic==2.11.3
 sqlalchemy==2.0.28
@@ -10,12 +10,12 @@ httpx==0.27.0
 websockets==12.0.0
 numpy==1.26.4
 # Security-sensitive packages with pinned versions
-python-multipart==0.0.21  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-539810  # Updated to latest version to fix CVE-2024-539810  # Updated to latest version to fix CVE-2024-53981
+python-multipart==0.0.21  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-539810  # Updated to latest version to fix CVE-2024-539810  # Updated to latest version to fix CVE-2024-53981
 # Note: python-jose has vulnerabilities but no newer version is available
 # Consider replacing with another JWT library in production
 # For now, we'll use PyJWT as a more secure alternative
 pyjwt==2.8.0  # Using a secure version that doesn't have CVE-2024-53861  # Downgraded to fix CVE-2024-53861
-# # # # python-jose==3.3.0  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Commented out due to security vulnerabilities
+# # # # # # python-jose==3.3.0  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Commented out due to security vulnerabilities
 passlib==1.7.4
 bcrypt==4.1.2
 pymavlink==2.4.40
