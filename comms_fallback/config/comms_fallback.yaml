@@ -1,0 +1,72 @@
+# SATCOM / 5G Fallback Connectivity Configuration
+
+# Adapter configurations
+adapters:
+  wifi_mesh:
+    enabled: true
+    name: "WiFi Mesh"
+    priority: 1
+    mesh_node_id: "${MESH_NODE_ID:drone1}"
+    min_rssi: -75
+    max_latency: 100
+    max_packet_loss: 5.0
+    max_jitter: 20.0
+    wireguard_endpoint: "192.168.1.1:51820"
+  
+  five_g:
+    enabled: true
+    name: "5G"
+    priority: 2
+    apn: "${FIVE_G_APN:internet}"
+    device: "${FIVE_G_DEVICE:/dev/ttyUSB0}"
+    min_rssi: -90
+    max_latency: 150
+    max_packet_loss: 10.0
+    max_jitter: 30.0
+    wireguard_endpoint: "10.0.0.1:51820"
+    
+  iridium:
+    enabled: true
+    name: "Iridium Certus"
+    priority: 3
+    device: "${IRIDIUM_DEVICE:/dev/ttyUSB1}"
+    min_rssi: -100
+    max_latency: 1000
+    max_packet_loss: 15.0
+    max_jitter: 100.0
+    wireguard_endpoint: "100.64.0.1:51820"
+
+# Connection monitor configuration
+monitor:
+  check_interval: 1.0  # seconds
+  hysteresis_time: 5.0  # seconds
+  hysteresis_count: 5   # number of consecutive checks
+
+# Fallback manager configuration
+fallback:
+  buffer_size: 1000     # number of messages
+  critical_timeout: 30  # seconds
+  session_timeout: 300  # seconds
+
+# WireGuard configuration
+wireguard:
+  enabled: true
+  interface: "wg0"
+  port: 51820
+  peers:
+    - name: "ground_station"
+      public_key: "${WG_PEER_PUBLIC_KEY:public_key_here}"
+      endpoint: "192.168.1.1:51820"
+      allowed_ips: "0.0.0.0/0"
+
+# Redis configuration
+redis:
+  url: "${REDIS_URL:redis://localhost:6379/0}"
+  prefix: "comms_fallback:"
+  ttl: 3600  # seconds
+
+# Logging configuration
+logging:
+  level: "${LOG_LEVEL:INFO}"
+  file: "${LOG_FILE:logs/comms_fallback.log}"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"

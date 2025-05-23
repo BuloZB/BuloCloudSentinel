@@ -161,6 +161,23 @@ The Drone Show Microservice enables planning, simulation, and execution of chore
 - **🔋 Battery Management**: Optimize shows based on battery levels
 - **🔒 Security Hardened**: Comprehensive security measures and dependency management
 
+### 📡 SATCOM / 5G Fallback Connectivity
+
+The SATCOM / 5G Fallback Connectivity module ensures continuous communication for drones even in challenging environments:
+
+- **🔄 Multi-Adapter Architecture**: Modular design with WiFi Mesh, 5G, and Iridium Certus adapters
+- **📊 Connection Quality Monitoring**: Real-time monitoring of RSSI, latency, packet loss, and jitter
+- **⚡ Hysteresis Algorithm**: Prevents rapid switching between communication methods
+- **🔄 WireGuard Integration**: Seamless tunnel transitions between communication methods
+- **📝 Session Persistence**: Maintains sessions during communication method transitions
+- **📦 Message Buffering**: Critical message buffering during switchover periods
+- **⚙️ YAML Configuration**: Flexible configuration with threshold definitions and priority ordering
+- **🗺️ Geographic Rules**: Location-based adapter selection (e.g., prefer 5G in urban areas)
+- **📊 Redis Integration**: State management and transition history in Redis
+- **⏱️ Fast Switchover**: Transition time less than 3 seconds in all scenarios
+- **🔄 Zero Message Loss**: Guaranteed delivery of critical messages during transitions
+- **🧪 Comprehensive Testing**: Network condition simulation for thorough testing
+
 ### 🌐 Digital Twin & Simulation
 
 The Digital Twin & Simulation environment provides a deterministic, software-in-the-loop (SITL) testing platform:
@@ -524,6 +541,13 @@ bulo-cloud-sentinel/
 │   ├── sentinel_beacon/  # Meshtastic-based mesh communication for drones
 │   ├── sigint_service/   # Signal Intelligence service
 │   └── tacs/             # Target Acquisition and Coordination System
+├── comms_fallback/        # SATCOM / 5G Fallback Connectivity module
+│   ├── adapters/         # Communication adapters (WiFi Mesh, 5G, Iridium)
+│   ├── services/         # Services for connection monitoring and fallback
+│   ├── utils/            # Utilities for configuration and state management
+│   ├── config/           # Configuration files
+│   ├── tests/            # Test files
+│   └── README.md         # Module documentation
 ├── counter_uas/          # Counter-UAS / Intrusion Detection module
 │   ├── hardware/         # Hardware interfaces for KerberosSDR and Acconeer radar
 │   ├── processing/       # Signal processing for direction finding and radar

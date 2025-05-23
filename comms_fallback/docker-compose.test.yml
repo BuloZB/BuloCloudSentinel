@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: comms-fallback-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - test-network
+
+  comms-fallback-tests:
+    build:
+      context: ..
+      dockerfile: comms_fallback/Dockerfile.test
+    container_name: comms-fallback-tests
+    depends_on:
+      - redis
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - LOG_LEVEL=DEBUG
+    volumes:
+      - ..:/app
+    networks:
+      - test-network
+    command: pytest -xvs comms_fallback/tests/
+
+networks:
+  test-network:
+    driver: bridge
