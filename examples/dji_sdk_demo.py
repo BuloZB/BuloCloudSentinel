@@ -26,6 +26,25 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from dronecore.adapter_factory import AdapterFactory
 
+
+def redact_sensitive_data(data):
+    """Redact sensitive data from logs."""
+    if isinstance(data, dict):
+        redacted = {}
+        for key, value in data.items():
+            if any(pattern in key.lower() for pattern in ["password", "token", "secret", "key", "auth", "credential"]):
+                redacted[key] = "***REDACTED***"
+            else:
+                redacted[key] = redact_sensitive_data(value)
+        return redacted
+    elif isinstance(data, list):
+        return [redact_sensitive_data(item) for item in data]
+    elif isinstance(data, str) and len(data) > 20:
+        # Potentially sensitive long string
+        if any(pattern in data.lower() for pattern in ["password", "token", "secret", "key", "auth", "credential"]):
+            return "***REDACTED***"
+    return data
+
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -670,6 +689,7 @@ async def main():
                 logger.info(f"Stop follow me mission command result: {result}")
 
         else:
+                    logger.info(redact_sensitive_data(f"  Drone position: lat={drone_lat}, lon={drone_lon}"))
             logger.error(f"Unknown command category: {args.category}")
 
     finally:

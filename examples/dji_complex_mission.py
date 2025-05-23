@@ -29,6 +29,25 @@ from typing import Dict, Any, List, Optional, Tuple
 from enum import Enum
 import traceback
 
+def redact_sensitive_data(data):
+    """Redact sensitive data from logs."""
+    if isinstance(data, dict):
+        redacted = {}
+        for key, value in data.items():
+            if any(pattern in key.lower() for pattern in ["password", "token", "secret", "key", "auth", "credential"]):
+                redacted[key] = "***REDACTED***"
+            else:
+                redacted[key] = redact_sensitive_data(value)
+        return redacted
+    elif isinstance(data, list):
+        return [redact_sensitive_data(item) for item in data]
+    elif isinstance(data, str) and len(data) > 20:
+        # Potentially sensitive long string
+        if any(pattern in data.lower() for pattern in ["password", "token", "secret", "key", "auth", "credential"]):
+            return "***REDACTED***"
+    return data
+
+
 # Add project root to path to ensure imports work
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
@@ -518,6 +537,7 @@ class ComplexMission:
         Args:
             target_lat: Target latitude
             target_lon: Target longitude
+                    logger.info(redact_sensitive_data(f"Staying at waypoint for {stay_time} seconds"))
             target_alt: Target altitude
             timeout: Maximum time to wait in seconds
 

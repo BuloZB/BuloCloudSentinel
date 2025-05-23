@@ -19,6 +19,25 @@ from dronecore.flight_controller_adapter import FlightControllerAdapter
 
 logger = logging.getLogger(__name__)
 
+
+def redact_sensitive_data(data):
+    """Redact sensitive data from logs."""
+    if isinstance(data, dict):
+        redacted = {}
+        for key, value in data.items():
+            if any(pattern in key.lower() for pattern in ["password", "token", "secret", "key", "auth", "credential"]):
+                redacted[key] = "***REDACTED***"
+            else:
+                redacted[key] = redact_sensitive_data(value)
+        return redacted
+    elif isinstance(data, list):
+        return [redact_sensitive_data(item) for item in data]
+    elif isinstance(data, str) and len(data) > 20:
+        # Potentially sensitive long string
+        if any(pattern in data.lower() for pattern in ["password", "token", "secret", "key", "auth", "credential"]):
+            return "***REDACTED***"
+    return data
+
 # DJI SDK Enums
 class FlightMode(Enum):
     """DJI flight modes."""
@@ -364,7 +383,7 @@ class DJIAdapter(FlightControllerAdapter):
                 # Simulate goto command
                 return True
             elif command_name == "return_to_home":
-                logger.info("Executing return to home command")
+                logger.info(redact_sensitive_data("Executing return to home command"))
                 # Simulate RTH command
                 return True
             elif command_name == "stop":
@@ -472,7 +491,7 @@ class DJIAdapter(FlightControllerAdapter):
                 return True
             elif command_name == "start_recording":
                 if not self.enable_camera:
-                    logger.error("Camera is not enabled in the adapter configuration")
+                    logger.error(redact_sensitive_data("Camera is not enabled in the adapter configuration"))
                     return False
                 logger.info("Starting video recording")
                 self._video_recording = True
@@ -480,7 +499,7 @@ class DJIAdapter(FlightControllerAdapter):
                 return True
             elif command_name == "stop_recording":
                 if not self.enable_camera:
-                    logger.error("Camera is not enabled in the adapter configuration")
+                    logger.error(redact_sensitive_data("Camera is not enabled in the adapter configuration"))
                     return False
                 logger.info("Stopping video recording")
                 self._video_recording = False
@@ -630,6 +649,7 @@ class DJIAdapter(FlightControllerAdapter):
     def register_telemetry_callback(self, callback):
         """
         Register a callback function to receive telemetry updates.
+                logger.warning(redact_sensitive_data(f"Unknown command: {command_name}"))
 
         Args:
             callback: Function to call with telemetry data.
