@@ -1,8 +1,7 @@
 fastapi==0.115.12  # Updated to latest version for security improvements  # Updated to latest version for security improvements  # Updated to latest version for security improvements  # Updated to latest version for security improvements  # Updated to latest version
 uvicorn[standard]==0.34.0
 pydantic==2.10.6
-python-multipart==0.0.18  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-539810  # Updated to latest version to fix CVE-2024-539810  # Updated to latest version to fix CVE-2024-53981
-python-socketio==5.13.0
+python-multipart==0.0.18  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-539810  # Updated to latest version to fix CVE-2024-539810  # Updated to latest version to fix CVE-2024-53981python-socketio==5.13.0
 # Removing python-jose due to vulnerabilities CVE-2024-33664 and CVE-2024-33663
 # # # # # # python-jose==3.4.0  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663
 # Using PyJWT instead (see line 91)
@@ -53,8 +52,7 @@ playwright==1.49.1 # Caution: version must match docker-compose.playwright.yaml
 elasticsearch==8.17.1
 
 
-transformers==4.50.0  # Pinned to fix vulnerability PVE-2025-74882sentence-transformers==3.3.1
-accelerate
+transformers==4.50.0  # Pinned to fix vulnerability PVE-2025-74882sentence-transformers==3.3.1accelerate
 colbert-ai==0.2.21
 einops==0.8.1
 

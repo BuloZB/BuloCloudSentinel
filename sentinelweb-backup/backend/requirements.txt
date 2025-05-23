@@ -8,8 +8,7 @@ httpx==0.27.0  # Updated from 0.24.0 for security
 # # # # # # python-jose==3.4.0  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663
 pyjwt==2.8.0  # Using a secure version that doesn't have CVE-2024-53861  # Downgraded to fix CVE-2024-53861
 passlib==1.7.4
-python-multipart==0.0.18  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-539810  # Updated to latest version to fix CVE-2024-539810  # Updated to latest version to fix CVE-2024-53981redis==5.0.3  # Updated from 4.5.4 for security
-websockets==12.0  # Updated from 11.0.3 for security
+python-multipart==0.0.18  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-539810  # Updated to latest version to fix CVE-2024-539810  # Updated to latest version to fix CVE-2024-53981redis==5.0.3  # Updated from 4.5.4 for securitywebsockets==12.0  # Updated from 11.0.3 for security
 python-dotenv==1.0.1  # Updated from 1.0.0 for security
 bcrypt==4.3.0  # Updated from 4.0.1 for security
 aiofiles==23.2.0  # Updated from 23.1.0 for security

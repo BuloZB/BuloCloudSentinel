@@ -1,8 +1,7 @@
 fastapi==0.115.12  # Updated to latest version for security improvements  # Updated to latest version for security improvements  # Updated to latest version for security improvements  # Updated to latest version for security improvements  # Updated to latest version
 uvicorn==0.34.0  # Pinned version for security
 pydantic==2.11.3  # Pinned version for security
-python-multipart==0.0.18  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-539810  # Updated to latest version to fix CVE-2024-539810  # Updated to latest version to fix CVE-2024-53981numpy>=1.24.0
-opencv-python>=4.7.0
+python-multipart==0.0.18  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-539810  # Updated to latest version to fix CVE-2024-539810  # Updated to latest version to fix CVE-2024-53981numpy>=1.24.0opencv-python>=4.7.0
 PyYAML>=6.0
 aiofiles>=23.1.0
 httpx>=0.24.0
@@ -15,7 +14,7 @@ matplotlib>=3.7.1
 prophet>=1.1.4
 xgboost>=1.7.5
 tensorflow>=2.12.0
-torch==2.5.2
+torch==2.6.1
 torchvision>=0.15.1
 onnxruntime>=1.14.1
 pytesseract>=0.3.10
