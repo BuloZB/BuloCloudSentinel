@@ -61,8 +61,6 @@
 		"@pyscript/core": "^0.6.46",
 		"@sveltejs/adapter-node": "^2.0.0",
 		"@sveltejs/svelte-virtual-list": "^3.0.1",
-		"@tiptap/extension-placeholder": "^2.11.9",
-		"@tiptap/extension-typography": "^2.10.0",
 		"@tiptap/pm": "^2.11.7",
 		"@tiptap/starter-kit": "^2.11.9",
 		"@xyflow/svelte": "^0.1.35",
