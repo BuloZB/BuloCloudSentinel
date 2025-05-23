@@ -64,7 +64,7 @@
 		"@tiptap/extension-placeholder": "^2.11.9",
 		"@tiptap/extension-typography": "^2.10.0",
 		"@tiptap/pm": "^2.11.7",
-		"@tiptap/starter-kit": "^2.10.0",
+		"@tiptap/starter-kit": "^2.11.9",
 		"@xyflow/svelte": "^0.1.35",
 		"async": "^3.2.5",
 		"bits-ui": "^0.22.0",
