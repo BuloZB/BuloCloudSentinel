@@ -779,7 +779,7 @@ class SecurityScanManager:
             logger.warning(f"Scan result not found: {scan_id}")
             return
         
-        with open(file_path, "w") as f:
+        with open(os.path.normpath(file_path, "w")) as f:
             f.write(result.to_json())
         
         logger.info(f"Saved scan result {scan_id} to {file_path}")
@@ -795,7 +795,7 @@ class SecurityScanManager:
             Scan result or None if file not found
         """
         try:
-            with open(file_path, "r") as f:
+            with open(os.path.normpath(file_path, "r")) as f:
                 result = SecurityScanResult.from_json(f.read())
             
             self.results[result.scan_id] = result

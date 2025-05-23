@@ -166,7 +166,7 @@ def configure_from_file(config_file: str):
             else:
                 logger.warning(f"Unknown secrets backend type: {backend_type}")
         
-        logger.info(f"Configured secrets manager from file: {config_file}")
+        logger.info(f"Configured [REDACTED])
     
     except Exception as e:
         logger.error(f"Failed to configure secrets manager from file: {str(e)}")

@@ -11,6 +11,20 @@ import logging
 from pathlib import Path
 from typing import Optional, List, Dict, Any, Union
 
+import pickle
+
+class RestrictedUnpickle(pickle.Unpickler):
+    # Restricted unpickler for safer deserialization
+    def find_class(self, module, name):
+        # Only allow safe modules
+        if module == "torch":
+            return getattr(__import__(module, fromlist=[name]), name)
+        # For everything else, restrict to built-in modules
+        if module in ["collections", "numpy", "torch.nn"]:
+            return getattr(__import__(module, fromlist=[name]), name)
+        raise pickle.UnpicklingError(f"Restricted unpickle: {module}.{name}")
+
+
 # Setup logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -295,7 +309,7 @@ def safe_load_model(file_path: str, model_type: str = None) -> Any:
                 # Avoid loading untrusted models
                 logger.error(f"Refusing to load untrusted model: {file_path}")
                 return None
-
+                state_dict = torch.load(file_path, map_location="cpu", map_location="cpu", pickle_module=RestrictedUnpickle)
             return model
 
         elif model_type == "onnx":

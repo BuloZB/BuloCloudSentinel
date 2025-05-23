@@ -101,7 +101,7 @@ class SecretRotator:
         """
         with self.rotation_lock:
             if key not in self.secret_configs:
-                logger.warning(f"Secret '{key}' not configured for rotation")
+                logger.warning(f"[REDACTED])
                 return False
             
             config = self.secret_configs[key]
@@ -124,7 +124,7 @@ class SecretRotator:
                 # Set new value
                 backend_index = config.get("backend_index", 0)
                 if not set_secret(key, new_value, backend_index):
-                    logger.error(f"Failed to set new value for secret '{key}'")
+                    logger.error(f"Failed to set new value for [REDACTED])
                     return False
                 
                 # Update last rotation time
@@ -136,13 +136,13 @@ class SecretRotator:
                     try:
                         notify_callback(key, new_value)
                     except Exception as e:
-                        logger.error(f"Error in notify callback for secret '{key}': {str(e)}")
+                        logger.error(f"Error in notify callback for [REDACTED])}")
                 
-                logger.info(f"Rotated secret '{key}'")
+                logger.info(f"Rotated [REDACTED])
                 return True
             
             except Exception as e:
-                logger.error(f"Error rotating secret '{key}': {str(e)}")
+                logger.error(f"Error rotating [REDACTED])}")
                 return False
     
     def rotate_all_secrets(self) -> Dict[str, bool]:

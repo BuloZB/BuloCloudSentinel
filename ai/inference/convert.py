@@ -24,6 +24,20 @@ from pathlib import Path
 from typing import Dict, Any, Optional, Union, List, Tuple
 import numpy as np
 
+import pickle
+
+class RestrictedUnpickle(pickle.Unpickler):
+    # Restricted unpickler for safer deserialization
+    def find_class(self, module, name):
+        # Only allow safe modules
+        if module == "torch":
+            return getattr(__import__(module, fromlist=[name]), name)
+        # For everything else, restrict to built-in modules
+        if module in ["collections", "numpy", "torch.nn"]:
+            return getattr(__import__(module, fromlist=[name]), name)
+        raise pickle.UnpicklingError(f"Restricted unpickle: {module}.{name}")
+
+
 # Setup logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -663,7 +677,7 @@ def print_model_info(model_path: str) -> None:
                 print(f"Number of parameters: {len(state_dict)}")
                 total_params = sum(p.numel() for p in model.parameters())
                 print(f"Total parameters: {total_params:,}")
-
+            model = torch.load(model_path, map_location="cpu", map_location="cpu", pickle_module=RestrictedUnpickle)
                 # Print model architecture if available
                 if hasattr(model, "__repr__"):
                     print("\nModel Architecture:")

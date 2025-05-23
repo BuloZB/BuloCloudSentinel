@@ -79,9 +79,9 @@ class ConfigManager:
                 # Merge secrets into configuration
                 self._merge_dict(self.config, secrets_config)
                 
-                logger.info(f"Loaded secrets from {self.secrets_path}")
+                logger.info(f"Loaded [REDACTED])
             else:
-                logger.warning(f"Secrets file {self.secrets_path} not found")
+                logger.warning(f"[REDACTED])
             
             # Load configuration from environment variables
             self._load_env_vars()
@@ -207,7 +207,7 @@ class ConfigManager:
             # Set secure permissions for secrets file
             os.chmod(self.secrets_path, 0o600)
             
-            logger.info(f"Saved configuration to {self.config_path} and {self.secrets_path}")
+            logger.info(f"Saved configuration to {self.config_path} and {self.[REDACTED])
         except Exception as e:
             logger.error(f"Error saving configuration: {str(e)}")
     

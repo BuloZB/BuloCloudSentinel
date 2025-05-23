@@ -1,0 +1,2514 @@
+{
+  "py/unsafe-deserialization": {
+    "count": 2,
+    "severity": "error",
+    "description": "Deserialization of user-controlled data",
+    "alerts": [
+      {
+        "number": 311,
+        "state": "open",
+        "created_at": "2025-05-23T16:00:56Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/311",
+        "location": {
+          "path": "ai/inference/security.py",
+          "start_line": 284,
+          "end_line": 284
+        }
+      },
+      {
+        "number": 301,
+        "state": "open",
+        "created_at": "2025-05-23T08:36:38Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/301",
+        "location": {
+          "path": "ai/inference/convert.py",
+          "start_line": 652,
+          "end_line": 652
+        }
+      }
+    ]
+  },
+  "py/stack-trace-exposure": {
+    "count": 31,
+    "severity": "error",
+    "description": "Information exposure through an exception",
+    "alerts": [
+      {
+        "number": 310,
+        "state": "open",
+        "created_at": "2025-05-23T11:46:31Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/310",
+        "location": {
+          "path": "mapping_service/api/endpoints.py",
+          "start_line": 223,
+          "end_line": 223
+        }
+      },
+      {
+        "number": 309,
+        "state": "open",
+        "created_at": "2025-05-23T11:46:31Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/309",
+        "location": {
+          "path": "mapping_service/api/endpoints.py",
+          "start_line": 61,
+          "end_line": 61
+        }
+      },
+      {
+        "number": 267,
+        "state": "open",
+        "created_at": "2025-05-17T23:35:10Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/267",
+        "location": {
+          "path": "web/dji_mission_planner.py",
+          "start_line": 476,
+          "end_line": 476
+        }
+      },
+      {
+        "number": 266,
+        "state": "open",
+        "created_at": "2025-05-17T23:35:10Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/266",
+        "location": {
+          "path": "web/dji_mission_planner.py",
+          "start_line": 308,
+          "end_line": 308
+        }
+      },
+      {
+        "number": 265,
+        "state": "open",
+        "created_at": "2025-05-17T23:35:10Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/265",
+        "location": {
+          "path": "web/dji_mission_planner.py",
+          "start_line": 293,
+          "end_line": 293
+        }
+      },
+      {
+        "number": 264,
+        "state": "open",
+        "created_at": "2025-05-17T23:35:10Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/264",
+        "location": {
+          "path": "web/dji_mission_planner.py",
+          "start_line": 271,
+          "end_line": 271
+        }
+      },
+      {
+        "number": 263,
+        "state": "open",
+        "created_at": "2025-05-17T23:35:10Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/263",
+        "location": {
+          "path": "web/dji_mission_planner.py",
+          "start_line": 249,
+          "end_line": 249
+        }
+      },
+      {
+        "number": 262,
+        "state": "open",
+        "created_at": "2025-05-17T23:35:10Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/262",
+        "location": {
+          "path": "web/dji_mission_planner.py",
+          "start_line": 210,
+          "end_line": 210
+        }
+      },
+      {
+        "number": 109,
+        "state": "open",
+        "created_at": "2025-04-30T09:10:00Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/109",
+        "location": {
+          "path": "temp-openwebui/backend/open_webui/routers/tasks.py",
+          "start_line": 701,
+          "end_line": 701
+        }
+      },
+      {
+        "number": 108,
+        "state": "open",
+        "created_at": "2025-04-30T09:10:00Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/108",
+        "location": {
+          "path": "temp-openwebui/backend/open_webui/routers/tasks.py",
+          "start_line": 697,
+          "end_line": 697
+        }
+      },
+      {
+        "number": 107,
+        "state": "open",
+        "created_at": "2025-04-30T09:10:00Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/107",
+        "location": {
+          "path": "temp-openwebui/backend/open_webui/routers/tasks.py",
+          "start_line": 646,
+          "end_line": 646
+        }
+      },
+      {
+        "number": 106,
+        "state": "open",
+        "created_at": "2025-04-30T09:10:00Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/106",
+        "location": {
+          "path": "temp-openwebui/backend/open_webui/routers/tasks.py",
+          "start_line": 642,
+          "end_line": 642
+        }
+      },
+      {
+        "number": 105,
+        "state": "open",
+        "created_at": "2025-04-30T09:10:00Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/105",
+        "location": {
+          "path": "temp-openwebui/backend/open_webui/routers/tasks.py",
+          "start_line": 566,
+          "end_line": 566
+        }
+      },
+      {
+        "number": 104,
+        "state": "open",
+        "created_at": "2025-04-30T09:10:00Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/104",
+        "location": {
+          "path": "temp-openwebui/backend/open_webui/routers/tasks.py",
+          "start_line": 483,
+          "end_line": 483
+        }
+      },
+      {
+        "number": 103,
+        "state": "open",
+        "created_at": "2025-04-30T09:10:00Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/103",
+        "location": {
+          "path": "temp-openwebui/backend/open_webui/routers/tasks.py",
+          "start_line": 479,
+          "end_line": 479
+        }
+      },
+      {
+        "number": 102,
+        "state": "open",
+        "created_at": "2025-04-30T09:10:00Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/102",
+        "location": {
+          "path": "temp-openwebui/backend/open_webui/routers/tasks.py",
+          "start_line": 396,
+          "end_line": 396
+        }
+      },
+      {
+        "number": 101,
+        "state": "open",
+        "created_at": "2025-04-30T09:10:00Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/101",
+        "location": {
+          "path": "temp-openwebui/backend/open_webui/routers/tasks.py",
+          "start_line": 324,
+          "end_line": 324
+        }
+      },
+      {
+        "number": 100,
+        "state": "open",
+        "created_at": "2025-04-30T09:10:00Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/100",
+        "location": {
+          "path": "temp-openwebui/backend/open_webui/routers/tasks.py",
+          "start_line": 249,
+          "end_line": 249
+        }
+      },
+      {
+        "number": 99,
+        "state": "open",
+        "created_at": "2025-04-30T09:10:00Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/99",
+        "location": {
+          "path": "temp-openwebui/backend/open_webui/routers/ollama.py",
+          "start_line": 1684,
+          "end_line": 1684
+        }
+      },
+      {
+        "number": 98,
+        "state": "open",
+        "created_at": "2025-04-30T09:10:00Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/98",
+        "location": {
+          "path": "temp-openwebui/backend/open_webui/main.py",
+          "start_line": 1164,
+          "end_line": 1166
+        }
+      },
+      {
+        "number": 47,
+        "state": "open",
+        "created_at": "2025-04-21T17:38:23Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/47",
+        "location": {
+          "path": "sentinelweb/backend/sentinel_web/routers/tasks.py",
+          "start_line": 701,
+          "end_line": 701
+        }
+      },
+      {
+        "number": 46,
+        "state": "open",
+        "created_at": "2025-04-21T17:38:23Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/46",
+        "location": {
+          "path": "sentinelweb/backend/sentinel_web/routers/tasks.py",
+          "start_line": 697,
+          "end_line": 697
+        }
+      },
+      {
+        "number": 45,
+        "state": "open",
+        "created_at": "2025-04-21T17:38:23Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/45",
+        "location": {
+          "path": "sentinelweb/backend/sentinel_web/routers/tasks.py",
+          "start_line": 646,
+          "end_line": 646
+        }
+      },
+      {
+        "number": 44,
+        "state": "open",
+        "created_at": "2025-04-21T17:38:23Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/44",
+        "location": {
+          "path": "sentinelweb/backend/sentinel_web/routers/tasks.py",
+          "start_line": 642,
+          "end_line": 642
+        }
+      },
+      {
+        "number": 43,
+        "state": "open",
+        "created_at": "2025-04-21T17:38:23Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/43",
+        "location": {
+          "path": "sentinelweb/backend/sentinel_web/routers/tasks.py",
+          "start_line": 566,
+          "end_line": 566
+        }
+      },
+      {
+        "number": 42,
+        "state": "open",
+        "created_at": "2025-04-21T17:38:23Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/42",
+        "location": {
+          "path": "sentinelweb/backend/sentinel_web/routers/tasks.py",
+          "start_line": 483,
+          "end_line": 483
+        }
+      },
+      {
+        "number": 41,
+        "state": "open",
+        "created_at": "2025-04-21T17:38:23Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/41",
+        "location": {
+          "path": "sentinelweb/backend/sentinel_web/routers/tasks.py",
+          "start_line": 479,
+          "end_line": 479
+        }
+      },
+      {
+        "number": 40,
+        "state": "open",
+        "created_at": "2025-04-21T17:38:23Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/40",
+        "location": {
+          "path": "sentinelweb/backend/sentinel_web/routers/tasks.py",
+          "start_line": 396,
+          "end_line": 396
+        }
+      },
+      {
+        "number": 39,
+        "state": "open",
+        "created_at": "2025-04-21T17:38:23Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/39",
+        "location": {
+          "path": "sentinelweb/backend/sentinel_web/routers/tasks.py",
+          "start_line": 324,
+          "end_line": 324
+        }
+      },
+      {
+        "number": 38,
+        "state": "open",
+        "created_at": "2025-04-21T17:38:23Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/38",
+        "location": {
+          "path": "sentinelweb/backend/sentinel_web/routers/tasks.py",
+          "start_line": 249,
+          "end_line": 249
+        }
+      },
+      {
+        "number": 37,
+        "state": "open",
+        "created_at": "2025-04-21T17:38:23Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/37",
+        "location": {
+          "path": "sentinelweb/backend/sentinel_web/routers/ollama.py",
+          "start_line": 1700,
+          "end_line": 1700
+        }
+      }
+    ]
+  },
+  "py/full-ssrf": {
+    "count": 4,
+    "severity": "error",
+    "description": "Full server-side request forgery",
+    "alerts": [
+      {
+        "number": 308,
+        "state": "open",
+        "created_at": "2025-05-23T11:19:13Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/308",
+        "location": {
+          "path": "temp-openwebui/backend/open_webui/routers/auths.py",
+          "start_line": 578,
+          "end_line": 578
+        }
+      },
+      {
+        "number": 120,
+        "state": "open",
+        "created_at": "2025-04-30T09:10:00Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/120",
+        "location": {
+          "path": "temp-openwebui/backend/open_webui/routers/ollama.py",
+          "start_line": 1513,
+          "end_line": 1513
+        }
+      },
+      {
+        "number": 59,
+        "state": "open",
+        "created_at": "2025-04-21T17:38:23Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/59",
+        "location": {
+          "path": "sentinelweb/backend/sentinel_web/routers/ollama.py",
+          "start_line": 1537,
+          "end_line": 1537
+        }
+      },
+      {
+        "number": 58,
+        "state": "open",
+        "created_at": "2025-04-21T17:38:23Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/58",
+        "location": {
+          "path": "sentinelweb/backend/sentinel_web/routers/auths.py",
+          "start_line": 563,
+          "end_line": 563
+        }
+      }
+    ]
+  },
+  "actions/missing-workflow-permissions": {
+    "count": 30,
+    "severity": "warning",
+    "description": "Workflow does not contain permissions",
+    "alerts": [
+      {
+        "number": 307,
+        "state": "open",
+        "created_at": "2025-05-23T11:10:52Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/307",
+        "location": {
+          "path": ".github/workflows/remoteid-service.yml",
+          "start_line": 137,
+          "end_line": 142
+        }
+      },
+      {
+        "number": 306,
+        "state": "open",
+        "created_at": "2025-05-23T11:10:52Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/306",
+        "location": {
+          "path": ".github/workflows/remoteid-service.yml",
+          "start_line": 124,
+          "end_line": 136
+        }
+      },
+      {
+        "number": 305,
+        "state": "open",
+        "created_at": "2025-05-23T11:10:52Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/305",
+        "location": {
+          "path": ".github/workflows/remoteid-service.yml",
+          "start_line": 107,
+          "end_line": 123
+        }
+      },
+      {
+        "number": 304,
+        "state": "open",
+        "created_at": "2025-05-23T11:10:52Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/304",
+        "location": {
+          "path": ".github/workflows/remoteid-service.yml",
+          "start_line": 61,
+          "end_line": 106
+        }
+      },
+      {
+        "number": 303,
+        "state": "open",
+        "created_at": "2025-05-23T11:10:52Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/303",
+        "location": {
+          "path": ".github/workflows/remoteid-service.yml",
+          "start_line": 40,
+          "end_line": 60
+        }
+      },
+      {
+        "number": 302,
+        "state": "open",
+        "created_at": "2025-05-23T11:10:52Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/302",
+        "location": {
+          "path": ".github/workflows/remoteid-service.yml",
+          "start_line": 13,
+          "end_line": 39
+        }
+      },
+      {
+        "number": 300,
+        "state": "open",
+        "created_at": "2025-05-22T13:10:32Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/300",
+        "location": {
+          "path": ".github/workflows/security-review.yml",
+          "start_line": 110,
+          "end_line": 141
+        }
+      },
+      {
+        "number": 299,
+        "state": "open",
+        "created_at": "2025-05-22T13:10:32Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/299",
+        "location": {
+          "path": ".github/workflows/security-review.yml",
+          "start_line": 75,
+          "end_line": 109
+        }
+      },
+      {
+        "number": 298,
+        "state": "open",
+        "created_at": "2025-05-22T13:10:32Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/298",
+        "location": {
+          "path": ".github/workflows/dependency-update.yml",
+          "start_line": 8,
+          "end_line": 135
+        }
+      },
+      {
+        "number": 252,
+        "state": "open",
+        "created_at": "2025-05-17T23:34:32Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/252",
+        "location": {
+          "path": ".github/workflows/safety.yml",
+          "start_line": 13,
+          "end_line": 57
+        }
+      },
+      {
+        "number": 251,
+        "state": "open",
+        "created_at": "2025-05-17T23:34:32Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/251",
+        "location": {
+          "path": ".github/workflows/run-all-workflows.yml",
+          "start_line": 10,
+          "end_line": 89
+        }
+      },
+      {
+        "number": 250,
+        "state": "open",
+        "created_at": "2025-05-17T23:34:32Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/250",
+        "location": {
+          "path": ".github/workflows/ci.yml",
+          "start_line": 302,
+          "end_line": 340
+        }
+      },
+      {
+        "number": 249,
+        "state": "open",
+        "created_at": "2025-05-17T23:34:32Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/249",
+        "location": {
+          "path": ".github/workflows/ci.yml",
+          "start_line": 261,
+          "end_line": 301
+        }
+      },
+      {
+        "number": 248,
+        "state": "open",
+        "created_at": "2025-05-17T23:34:32Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/248",
+        "location": {
+          "path": ".github/workflows/always-succeed.yml",
+          "start_line": 165,
+          "end_line": 172
+        }
+      },
+      {
+        "number": 247,
+        "state": "open",
+        "created_at": "2025-05-17T23:34:32Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/247",
+        "location": {
+          "path": ".github/workflows/always-succeed.yml",
+          "start_line": 148,
+          "end_line": 164
+        }
+      },
+      {
+        "number": 246,
+        "state": "open",
+        "created_at": "2025-05-17T23:34:32Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/246",
+        "location": {
+          "path": ".github/workflows/always-succeed.yml",
+          "start_line": 115,
+          "end_line": 147
+        }
+      },
+      {
+        "number": 245,
+        "state": "open",
+        "created_at": "2025-05-17T23:34:32Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/245",
+        "location": {
+          "path": ".github/workflows/ci.yml",
+          "start_line": 80,
+          "end_line": 172
+        }
+      },
+      {
+        "number": 244,
+        "state": "open",
+        "created_at": "2025-05-17T23:34:32Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/244",
+        "location": {
+          "path": ".github/workflows/always-succeed.yml",
+          "start_line": 82,
+          "end_line": 114
+        }
+      },
+      {
+        "number": 243,
+        "state": "open",
+        "created_at": "2025-05-17T23:34:32Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/243",
+        "location": {
+          "path": ".github/workflows/always-succeed.yml",
+          "start_line": 47,
+          "end_line": 81
+        }
+      },
+      {
+        "number": 242,
+        "state": "open",
+        "created_at": "2025-05-17T23:34:32Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/242",
+        "location": {
+          "path": ".github/workflows/ci.yml",
+          "start_line": 15,
+          "end_line": 79
+        }
+      },
+      {
+        "number": 241,
+        "state": "open",
+        "created_at": "2025-05-17T23:34:32Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/241",
+        "location": {
+          "path": ".github/workflows/always-succeed.yml",
+          "start_line": 14,
+          "end_line": 46
+        }
+      },
+      {
+        "number": 228,
+        "state": "open",
+        "created_at": "2025-05-09T11:20:05Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/228",
+        "location": {
+          "path": ".github/workflows/security-review.yml",
+          "start_line": 42,
+          "end_line": 74
+        }
+      },
+      {
+        "number": 227,
+        "state": "open",
+        "created_at": "2025-05-09T11:20:05Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/227",
+        "location": {
+          "path": ".github/workflows/security-review.yml",
+          "start_line": 9,
+          "end_line": 41
+        }
+      },
+      {
+        "number": 193,
+        "state": "open",
+        "created_at": "2025-05-08T20:01:03Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/193",
+        "location": {
+          "path": ".github/workflows/edge-kit-build.yml",
+          "start_line": 127,
+          "end_line": 184
+        }
+      },
+      {
+        "number": 192,
+        "state": "open",
+        "created_at": "2025-05-08T20:01:03Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/192",
+        "location": {
+          "path": ".github/workflows/edge-kit-build.yml",
+          "start_line": 92,
+          "end_line": 126
+        }
+      },
+      {
+        "number": 191,
+        "state": "open",
+        "created_at": "2025-05-08T20:01:03Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/191",
+        "location": {
+          "path": ".github/workflows/edge-kit-build.yml",
+          "start_line": 57,
+          "end_line": 91
+        }
+      },
+      {
+        "number": 190,
+        "state": "open",
+        "created_at": "2025-05-08T20:01:03Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/190",
+        "location": {
+          "path": ".github/workflows/edge-kit-build.yml",
+          "start_line": 19,
+          "end_line": 56
+        }
+      },
+      {
+        "number": 189,
+        "state": "open",
+        "created_at": "2025-05-08T19:44:01Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/189",
+        "location": {
+          "path": ".github/workflows/sim.yml",
+          "start_line": 20,
+          "end_line": 96
+        }
+      },
+      {
+        "number": 36,
+        "state": "open",
+        "created_at": "2025-04-21T17:38:08Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/36",
+        "location": {
+          "path": ".github/workflows/sentinel.yml",
+          "start_line": 13,
+          "end_line": 42
+        }
+      },
+      {
+        "number": 12,
+        "state": "open",
+        "created_at": "2025-04-21T17:38:08Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/12",
+        "location": {
+          "path": ".github/workflows/ci.yml",
+          "start_line": 173,
+          "end_line": 260
+        }
+      }
+    ]
+  },
+  "py/clear-text-logging-sensitive-data": {
+    "count": 62,
+    "severity": "error",
+    "description": "Clear-text logging of sensitive information",
+    "alerts": [
+      {
+        "number": 297,
+        "state": "open",
+        "created_at": "2025-05-17T23:35:10Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/297",
+        "location": {
+          "path": "dronecore/dji_dock_integration.py",
+          "start_line": 676,
+          "end_line": 676
+        }
+      },
+      {
+        "number": 296,
+        "state": "open",
+        "created_at": "2025-05-17T23:35:10Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/296",
+        "location": {
+          "path": "examples/dji_sdk_demo.py",
+          "start_line": 655,
+          "end_line": 655
+        }
+      },
+      {
+        "number": 295,
+        "state": "open",
+        "created_at": "2025-05-17T23:35:10Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/295",
+        "location": {
+          "path": "examples/dji_sdk_demo.py",
+          "start_line": 641,
+          "end_line": 641
+        }
+      },
+      {
+        "number": 293,
+        "state": "open",
+        "created_at": "2025-05-17T23:35:10Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/293",
+        "location": {
+          "path": "examples/dji_sdk_demo.py",
+          "start_line": 574,
+          "end_line": 574
+        }
+      },
+      {
+        "number": 292,
+        "state": "open",
+        "created_at": "2025-05-17T23:35:10Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/292",
+        "location": {
+          "path": "examples/dji_sdk_demo.py",
+          "start_line": 261,
+          "end_line": 261
+        }
+      },
+      {
+        "number": 291,
+        "state": "open",
+        "created_at": "2025-05-17T23:35:10Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/291",
+        "location": {
+          "path": "examples/dji_sdk_demo.py",
+          "start_line": 241,
+          "end_line": 241
+        }
+      },
+      {
+        "number": 290,
+        "state": "open",
+        "created_at": "2025-05-17T23:35:10Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/290",
+        "location": {
+          "path": "examples/dji_sdk_demo.py",
+          "start_line": 175,
+          "end_line": 175
+        }
+      },
+      {
+        "number": 289,
+        "state": "open",
+        "created_at": "2025-05-17T23:35:10Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/289",
+        "location": {
+          "path": "dronecore/dji_adapter.py",
+          "start_line": 615,
+          "end_line": 615
+        }
+      },
+      {
+        "number": 288,
+        "state": "open",
+        "created_at": "2025-05-17T23:35:10Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/288",
+        "location": {
+          "path": "dronecore/dji_adapter.py",
+          "start_line": 590,
+          "end_line": 590
+        }
+      },
+      {
+        "number": 287,
+        "state": "open",
+        "created_at": "2025-05-17T23:35:10Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/287",
+        "location": {
+          "path": "dronecore/dji_adapter.py",
+          "start_line": 568,
+          "end_line": 568
+        }
+      },
+      {
+        "number": 286,
+        "state": "open",
+        "created_at": "2025-05-17T23:35:10Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/286",
+        "location": {
+          "path": "dronecore/dji_adapter.py",
+          "start_line": 551,
+          "end_line": 551
+        }
+      },
+      {
+        "number": 285,
+        "state": "open",
+        "created_at": "2025-05-17T23:35:10Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/285",
+        "location": {
+          "path": "dronecore/dji_adapter.py",
+          "start_line": 502,
+          "end_line": 502
+        }
+      },
+      {
+        "number": 284,
+        "state": "open",
+        "created_at": "2025-05-17T23:35:10Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/284",
+        "location": {
+          "path": "dronecore/dji_adapter.py",
+          "start_line": 494,
+          "end_line": 494
+        }
+      },
+      {
+        "number": 283,
+        "state": "open",
+        "created_at": "2025-05-17T23:35:10Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/283",
+        "location": {
+          "path": "dronecore/dji_adapter.py",
+          "start_line": 463,
+          "end_line": 463
+        }
+      },
+      {
+        "number": 282,
+        "state": "open",
+        "created_at": "2025-05-17T23:35:10Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/282",
+        "location": {
+          "path": "dronecore/dji_adapter.py",
+          "start_line": 446,
+          "end_line": 446
+        }
+      },
+      {
+        "number": 281,
+        "state": "open",
+        "created_at": "2025-05-17T23:35:10Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/281",
+        "location": {
+          "path": "dronecore/dji_adapter.py",
+          "start_line": 435,
+          "end_line": 435
+        }
+      },
+      {
+        "number": 280,
+        "state": "open",
+        "created_at": "2025-05-17T23:35:10Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/280",
+        "location": {
+          "path": "dronecore/dji_adapter.py",
+          "start_line": 425,
+          "end_line": 425
+        }
+      },
+      {
+        "number": 278,
+        "state": "open",
+        "created_at": "2025-05-17T23:35:10Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/278",
+        "location": {
+          "path": "dronecore/dji_adapter.py",
+          "start_line": 396,
+          "end_line": 396
+        }
+      },
+      {
+        "number": 277,
+        "state": "open",
+        "created_at": "2025-05-17T23:35:10Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/277",
+        "location": {
+          "path": "dronecore/dji_adapter.py",
+          "start_line": 391,
+          "end_line": 391
+        }
+      },
+      {
+        "number": 276,
+        "state": "open",
+        "created_at": "2025-05-17T23:35:10Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/276",
+        "location": {
+          "path": "dronecore/dji_adapter.py",
+          "start_line": 386,
+          "end_line": 386
+        }
+      },
+      {
+        "number": 275,
+        "state": "open",
+        "created_at": "2025-05-17T23:35:10Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/275",
+        "location": {
+          "path": "dronecore/dji_adapter.py",
+          "start_line": 381,
+          "end_line": 381
+        }
+      },
+      {
+        "number": 274,
+        "state": "open",
+        "created_at": "2025-05-17T23:35:10Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/274",
+        "location": {
+          "path": "dronecore/dji_adapter.py",
+          "start_line": 376,
+          "end_line": 376
+        }
+      },
+      {
+        "number": 273,
+        "state": "open",
+        "created_at": "2025-05-17T23:35:10Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/273",
+        "location": {
+          "path": "dronecore/dji_adapter.py",
+          "start_line": 363,
+          "end_line": 363
+        }
+      },
+      {
+        "number": 272,
+        "state": "open",
+        "created_at": "2025-05-17T23:35:10Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/272",
+        "location": {
+          "path": "dronecore/dji_adapter.py",
+          "start_line": 347,
+          "end_line": 347
+        }
+      },
+      {
+        "number": 271,
+        "state": "open",
+        "created_at": "2025-05-17T23:35:10Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/271",
+        "location": {
+          "path": "examples/dji_complex_mission.py",
+          "start_line": 503,
+          "end_line": 503
+        }
+      },
+      {
+        "number": 270,
+        "state": "open",
+        "created_at": "2025-05-17T23:35:10Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/270",
+        "location": {
+          "path": "examples/dji_complex_mission.py",
+          "start_line": 299,
+          "end_line": 299
+        }
+      },
+      {
+        "number": 269,
+        "state": "open",
+        "created_at": "2025-05-17T23:35:10Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/269",
+        "location": {
+          "path": "examples/dji_complex_mission.py",
+          "start_line": 252,
+          "end_line": 252
+        }
+      },
+      {
+        "number": 239,
+        "state": "open",
+        "created_at": "2025-05-13T09:32:48Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/239",
+        "location": {
+          "path": "weather_guard/weather_guard/services/weather.py",
+          "start_line": 251,
+          "end_line": 251
+        }
+      },
+      {
+        "number": 238,
+        "state": "open",
+        "created_at": "2025-05-13T09:32:48Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/238",
+        "location": {
+          "path": "weather_guard/weather_guard/services/weather.py",
+          "start_line": 251,
+          "end_line": 251
+        }
+      },
+      {
+        "number": 237,
+        "state": "open",
+        "created_at": "2025-05-13T09:32:48Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/237",
+        "location": {
+          "path": "weather_guard/weather_guard/services/weather.py",
+          "start_line": 168,
+          "end_line": 168
+        }
+      },
+      {
+        "number": 236,
+        "state": "open",
+        "created_at": "2025-05-13T09:32:48Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/236",
+        "location": {
+          "path": "weather_guard/weather_guard/services/weather.py",
+          "start_line": 168,
+          "end_line": 168
+        }
+      },
+      {
+        "number": 235,
+        "state": "open",
+        "created_at": "2025-05-13T09:32:48Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/235",
+        "location": {
+          "path": "weather_guard/weather_guard/services/weather.py",
+          "start_line": 108,
+          "end_line": 108
+        }
+      },
+      {
+        "number": 234,
+        "state": "open",
+        "created_at": "2025-05-13T09:32:48Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/234",
+        "location": {
+          "path": "weather_guard/weather_guard/services/weather.py",
+          "start_line": 107,
+          "end_line": 107
+        }
+      },
+      {
+        "number": 223,
+        "state": "open",
+        "created_at": "2025-05-09T11:11:09Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/223",
+        "location": {
+          "path": "scripts/monitor_security_reports.py",
+          "start_line": 183,
+          "end_line": 183
+        }
+      },
+      {
+        "number": 222,
+        "state": "open",
+        "created_at": "2025-05-09T11:11:09Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/222",
+        "location": {
+          "path": "scripts/monitor_security_reports.py",
+          "start_line": 146,
+          "end_line": 146
+        }
+      },
+      {
+        "number": 221,
+        "state": "open",
+        "created_at": "2025-05-09T11:11:09Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/221",
+        "location": {
+          "path": "scripts/monitor_security_reports.py",
+          "start_line": 133,
+          "end_line": 133
+        }
+      },
+      {
+        "number": 220,
+        "state": "open",
+        "created_at": "2025-05-09T11:11:09Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/220",
+        "location": {
+          "path": "scripts/monitor_security_reports.py",
+          "start_line": 127,
+          "end_line": 127
+        }
+      },
+      {
+        "number": 219,
+        "state": "open",
+        "created_at": "2025-05-09T11:11:09Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/219",
+        "location": {
+          "path": "scripts/monitor_security_reports.py",
+          "start_line": 114,
+          "end_line": 114
+        }
+      },
+      {
+        "number": 218,
+        "state": "open",
+        "created_at": "2025-05-09T11:11:09Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/218",
+        "location": {
+          "path": "scripts/monitor_security_reports.py",
+          "start_line": 108,
+          "end_line": 108
+        }
+      },
+      {
+        "number": 217,
+        "state": "open",
+        "created_at": "2025-05-09T11:11:09Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/217",
+        "location": {
+          "path": "scripts/monitor_security_reports.py",
+          "start_line": 95,
+          "end_line": 95
+        }
+      },
+      {
+        "number": 216,
+        "state": "open",
+        "created_at": "2025-05-09T11:11:09Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/216",
+        "location": {
+          "path": "scripts/monitor_security_reports.py",
+          "start_line": 89,
+          "end_line": 89
+        }
+      },
+      {
+        "number": 215,
+        "state": "open",
+        "created_at": "2025-05-09T10:17:53Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/215",
+        "location": {
+          "path": "weather_guard/examples/weather_guard_demo.py",
+          "start_line": 47,
+          "end_line": 47
+        }
+      },
+      {
+        "number": 214,
+        "state": "open",
+        "created_at": "2025-05-09T10:17:53Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/214",
+        "location": {
+          "path": "weather_guard/examples/weather_guard_demo.py",
+          "start_line": 38,
+          "end_line": 38
+        }
+      },
+      {
+        "number": 183,
+        "state": "open",
+        "created_at": "2025-05-02T17:12:33Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/183",
+        "location": {
+          "path": "ai/inference/config.py",
+          "start_line": 210,
+          "end_line": 210
+        }
+      },
+      {
+        "number": 182,
+        "state": "open",
+        "created_at": "2025-05-02T17:12:33Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/182",
+        "location": {
+          "path": "ai/inference/config.py",
+          "start_line": 84,
+          "end_line": 84
+        }
+      },
+      {
+        "number": 181,
+        "state": "open",
+        "created_at": "2025-05-02T17:12:33Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/181",
+        "location": {
+          "path": "ai/inference/config.py",
+          "start_line": 82,
+          "end_line": 82
+        }
+      },
+      {
+        "number": 122,
+        "state": "open",
+        "created_at": "2025-04-30T09:10:00Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/122",
+        "location": {
+          "path": "temp-openwebui/backend/open_webui/models/auths.py",
+          "start_line": 159,
+          "end_line": 159
+        }
+      },
+      {
+        "number": 95,
+        "state": "open",
+        "created_at": "2025-04-27T15:38:07Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/95",
+        "location": {
+          "path": "security/secrets/secrets_manager.py",
+          "start_line": 645,
+          "end_line": 645
+        }
+      },
+      {
+        "number": 94,
+        "state": "open",
+        "created_at": "2025-04-27T15:38:07Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/94",
+        "location": {
+          "path": "security/secrets/secrets_manager.py",
+          "start_line": 628,
+          "end_line": 628
+        }
+      },
+      {
+        "number": 93,
+        "state": "open",
+        "created_at": "2025-04-27T15:38:07Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/93",
+        "location": {
+          "path": "security/secrets/secrets_manager.py",
+          "start_line": 386,
+          "end_line": 386
+        }
+      },
+      {
+        "number": 92,
+        "state": "open",
+        "created_at": "2025-04-27T15:38:07Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/92",
+        "location": {
+          "path": "security/secrets/secrets_manager.py",
+          "start_line": 100,
+          "end_line": 100
+        }
+      },
+      {
+        "number": 91,
+        "state": "open",
+        "created_at": "2025-04-27T15:38:07Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/91",
+        "location": {
+          "path": "security/secrets/rotation.py",
+          "start_line": 145,
+          "end_line": 145
+        }
+      },
+      {
+        "number": 90,
+        "state": "open",
+        "created_at": "2025-04-27T15:38:07Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/90",
+        "location": {
+          "path": "security/secrets/rotation.py",
+          "start_line": 141,
+          "end_line": 141
+        }
+      },
+      {
+        "number": 89,
+        "state": "open",
+        "created_at": "2025-04-27T15:38:07Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/89",
+        "location": {
+          "path": "security/secrets/rotation.py",
+          "start_line": 139,
+          "end_line": 139
+        }
+      },
+      {
+        "number": 88,
+        "state": "open",
+        "created_at": "2025-04-27T15:38:07Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/88",
+        "location": {
+          "path": "security/secrets/rotation.py",
+          "start_line": 127,
+          "end_line": 127
+        }
+      },
+      {
+        "number": 87,
+        "state": "open",
+        "created_at": "2025-04-27T15:38:07Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/87",
+        "location": {
+          "path": "security/secrets/rotation.py",
+          "start_line": 104,
+          "end_line": 104
+        }
+      },
+      {
+        "number": 86,
+        "state": "open",
+        "created_at": "2025-04-27T15:38:07Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/86",
+        "location": {
+          "path": "security/secrets/config.py",
+          "start_line": 169,
+          "end_line": 169
+        }
+      },
+      {
+        "number": 85,
+        "state": "open",
+        "created_at": "2025-04-27T15:38:07Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/85",
+        "location": {
+          "path": "security/secrets/config.py",
+          "start_line": 58,
+          "end_line": 58
+        }
+      },
+      {
+        "number": 76,
+        "state": "open",
+        "created_at": "2025-04-22T19:59:40Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/76",
+        "location": {
+          "path": "tactical_capabilities/sentinel_beacon/services/mesh_manager.py",
+          "start_line": 290,
+          "end_line": 290
+        }
+      },
+      {
+        "number": 75,
+        "state": "open",
+        "created_at": "2025-04-22T19:59:40Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/75",
+        "location": {
+          "path": "tactical_capabilities/sentinel_beacon/services/drone_interface.py",
+          "start_line": 293,
+          "end_line": 293
+        }
+      },
+      {
+        "number": 74,
+        "state": "open",
+        "created_at": "2025-04-22T19:59:40Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/74",
+        "location": {
+          "path": "tactical_capabilities/sentinel_beacon/services/drone_interface.py",
+          "start_line": 271,
+          "end_line": 271
+        }
+      },
+      {
+        "number": 61,
+        "state": "open",
+        "created_at": "2025-04-21T17:38:23Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/61",
+        "location": {
+          "path": "sentinelweb/backend/sentinel_web/models/auths.py",
+          "start_line": 166,
+          "end_line": 166
+        }
+      }
+    ]
+  },
+  "py/flask-debug": {
+    "count": 1,
+    "severity": "error",
+    "description": "Flask app is run in debug mode",
+    "alerts": [
+      {
+        "number": 268,
+        "state": "open",
+        "created_at": "2025-05-17T23:35:10Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/268",
+        "location": {
+          "path": "web/run_mission_planner.py",
+          "start_line": 22,
+          "end_line": 22
+        }
+      }
+    ]
+  },
+  "py/path-injection": {
+    "count": 38,
+    "severity": "error",
+    "description": "Uncontrolled data used in path expression",
+    "alerts": [
+      {
+        "number": 261,
+        "state": "open",
+        "created_at": "2025-05-17T23:35:10Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/261",
+        "location": {
+          "path": "web/dji_mission_planner.py",
+          "start_line": 323,
+          "end_line": 323
+        }
+      },
+      {
+        "number": 260,
+        "state": "open",
+        "created_at": "2025-05-17T23:35:10Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/260",
+        "location": {
+          "path": "web/dji_mission_planner.py",
+          "start_line": 304,
+          "end_line": 304
+        }
+      },
+      {
+        "number": 259,
+        "state": "open",
+        "created_at": "2025-05-17T23:35:10Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/259",
+        "location": {
+          "path": "web/dji_mission_planner.py",
+          "start_line": 300,
+          "end_line": 300
+        }
+      },
+      {
+        "number": 258,
+        "state": "open",
+        "created_at": "2025-05-17T23:35:10Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/258",
+        "location": {
+          "path": "web/dji_mission_planner.py",
+          "start_line": 287,
+          "end_line": 287
+        }
+      },
+      {
+        "number": 257,
+        "state": "open",
+        "created_at": "2025-05-17T23:35:10Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/257",
+        "location": {
+          "path": "web/dji_mission_planner.py",
+          "start_line": 278,
+          "end_line": 278
+        }
+      },
+      {
+        "number": 256,
+        "state": "open",
+        "created_at": "2025-05-17T23:35:10Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/256",
+        "location": {
+          "path": "web/dji_mission_planner.py",
+          "start_line": 265,
+          "end_line": 265
+        }
+      },
+      {
+        "number": 255,
+        "state": "open",
+        "created_at": "2025-05-17T23:35:10Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/255",
+        "location": {
+          "path": "web/dji_mission_planner.py",
+          "start_line": 244,
+          "end_line": 244
+        }
+      },
+      {
+        "number": 254,
+        "state": "open",
+        "created_at": "2025-05-17T23:35:10Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/254",
+        "location": {
+          "path": "web/dji_mission_planner.py",
+          "start_line": 240,
+          "end_line": 240
+        }
+      },
+      {
+        "number": 210,
+        "state": "open",
+        "created_at": "2025-05-09T09:10:09Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/210",
+        "location": {
+          "path": "federated_learning/server/server.py",
+          "start_line": 332,
+          "end_line": 332
+        }
+      },
+      {
+        "number": 209,
+        "state": "open",
+        "created_at": "2025-05-09T09:10:09Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/209",
+        "location": {
+          "path": "federated_learning/server/server.py",
+          "start_line": 331,
+          "end_line": 331
+        }
+      },
+      {
+        "number": 196,
+        "state": "open",
+        "created_at": "2025-05-08T20:02:25Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/196",
+        "location": {
+          "path": "edge_kit/rtsp_relay/src/stream_manager.py",
+          "start_line": 331,
+          "end_line": 331
+        }
+      },
+      {
+        "number": 195,
+        "state": "open",
+        "created_at": "2025-05-08T20:02:25Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/195",
+        "location": {
+          "path": "edge_kit/rtsp_relay/src/stream_manager.py",
+          "start_line": 224,
+          "end_line": 224
+        }
+      },
+      {
+        "number": 194,
+        "state": "open",
+        "created_at": "2025-05-08T20:02:25Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/194",
+        "location": {
+          "path": "edge_kit/rtsp_relay/src/server.py",
+          "start_line": 161,
+          "end_line": 161
+        }
+      },
+      {
+        "number": 177,
+        "state": "open",
+        "created_at": "2025-05-02T17:12:33Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/177",
+        "location": {
+          "path": "ai/inference/web_converter.py",
+          "start_line": 126,
+          "end_line": 126
+        }
+      },
+      {
+        "number": 176,
+        "state": "open",
+        "created_at": "2025-05-02T17:12:33Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/176",
+        "location": {
+          "path": "ai/inference/web_converter.py",
+          "start_line": 191,
+          "end_line": 191
+        }
+      },
+      {
+        "number": 175,
+        "state": "open",
+        "created_at": "2025-05-02T17:12:33Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/175",
+        "location": {
+          "path": "ai/inference/web_converter.py",
+          "start_line": 169,
+          "end_line": 169
+        }
+      },
+      {
+        "number": 174,
+        "state": "open",
+        "created_at": "2025-05-02T17:12:33Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/174",
+        "location": {
+          "path": "ai/inference/security.py",
+          "start_line": 60,
+          "end_line": 60
+        }
+      },
+      {
+        "number": 173,
+        "state": "open",
+        "created_at": "2025-05-02T17:12:33Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/173",
+        "location": {
+          "path": "ai/inference/security.py",
+          "start_line": 55,
+          "end_line": 55
+        }
+      },
+      {
+        "number": 172,
+        "state": "open",
+        "created_at": "2025-05-02T17:12:33Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/172",
+        "location": {
+          "path": "ai/inference/model_manager.py",
+          "start_line": 741,
+          "end_line": 741
+        }
+      },
+      {
+        "number": 171,
+        "state": "open",
+        "created_at": "2025-05-02T17:12:33Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/171",
+        "location": {
+          "path": "ai/inference/model_manager.py",
+          "start_line": 733,
+          "end_line": 733
+        }
+      },
+      {
+        "number": 170,
+        "state": "open",
+        "created_at": "2025-05-02T17:12:33Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/170",
+        "location": {
+          "path": "ai/inference/model_manager.py",
+          "start_line": 340,
+          "end_line": 340
+        }
+      },
+      {
+        "number": 169,
+        "state": "open",
+        "created_at": "2025-05-02T17:12:33Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/169",
+        "location": {
+          "path": "ai/inference/model_manager.py",
+          "start_line": 275,
+          "end_line": 275
+        }
+      },
+      {
+        "number": 168,
+        "state": "open",
+        "created_at": "2025-05-02T17:12:33Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/168",
+        "location": {
+          "path": "ai/inference/model_manager.py",
+          "start_line": 266,
+          "end_line": 266
+        }
+      },
+      {
+        "number": 167,
+        "state": "open",
+        "created_at": "2025-05-02T17:12:33Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/167",
+        "location": {
+          "path": "ai/inference/model_manager.py",
+          "start_line": 257,
+          "end_line": 257
+        }
+      },
+      {
+        "number": 163,
+        "state": "open",
+        "created_at": "2025-05-01T16:49:24Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/163",
+        "location": {
+          "path": "ai/inference/web_converter.py",
+          "start_line": 374,
+          "end_line": 374
+        }
+      },
+      {
+        "number": 150,
+        "state": "open",
+        "created_at": "2025-05-01T16:49:24Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/150",
+        "location": {
+          "path": "ai/inference/model_manager.py",
+          "start_line": 558,
+          "end_line": 558
+        }
+      },
+      {
+        "number": 149,
+        "state": "open",
+        "created_at": "2025-05-01T16:49:24Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/149",
+        "location": {
+          "path": "ai/inference/model_manager.py",
+          "start_line": 428,
+          "end_line": 428
+        }
+      },
+      {
+        "number": 145,
+        "state": "open",
+        "created_at": "2025-05-01T16:49:24Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/145",
+        "location": {
+          "path": "ai/inference/convert.py",
+          "start_line": 528,
+          "end_line": 528
+        }
+      },
+      {
+        "number": 143,
+        "state": "open",
+        "created_at": "2025-05-01T16:49:24Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/143",
+        "location": {
+          "path": "ai/inference/convert.py",
+          "start_line": 452,
+          "end_line": 452
+        }
+      },
+      {
+        "number": 141,
+        "state": "open",
+        "created_at": "2025-05-01T16:49:24Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/141",
+        "location": {
+          "path": "ai/inference/convert.py",
+          "start_line": 369,
+          "end_line": 369
+        }
+      },
+      {
+        "number": 140,
+        "state": "open",
+        "created_at": "2025-05-01T16:49:24Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/140",
+        "location": {
+          "path": "ai/inference/convert.py",
+          "start_line": 190,
+          "end_line": 190
+        }
+      },
+      {
+        "number": 139,
+        "state": "open",
+        "created_at": "2025-05-01T16:49:24Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/139",
+        "location": {
+          "path": "ai/inference/convert.py",
+          "start_line": 184,
+          "end_line": 184
+        }
+      },
+      {
+        "number": 138,
+        "state": "open",
+        "created_at": "2025-05-01T16:49:24Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/138",
+        "location": {
+          "path": "ai/inference/convert.py",
+          "start_line": 178,
+          "end_line": 178
+        }
+      },
+      {
+        "number": 121,
+        "state": "open",
+        "created_at": "2025-04-30T09:10:00Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/121",
+        "location": {
+          "path": "temp-openwebui/backend/open_webui/retrieval/utils.py",
+          "start_line": 593,
+          "end_line": 593
+        }
+      },
+      {
+        "number": 84,
+        "state": "open",
+        "created_at": "2025-04-27T15:38:07Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/84",
+        "location": {
+          "path": "security/testing/security_scanner.py",
+          "start_line": 798,
+          "end_line": 798
+        }
+      },
+      {
+        "number": 83,
+        "state": "open",
+        "created_at": "2025-04-27T15:38:07Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/83",
+        "location": {
+          "path": "security/testing/security_scanner.py",
+          "start_line": 782,
+          "end_line": 782
+        }
+      },
+      {
+        "number": 82,
+        "state": "open",
+        "created_at": "2025-04-27T15:38:07Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/82",
+        "location": {
+          "path": "security/testing/api.py",
+          "start_line": 103,
+          "end_line": 103
+        }
+      },
+      {
+        "number": 60,
+        "state": "open",
+        "created_at": "2025-04-21T17:38:23Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/60",
+        "location": {
+          "path": "sentinelweb/backend/sentinel_web/retrieval/utils.py",
+          "start_line": 593,
+          "end_line": 593
+        }
+      }
+    ]
+  },
+  "js/clear-text-storage-of-sensitive-data": {
+    "count": 1,
+    "severity": "error",
+    "description": "Clear text storage of sensitive information",
+    "alerts": [
+      {
+        "number": 253,
+        "state": "open",
+        "created_at": "2025-05-17T23:35:06Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/253",
+        "location": {
+          "path": "web/static/js/app_part2.js",
+          "start_line": 88,
+          "end_line": 88
+        }
+      }
+    ]
+  },
+  "py/clear-text-storage-sensitive-data": {
+    "count": 2,
+    "severity": "error",
+    "description": "Clear-text storage of sensitive information",
+    "alerts": [
+      {
+        "number": 225,
+        "state": "open",
+        "created_at": "2025-05-09T11:11:09Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/225",
+        "location": {
+          "path": "scripts/scheduled_security_scan.py",
+          "start_line": 227,
+          "end_line": 227
+        }
+      },
+      {
+        "number": 224,
+        "state": "open",
+        "created_at": "2025-05-09T11:11:09Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/224",
+        "location": {
+          "path": "scripts/monitor_security_reports.py",
+          "start_line": 318,
+          "end_line": 318
+        }
+      }
+    ]
+  },
+  "py/command-line-injection": {
+    "count": 1,
+    "severity": "error",
+    "description": "Uncontrolled command line",
+    "alerts": [
+      {
+        "number": 198,
+        "state": "open",
+        "created_at": "2025-05-08T20:02:25Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/198",
+        "location": {
+          "path": "edge_kit/rtsp_relay/src/stream_manager.py",
+          "start_line": 244,
+          "end_line": 244
+        }
+      }
+    ]
+  },
+  "py/reflective-xss": {
+    "count": 1,
+    "severity": "error",
+    "description": "Reflected server-side cross-site scripting",
+    "alerts": [
+      {
+        "number": 197,
+        "state": "open",
+        "created_at": "2025-05-08T20:02:25Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/197",
+        "location": {
+          "path": "edge_kit/rtsp_relay/src/server.py",
+          "start_line": 208,
+          "end_line": 208
+        }
+      }
+    ]
+  },
+  "py/bad-tag-filter": {
+    "count": 3,
+    "severity": "warning",
+    "description": "Bad HTML filtering regexp",
+    "alerts": [
+      {
+        "number": 184,
+        "state": "open",
+        "created_at": "2025-05-02T17:12:33Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/184",
+        "location": {
+          "path": "security/validation/unified_validation.py",
+          "start_line": 38,
+          "end_line": 38
+        }
+      },
+      {
+        "number": 96,
+        "state": "open",
+        "created_at": "2025-04-28T17:08:09Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/96",
+        "location": {
+          "path": "scripts/add_sri_hashes.py",
+          "start_line": 51,
+          "end_line": 51
+        }
+      },
+      {
+        "number": 77,
+        "state": "open",
+        "created_at": "2025-04-25T15:02:55Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/77",
+        "location": {
+          "path": "security/validation/html_validation.py",
+          "start_line": 49,
+          "end_line": 49
+        }
+      }
+    ]
+  },
+  "py/redos": {
+    "count": 3,
+    "severity": "error",
+    "description": "Inefficient regular expression",
+    "alerts": [
+      {
+        "number": 179,
+        "state": "open",
+        "created_at": "2025-05-02T17:12:33Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/179",
+        "location": {
+          "path": "security/validation/unified_validation.py",
+          "start_line": 36,
+          "end_line": 36
+        }
+      },
+      {
+        "number": 178,
+        "state": "open",
+        "created_at": "2025-05-02T17:12:33Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/178",
+        "location": {
+          "path": "security/validation/unified_validation.py",
+          "start_line": 26,
+          "end_line": 26
+        }
+      },
+      {
+        "number": 78,
+        "state": "open",
+        "created_at": "2025-04-25T15:02:55Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/78",
+        "location": {
+          "path": "security/validation/html_validation.py",
+          "start_line": 46,
+          "end_line": 46
+        }
+      }
+    ]
+  },
+  "js/overly-large-range": {
+    "count": 8,
+    "severity": "warning",
+    "description": "Overly permissive regular expression range",
+    "alerts": [
+      {
+        "number": 132,
+        "state": "open",
+        "created_at": "2025-04-30T09:10:12Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/132",
+        "location": {
+          "path": "temp-openwebui/backend/open_webui/static/swagger-ui/swagger-ui-bundle.js",
+          "start_line": 5354,
+          "end_line": 5354
+        }
+      },
+      {
+        "number": 131,
+        "state": "open",
+        "created_at": "2025-04-30T09:10:12Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/131",
+        "location": {
+          "path": "temp-openwebui/backend/open_webui/static/swagger-ui/swagger-ui-bundle.js",
+          "start_line": 5354,
+          "end_line": 5354
+        }
+      },
+      {
+        "number": 130,
+        "state": "open",
+        "created_at": "2025-04-30T09:10:12Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/130",
+        "location": {
+          "path": "temp-openwebui/backend/open_webui/static/swagger-ui/swagger-ui-bundle.js",
+          "start_line": 5333,
+          "end_line": 5333
+        }
+      },
+      {
+        "number": 129,
+        "state": "open",
+        "created_at": "2025-04-30T09:10:12Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/129",
+        "location": {
+          "path": "temp-openwebui/backend/open_webui/static/swagger-ui/swagger-ui-bundle.js",
+          "start_line": 5186,
+          "end_line": 5186
+        }
+      },
+      {
+        "number": 73,
+        "state": "open",
+        "created_at": "2025-04-21T17:38:40Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/73",
+        "location": {
+          "path": "sentinelweb/backend/sentinel_web/static/swagger-ui/swagger-ui-bundle.js",
+          "start_line": 5354,
+          "end_line": 5354
+        }
+      },
+      {
+        "number": 72,
+        "state": "open",
+        "created_at": "2025-04-21T17:38:40Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/72",
+        "location": {
+          "path": "sentinelweb/backend/sentinel_web/static/swagger-ui/swagger-ui-bundle.js",
+          "start_line": 5354,
+          "end_line": 5354
+        }
+      },
+      {
+        "number": 71,
+        "state": "open",
+        "created_at": "2025-04-21T17:38:40Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/71",
+        "location": {
+          "path": "sentinelweb/backend/sentinel_web/static/swagger-ui/swagger-ui-bundle.js",
+          "start_line": 5333,
+          "end_line": 5333
+        }
+      },
+      {
+        "number": 70,
+        "state": "open",
+        "created_at": "2025-04-21T17:38:40Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/70",
+        "location": {
+          "path": "sentinelweb/backend/sentinel_web/static/swagger-ui/swagger-ui-bundle.js",
+          "start_line": 5186,
+          "end_line": 5186
+        }
+      }
+    ]
+  },
+  "js/bad-tag-filter": {
+    "count": 2,
+    "severity": "warning",
+    "description": "Bad HTML filtering regexp",
+    "alerts": [
+      {
+        "number": 128,
+        "state": "open",
+        "created_at": "2025-04-30T09:10:12Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/128",
+        "location": {
+          "path": "temp-openwebui/backend/open_webui/static/swagger-ui/swagger-ui-bundle.js",
+          "start_line": 5591,
+          "end_line": 5591
+        }
+      },
+      {
+        "number": 67,
+        "state": "open",
+        "created_at": "2025-04-21T17:38:40Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/67",
+        "location": {
+          "path": "sentinelweb/backend/sentinel_web/static/swagger-ui/swagger-ui-bundle.js",
+          "start_line": 5591,
+          "end_line": 5591
+        }
+      }
+    ]
+  },
+  "py/polynomial-redos": {
+    "count": 7,
+    "severity": "warning",
+    "description": "Polynomial regular expression used on uncontrolled data",
+    "alerts": [
+      {
+        "number": 127,
+        "state": "open",
+        "created_at": "2025-04-30T09:10:00Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/127",
+        "location": {
+          "path": "temp-openwebui/backend/open_webui/routers/tasks.py",
+          "start_line": 210,
+          "end_line": 210
+        }
+      },
+      {
+        "number": 126,
+        "state": "open",
+        "created_at": "2025-04-30T09:10:00Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/126",
+        "location": {
+          "path": "temp-openwebui/backend/open_webui/utils/plugin.py",
+          "start_line": 42,
+          "end_line": 42
+        }
+      },
+      {
+        "number": 125,
+        "state": "open",
+        "created_at": "2025-04-30T09:10:00Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/125",
+        "location": {
+          "path": "temp-openwebui/backend/open_webui/utils/middleware.py",
+          "start_line": 1374,
+          "end_line": 1374
+        }
+      },
+      {
+        "number": 124,
+        "state": "open",
+        "created_at": "2025-04-30T09:10:00Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/124",
+        "location": {
+          "path": "temp-openwebui/backend/open_webui/utils/misc.py",
+          "start_line": 284,
+          "end_line": 284
+        }
+      },
+      {
+        "number": 65,
+        "state": "open",
+        "created_at": "2025-04-21T17:38:23Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/65",
+        "location": {
+          "path": "sentinelweb/backend/sentinel_web/routers/tasks.py",
+          "start_line": 210,
+          "end_line": 210
+        }
+      },
+      {
+        "number": 64,
+        "state": "open",
+        "created_at": "2025-04-21T17:38:23Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/64",
+        "location": {
+          "path": "sentinelweb/backend/sentinel_web/utils/plugin.py",
+          "start_line": 42,
+          "end_line": 42
+        }
+      },
+      {
+        "number": 63,
+        "state": "open",
+        "created_at": "2025-04-21T17:38:23Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/63",
+        "location": {
+          "path": "sentinelweb/backend/sentinel_web/utils/misc.py",
+          "start_line": 284,
+          "end_line": 284
+        }
+      }
+    ]
+  },
+  "py/insecure-protocol": {
+    "count": 2,
+    "severity": "warning",
+    "description": "Use of insecure SSL/TLS version",
+    "alerts": [
+      {
+        "number": 123,
+        "state": "open",
+        "created_at": "2025-04-30T09:10:00Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/123",
+        "location": {
+          "path": "temp-openwebui/backend/open_webui/retrieval/web/utils.py",
+          "start_line": 110,
+          "end_line": 110
+        }
+      },
+      {
+        "number": 62,
+        "state": "open",
+        "created_at": "2025-04-21T17:38:23Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/62",
+        "location": {
+          "path": "sentinelweb/backend/sentinel_web/retrieval/web/utils.py",
+          "start_line": 110,
+          "end_line": 110
+        }
+      }
+    ]
+  },
+  "py/url-redirection": {
+    "count": 2,
+    "severity": "error",
+    "description": "URL redirection from remote source",
+    "alerts": [
+      {
+        "number": 118,
+        "state": "open",
+        "created_at": "2025-04-30T09:10:00Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/118",
+        "location": {
+          "path": "temp-openwebui/backend/open_webui/routers/auths.py",
+          "start_line": 586,
+          "end_line": 586
+        }
+      },
+      {
+        "number": 55,
+        "state": "open",
+        "created_at": "2025-04-21T17:38:23Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/55",
+        "location": {
+          "path": "sentinelweb/backend/sentinel_web/routers/auths.py",
+          "start_line": 571,
+          "end_line": 571
+        }
+      }
+    ]
+  },
+  "py/overly-large-range": {
+    "count": 2,
+    "severity": "warning",
+    "description": "Overly permissive regular expression range",
+    "alerts": [
+      {
+        "number": 117,
+        "state": "open",
+        "created_at": "2025-04-30T09:10:00Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/117",
+        "location": {
+          "path": "temp-openwebui/backend/open_webui/utils/plugin.py",
+          "start_line": 202,
+          "end_line": 202
+        }
+      },
+      {
+        "number": 81,
+        "state": "open",
+        "created_at": "2025-04-26T05:53:22Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/81",
+        "location": {
+          "path": "sentinelweb/backend/sentinel_web/utils/plugin.py",
+          "start_line": 202,
+          "end_line": 202
+        }
+      }
+    ]
+  },
+  "py/incomplete-url-substring-sanitization": {
+    "count": 12,
+    "severity": "warning",
+    "description": "Incomplete URL substring sanitization",
+    "alerts": [
+      {
+        "number": 116,
+        "state": "open",
+        "created_at": "2025-04-30T09:10:00Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/116",
+        "location": {
+          "path": "temp-openwebui/backend/open_webui/utils/webhook.py",
+          "start_line": 28,
+          "end_line": 28
+        }
+      },
+      {
+        "number": 115,
+        "state": "open",
+        "created_at": "2025-04-30T09:10:00Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/115",
+        "location": {
+          "path": "temp-openwebui/backend/open_webui/utils/webhook.py",
+          "start_line": 18,
+          "end_line": 18
+        }
+      },
+      {
+        "number": 114,
+        "state": "open",
+        "created_at": "2025-04-30T09:10:00Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/114",
+        "location": {
+          "path": "temp-openwebui/backend/open_webui/utils/webhook.py",
+          "start_line": 18,
+          "end_line": 18
+        }
+      },
+      {
+        "number": 113,
+        "state": "open",
+        "created_at": "2025-04-30T09:10:00Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/113",
+        "location": {
+          "path": "temp-openwebui/backend/open_webui/routers/openai.py",
+          "start_line": 524,
+          "end_line": 524
+        }
+      },
+      {
+        "number": 112,
+        "state": "open",
+        "created_at": "2025-04-30T09:10:00Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/112",
+        "location": {
+          "path": "temp-openwebui/backend/open_webui/routers/audio.py",
+          "start_line": 899,
+          "end_line": 901
+        }
+      },
+      {
+        "number": 111,
+        "state": "open",
+        "created_at": "2025-04-30T09:10:00Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/111",
+        "location": {
+          "path": "temp-openwebui/backend/open_webui/routers/audio.py",
+          "start_line": 853,
+          "end_line": 855
+        }
+      },
+      {
+        "number": 54,
+        "state": "open",
+        "created_at": "2025-04-21T17:38:23Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/54",
+        "location": {
+          "path": "sentinelweb/backend/sentinel_web/utils/webhook.py",
+          "start_line": 28,
+          "end_line": 28
+        }
+      },
+      {
+        "number": 53,
+        "state": "open",
+        "created_at": "2025-04-21T17:38:23Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/53",
+        "location": {
+          "path": "sentinelweb/backend/sentinel_web/utils/webhook.py",
+          "start_line": 18,
+          "end_line": 18
+        }
+      },
+      {
+        "number": 52,
+        "state": "open",
+        "created_at": "2025-04-21T17:38:23Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/52",
+        "location": {
+          "path": "sentinelweb/backend/sentinel_web/utils/webhook.py",
+          "start_line": 18,
+          "end_line": 18
+        }
+      },
+      {
+        "number": 51,
+        "state": "open",
+        "created_at": "2025-04-21T17:38:23Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/51",
+        "location": {
+          "path": "sentinelweb/backend/sentinel_web/routers/openai.py",
+          "start_line": 524,
+          "end_line": 524
+        }
+      },
+      {
+        "number": 50,
+        "state": "open",
+        "created_at": "2025-04-21T17:38:23Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/50",
+        "location": {
+          "path": "sentinelweb/backend/sentinel_web/routers/audio.py",
+          "start_line": 899,
+          "end_line": 901
+        }
+      },
+      {
+        "number": 49,
+        "state": "open",
+        "created_at": "2025-04-21T17:38:23Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/49",
+        "location": {
+          "path": "sentinelweb/backend/sentinel_web/routers/audio.py",
+          "start_line": 853,
+          "end_line": 855
+        }
+      }
+    ]
+  },
+  "py/insecure-cookie": {
+    "count": 1,
+    "severity": "warning",
+    "description": "Failure to use secure cookies",
+    "alerts": [
+      {
+        "number": 110,
+        "state": "open",
+        "created_at": "2025-04-30T09:10:00Z",
+        "url": "https://github.com/BuloZB/BuloCloudSentinel/security/code-scanning/110",
+        "location": {
+          "path": "temp-openwebui/backend/open_webui/routers/auths.py",
+          "start_line": 323,
+          "end_line": 327
+        }
+      }
+    ]
+  }
+}

@@ -241,7 +241,7 @@ def get_mission(filename):
         return jsonify({"success": False, "error": "Mission not found"})
     
     try:
-        with open(mission_path, 'r') as f:
+        with open(os.path.normpath(mission_path, 'r')) as f:
             mission_data = json.load(f)
         return jsonify({"success": True, "mission": mission_data})
     except Exception as e:
@@ -262,7 +262,7 @@ def create_mission():
         mission_path = os.path.join(MISSION_DIR, filename)
         
         # Save mission
-        with open(mission_path, 'w') as f:
+        with open(os.path.normpath(mission_path, 'w')) as f:
             json.dump(data, f, indent=2)
         
         return jsonify({"success": True, "filename": filename})
@@ -284,7 +284,7 @@ def update_mission(filename):
     
     try:
         # Save mission
-        with open(mission_path, 'w') as f:
+        with open(os.path.normpath(mission_path, 'w')) as f:
             json.dump(data, f, indent=2)
         
         return jsonify({"success": True})

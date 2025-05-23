@@ -329,7 +329,7 @@ def load_config(config_path: Optional[str] = None) -> Dict[str, Any]:
     config = DEFAULT_CONFIG.copy()
     
     if config_path and os.path.exists(config_path):
-        with open(config_path, "r") as f:
+        with open(os.path.normpath(config_path, "r")) as f:
             file_config = yaml.safe_load(f)
             
         # Update config with file values

@@ -97,7 +97,7 @@ class EnvironmentSecretsBackend(SecretsBackend):
             prefix: Prefix for environment variables
         """
         self.prefix = prefix
-        logger.info(f"Initialized environment secrets backend with prefix '{prefix}'")
+        logger.info(f"Initialized environment [REDACTED])
     
     def get_secret(self, key: str) -> Optional[str]:
         """
@@ -383,7 +383,7 @@ class AWSSecretsManagerBackend(SecretsBackend):
             aws_secret_access_key=aws_secret_access_key
         )
         
-        logger.info(f"Initialized AWS Secrets Manager backend with prefix '{prefix}'")
+        logger.info(f"Initialized AWS [REDACTED])
     
     def get_secret(self, key: str) -> Optional[str]:
         """
@@ -625,7 +625,7 @@ class SecretsManager:
             if value is not None:
                 return value
         
-        logger.debug(f"Secret '{key}' not found in any backend")
+        logger.debug(f"[REDACTED])
         return default
     
     def set_secret(self, key: str, value: str, backend_index: int = 0) -> bool:

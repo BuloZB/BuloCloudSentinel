@@ -124,13 +124,13 @@ def parse_secret_report(report_path: Path) -> Dict:
     Returns:
         Parsed report data
     """
-    logger.info(f"Parsing secret report {report_path}...")
+    logger.info(f"Parsing [REDACTED])
     
     try:
         with open(report_path, "r") as f:
             return json.load(f)
     except Exception as e:
-        logger.error(f"Failed to parse secret report {report_path}: {str(e)}")
+        logger.error(f"Failed to parse [REDACTED])}")
         return {}
 
 def parse_security_report(report_path: Path) -> Dict:
