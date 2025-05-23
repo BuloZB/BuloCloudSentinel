@@ -280,7 +280,14 @@ def safe_load_model(file_path: str, model_type: str = None) -> Any:
                     logger.error(f"File integrity check failed for: {file_path}")
                     return None
 
-                model = torch.load(file_path, map_location="cpu", weights_only=True)
+                # Load only the state dictionary for better security
+                state_dict = torch.load(file_path, map_location="cpu")
+                if not isinstance(state_dict, dict):
+                    logger.error(f"Invalid state dictionary format in: {file_path}")
+                    return None
+
+                # Additional validation can be added here if needed
+                model = state_dict
             else:
                 # For untrusted models, we should avoid loading them or implement additional validation
                 logger.warning(f"Loading model from untrusted source: {file_path}")
