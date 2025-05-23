@@ -1,0 +1,140 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    ports:
+      - "8070:8000"
+    volumes:
+      - ./:/app
+      - mapping_temp:/tmp/mapping_service
+    environment:
+      - POSTGRES_SERVER=db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=mapping_service
+      - POSTGRES_PORT=5432
+      - MINIO_SERVER=minio
+      - MINIO_PORT=9000
+      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_SECRET_KEY=minioadmin
+      - MINIO_BUCKET=mapping-service
+      - ODM_API_URL=http://odm:3000
+      - SENTINEL_API_URL=http://bulocloud-sentinel-api:8000
+      - SENTINEL_API_TOKEN=${SENTINEL_API_TOKEN:-}
+      - TEMP_DIRECTORY=/tmp/mapping_service
+    depends_on:
+      - db
+      - minio
+      - odm
+    networks:
+      - mapping-network
+      - sentinel-network
+    restart: unless-stopped
+
+  worker:
+    build:
+      context: .
+      dockerfile: docker/worker.Dockerfile
+    volumes:
+      - ./:/app
+      - mapping_temp:/tmp/mapping_service
+    environment:
+      - POSTGRES_SERVER=db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=mapping_service
+      - POSTGRES_PORT=5432
+      - MINIO_SERVER=minio
+      - MINIO_PORT=9000
+      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_SECRET_KEY=minioadmin
+      - MINIO_BUCKET=mapping-service
+      - ODM_API_URL=http://odm:3000
+      - SENTINEL_API_URL=http://bulocloud-sentinel-api:8000
+      - SENTINEL_API_TOKEN=${SENTINEL_API_TOKEN:-}
+      - TEMP_DIRECTORY=/tmp/mapping_service
+      - WORKER_CONCURRENCY=2
+    depends_on:
+      - db
+      - minio
+      - odm
+    networks:
+      - mapping-network
+      - sentinel-network
+    restart: unless-stopped
+
+  db:
+    image: postgis/postgis:15-3.4
+    volumes:
+      - mapping_db_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=mapping_service
+    ports:
+      - "5435:5432"
+    networks:
+      - mapping-network
+    restart: unless-stopped
+
+  minio:
+    image: minio/minio:latest
+    volumes:
+      - mapping_minio_data:/data
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+    ports:
+      - "9005:9000"
+      - "9006:9001"
+    command: server /data --console-address ":9001"
+    networks:
+      - mapping-network
+    restart: unless-stopped
+
+  odm:
+    build:
+      context: .
+      dockerfile: docker/odm.Dockerfile
+    ports:
+      - "3005:3000"
+    volumes:
+      - mapping_odm_data:/var/www/data
+    networks:
+      - mapping-network
+    restart: unless-stopped
+
+  # MinIO setup
+  minio-setup:
+    image: minio/mc:latest
+    depends_on:
+      - minio
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+    entrypoint: >
+      /bin/sh -c "
+      sleep 5;
+      /usr/bin/mc config host add myminio http://minio:9000 minioadmin minioadmin;
+      /usr/bin/mc mb myminio/mapping-service;
+      /usr/bin/mc policy set public myminio/mapping-service/tiles;
+      /usr/bin/mc policy set public myminio/mapping-service/orthomosaics;
+      exit 0;
+      "
+    networks:
+      - mapping-network
+
+volumes:
+  mapping_db_data:
+  mapping_minio_data:
+  mapping_odm_data:
+  mapping_temp:
+
+networks:
+  mapping-network:
+    driver: bridge
+  sentinel-network:
+    external: true

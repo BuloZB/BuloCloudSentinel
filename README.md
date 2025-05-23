@@ -111,6 +111,21 @@ The Counter-UAS / Intrusion Detection module provides comprehensive capabilities
 - **📏 High Accuracy**: Bearing accuracy < 5° and range accuracy within 10%
 - **🔒 Secure Operation**: Isolated components with encrypted communications
 
+### 🗺️ Persistent Mapping
+
+The Persistent Mapping Module generates orthomosaic images and 3D terrain meshes from drone imagery:
+
+- **📸 Image Collection**: Upload and manage geotagged drone images
+- **🌍 Orthomosaic Generation**: Create high-resolution aerial images
+- **🏔️ 3D Mesh Reconstruction**: Generate 3D terrain models
+- **🧩 Map Tiling**: Create map tiles for efficient streaming
+- **🗄️ Geospatial Database**: Store and query mapping data with PostGIS
+- **🌐 Cesium Integration**: Visualize mapping data in 3D with Cesium
+- **⚙️ OpenDroneMap Integration**: Photogrammetry processing with OpenDroneMap
+- **📊 Timeline Functionality**: View historical mapping data
+- **📏 Measurement Tools**: Measure distance, area, and elevation
+- **🔄 Asynchronous Processing**: Process large datasets in the background
+
 ### 🔍 Vision System
 
 The Vision System provides advanced computer vision capabilities for the Bulo.Cloud Sentinel platform:
@@ -519,6 +534,18 @@ bulo-cloud-sentinel/
 │   ├── config/           # Configuration files
 │   ├── docs/             # Documentation
 │   └── tests/            # Test files
+├── mapping_service/      # Persistent Mapping Module
+│   ├── api/              # API endpoints
+│   ├── core/             # Core functionality
+│   ├── db/               # Database models and connections
+│   ├── processing/       # Processing pipeline
+│   ├── services/         # Business logic services
+│   ├── utils/            # Utility functions
+│   ├── docker/           # Docker configuration
+│   ├── docs/             # Documentation
+│   ├── tests/            # Test files
+│   ├── main.py           # Application entry point
+│   └── worker_main.py    # Worker entry point
 ├── tests/                # Test files
 │   └── test_tinygrad_backend.py # Tests for TinyGrad inference backend
 ├── vision_system/        # Vision System for crowd and vehicle analysis
