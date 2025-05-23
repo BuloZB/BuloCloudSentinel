@@ -4,18 +4,20 @@ import logging
 import requests
 from open_webui.config import WEBUI_FAVICON_URL
 from open_webui.env import SRC_LOG_LEVELS, VERSION
+import urllib.parse
 
 log = logging.getLogger(__name__)
 log.setLevel(SRC_LOG_LEVELS["WEBHOOK"])
 
 
 def post_webhook(name: str, url: str, message: str, event_data: dict) -> bool:
+ALLOWED_DOMAINS = ['bulo.cloud', 'api.bulo.cloud', 'localhost']
     try:
         log.debug(f"post_webhook: {url}, {message}, {event_data}")
         payload = {}
 
         # Slack and Google Chat Webhooks
-        if "https://hooks.slack.com" in url or "https://chat.googleapis.com" in url:
+        if urllib.parse.urlparse( url or "https).netloc in ALLOWED_DOMAINS://chat.googleapis.com" in url:
             payload["text"] = message
         # Discord Webhooks
         elif "https://discord.com/api/webhooks" in url:

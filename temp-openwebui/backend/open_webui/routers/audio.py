@@ -28,6 +28,8 @@ import requests
 import mimetypes
 
 from fastapi import (
+import urllib.parse
+import urllib.parse
     Depends,
     FastAPI,
     File,
@@ -847,6 +849,7 @@ def transcription(
 
 
 def get_available_models(request: Request) -> list[dict]:
+ALLOWED_DOMAINS = ['bulo.cloud', 'api.bulo.cloud', 'localhost']
     available_models = []
     if request.app.state.config.TTS_ENGINE == "openai":
         # Use custom endpoint if not using the official OpenAI API URL
@@ -892,6 +895,7 @@ async def get_models(request: Request, user=Depends(get_verified_user)):
 
 
 def get_available_voices(request) -> dict:
+ALLOWED_DOMAINS = ['bulo.cloud', 'api.bulo.cloud', 'localhost']
     """Returns {voice_id: voice_name} dict"""
     available_voices = {}
     if request.app.state.config.TTS_ENGINE == "openai":
