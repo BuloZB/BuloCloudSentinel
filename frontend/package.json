@@ -16,7 +16,7 @@
     "react-grid-layout": "^1.4.4",
     "react-leaflet": "^4.2.1",
     "react-router-dom": "^6.22.3",
-    "react-scripts": "^3.0.1",
+    "react-scripts": "^5.0.1",
     "web-vitals": "^3.5.2"
   },
   "scripts": {
@@ -46,17 +46,17 @@
   "proxy": "http://backend:8000",
   "devDependencies": {
     "@babel/helpers": "^7.26.0",
-    "@babel/runtime": "^7.26.0",
+    "@babel/runtime": "^7.27.1",
     "braces": "^3.0.2",
     "cookie": "^0.7.0",
     "cross-spawn": "^7.0.3",
-    "http-proxy-middleware": "^2.0.6",
+    "http-proxy-middleware": "^2.0.9",
     "ip": "^2.0.0",
     "lodash": "^4.17.21",
     "micromatch": "^4.0.5",
     "nth-check": "^2.1.1",
     "postcss": "^8.4.31",
-    "semver": "^7.5.4",
+    "semver": "^7.7.2",
     "webpack-dev-middleware": "^5.3.3"
   }
 }
