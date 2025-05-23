@@ -1,0 +1,117 @@
+version: '3.8'
+
+services:
+  remoteid-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: bulo/remoteid-service:latest
+    container_name: remoteid-service
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./config:/app/config
+      - ./logs:/app/logs
+    environment:
+      - ENVIRONMENT=development
+      - DATABASE_URL=postgresql+asyncpg://postgres:placeholderpassword@remoteid-db:5432/remoteid
+      - LOG_LEVEL=INFO
+      - ENABLE_BROADCAST=false  # Set to true to enable actual broadcasting
+      - ENABLE_HARDWARE=false   # Set to true when running on hardware with BLE/WiFi capabilities
+    depends_on:
+      - remoteid-db
+    networks:
+      - remoteid-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+
+  remoteid-db:
+    image: postgis/postgis:14-3.3
+    container_name: remoteid-db
+    restart: unless-stopped
+    ports:
+      - "5433:5432"  # Using 5433 to avoid conflicts with other PostgreSQL instances
+    volumes:
+      - remoteid-db-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=placeholderpassword
+      - POSTGRES_DB=remoteid
+    networks:
+      - remoteid-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+
+  remoteid-redis:
+    image: redis:7-alpine
+    container_name: remoteid-redis
+    restart: unless-stopped
+    ports:
+      - "6380:6379"  # Using 6380 to avoid conflicts with other Redis instances
+    volumes:
+      - remoteid-redis-data:/data
+    command: redis-server --appendonly yes --requirepass placeholderpassword
+    networks:
+      - remoteid-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "placeholderpassword", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+
+  # Optional: Include this service when running on hardware without BLE/WiFi capabilities
+  remoteid-simulator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: bulo/remoteid-simulator:latest
+    container_name: remoteid-simulator
+    restart: unless-stopped
+    command: python -m remoteid_service.cli.simulator
+    environment:
+      - ENVIRONMENT=development
+      - DATABASE_URL=postgresql+asyncpg://postgres:placeholderpassword@remoteid-db:5432/remoteid
+      - LOG_LEVEL=INFO
+      - SIMULATION_MODE=full  # Options: basic, full, random
+      - SIMULATION_INTERVAL=1  # Seconds between broadcasts
+    depends_on:
+      - remoteid-api
+      - remoteid-db
+    networks:
+      - remoteid-network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+
+networks:
+  remoteid-network:
+    driver: bridge
+
+volumes:
+  remoteid-db-data:
+  remoteid-redis-data:

@@ -1,0 +1,295 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: remoteid-api
+  labels:
+    app: remoteid-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: remoteid-api
+  template:
+    metadata:
+      labels:
+        app: remoteid-api
+    spec:
+      containers:
+      - name: remoteid-api
+        image: bulo/remoteid-service:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        env:
+        - name: ENVIRONMENT
+          value: "production"
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: remoteid-secrets
+              key: database-url
+        - name: REDIS_URL
+          valueFrom:
+            secretKeyRef:
+              name: remoteid-secrets
+              key: redis-url
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: remoteid-secrets
+              key: secret-key
+        - name: EASA_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: remoteid-secrets
+              key: easa-api-key
+        - name: FAA_LAANC_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: remoteid-secrets
+              key: faa-laanc-api-key
+        - name: LOG_LEVEL
+          value: "INFO"
+        - name: ENABLE_BROADCAST
+          value: "false"
+        - name: ENABLE_HARDWARE
+          value: "false"
+        resources:
+          limits:
+            cpu: "1"
+            memory: "1Gi"
+          requests:
+            cpu: "500m"
+            memory: "512Mi"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        volumeMounts:
+        - name: config-volume
+          mountPath: /app/config
+      volumes:
+      - name: config-volume
+        configMap:
+          name: remoteid-config
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: remoteid-db
+  labels:
+    app: remoteid-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: remoteid-db
+  template:
+    metadata:
+      labels:
+        app: remoteid-db
+    spec:
+      containers:
+      - name: remoteid-db
+        image: postgis/postgis:14-3.3
+        ports:
+        - containerPort: 5432
+        env:
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: remoteid-secrets
+              key: postgres-user
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: remoteid-secrets
+              key: postgres-password
+        - name: POSTGRES_DB
+          value: "remoteid"
+        resources:
+          limits:
+            cpu: "1"
+            memory: "2Gi"
+          requests:
+            cpu: "500m"
+            memory: "1Gi"
+        volumeMounts:
+        - name: postgres-data
+          mountPath: /var/lib/postgresql/data
+      volumes:
+      - name: postgres-data
+        persistentVolumeClaim:
+          claimName: remoteid-db-pvc
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: remoteid-redis
+  labels:
+    app: remoteid-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: remoteid-redis
+  template:
+    metadata:
+      labels:
+        app: remoteid-redis
+    spec:
+      containers:
+      - name: remoteid-redis
+        image: redis:7-alpine
+        ports:
+        - containerPort: 6379
+        args:
+        - redis-server
+        - --appendonly
+        - "yes"
+        - --requirepass
+        - $(REDIS_PASSWORD)
+        env:
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: remoteid-secrets
+              key: redis-password
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+        volumeMounts:
+        - name: redis-data
+          mountPath: /data
+      volumes:
+      - name: redis-data
+        persistentVolumeClaim:
+          claimName: remoteid-redis-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: remoteid-api
+spec:
+  selector:
+    app: remoteid-api
+  ports:
+  - port: 8080
+    targetPort: 8080
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: remoteid-db
+spec:
+  selector:
+    app: remoteid-db
+  ports:
+  - port: 5432
+    targetPort: 5432
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: remoteid-redis
+spec:
+  selector:
+    app: remoteid-redis
+  ports:
+  - port: 6379
+    targetPort: 6379
+  type: ClusterIP
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: remoteid-db-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: remoteid-redis-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: remoteid-config
+data:
+  config.yaml: |
+    # Configuration for the Remote ID & Regulatory Compliance Service
+
+    # General settings
+    PROJECT_NAME: "Remote ID & Regulatory Compliance Service"
+    API_V1_STR: "/api/v1"
+    ENVIRONMENT: "production"
+    DEBUG: false
+    LOG_LEVEL: "INFO"
+
+    # CORS settings
+    BACKEND_CORS_ORIGINS:
+      - "https://bulo.cloud"
+      - "https://api.bulo.cloud"
+
+    # Remote ID settings
+    ENABLE_BROADCAST: false
+    ENABLE_HARDWARE: false
+    BROADCAST_INTERVAL: 1
+    BROADCAST_METHODS:
+      - "wifi_nan"
+      - "bluetooth_le"
+    DEFAULT_BROADCAST_MODE: "faa"
+
+    # Flight plan settings
+    EASA_API_URL: "https://api.easa.europa.eu/sora/v1"
+    FAA_LAANC_API_URL: "https://api.faa.gov/laanc/v2"
+
+    # NOTAM settings
+    NOTAM_UPDATE_INTERVAL: 3600
+    NOTAM_SOURCES:
+      - "faa"
+      - "easa"
+
+    # Logging settings
+    LOG_RETENTION_DAYS: 30
+    BROADCAST_LOG_RETENTION_HOURS: 48
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: remoteid-secrets
+type: Opaque
+stringData:
+  database-url: "postgresql+asyncpg://postgres:placeholderpassword@remoteid-db:5432/remoteid"
+  redis-url: "redis://:placeholderpassword@remoteid-redis:6379/0"
+  secret-key: "placeholdersecretkey"
+  easa-api-key: "placeholderapikey"
+  faa-laanc-api-key: "placeholderapikey"
+  postgres-user: "postgres"
+  postgres-password: "placeholderpassword"
+  redis-password: "placeholderpassword"

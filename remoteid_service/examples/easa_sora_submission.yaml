@@ -1,0 +1,133 @@
+# Example EASA SORA Submission for Bulo.Cloud Sentinel Remote ID & Regulatory Compliance Service
+
+# Risk Class
+risk_class: "specific_sora"
+
+# Operational Volume
+operational_volume:
+  area:
+    points:
+      - latitude: 48.8584
+        longitude: 2.2945
+        altitude: 0
+      - latitude: 48.8584
+        longitude: 2.3045
+        altitude: 0
+      - latitude: 48.8534
+        longitude: 2.3045
+        altitude: 0
+      - latitude: 48.8534
+        longitude: 2.2945
+        altitude: 0
+      - latitude: 48.8584
+        longitude: 2.2945
+        altitude: 0
+  min_height: 0
+  max_height: 120
+  buffer: 50
+
+# Time Information
+start_time: "2023-12-15T10:00:00Z"
+end_time: "2023-12-15T12:00:00Z"
+
+# Drone Details
+drone_details:
+  manufacturer: "Bulo.Cloud"
+  model: "Sentinel X1"
+  serial_number: "SN-SENTINEL-001"
+  weight: 4.5  # kg
+  max_speed: 15.0  # m/s
+  max_flight_time: 30  # minutes
+  max_range: 5000  # meters
+  communication_links:
+    - type: "command_and_control"
+      frequency: "2.4GHz"
+      encryption: true
+    - type: "telemetry"
+      frequency: "900MHz"
+      encryption: true
+    - type: "video"
+      frequency: "5.8GHz"
+      encryption: true
+  sensors:
+    - type: "camera"
+      model: "RGB 20MP"
+    - type: "lidar"
+      model: "LiDAR-X1"
+    - type: "ads-b"
+      model: "ADS-B In Receiver"
+  certifications:
+    - "CE"
+    - "FCC"
+    - "IP54"
+
+# Operator Details
+operator_details:
+  name: "Bulo.Cloud Operations"
+  registration_number: "EU-OP-123456789"
+  address: "123 Drone Street, 75001 Paris, France"
+  contact:
+    name: "John Doe"
+    phone: "+33-555-123-4567"
+    email: "john.doe@example.com"
+  insurance:
+    provider: "Drone Insurance Co."
+    policy_number: "DI-123456"
+    expiry_date: "2024-12-31"
+  training:
+    - certificate: "EASA Open A2"
+      number: "A2-123456"
+      expiry_date: "2025-01-01"
+    - certificate: "EASA Specific STS-01"
+      number: "STS-123456"
+      expiry_date: "2025-01-01"
+
+# Operation Details
+operation_details:
+  operation_type: "aerial_survey"
+  operation_description: "Aerial survey of urban area for mapping purposes"
+  ground_risk_class: "GRC-3"
+  air_risk_class: "ARC-b"
+  final_risk_class: "SAIL-III"
+  operational_scenario:
+    population_density: "urban"
+    flight_over_people: true
+    flight_over_assemblies: false
+    flight_in_controlled_airspace: true
+  contingency_procedures:
+    lost_link: "Return to home at 50m altitude"
+    lost_gps: "Hover and wait for operator input"
+    low_battery: "Land at nearest safe location"
+    emergency_landing: "Activate parachute system"
+  emergency_response_plan:
+    emergency_contacts:
+      - name: "Local Police"
+        phone: "+33-555-111-2222"
+      - name: "Emergency Services"
+        phone: "112"
+    first_aid_kit: true
+    fire_extinguisher: true
+
+# Mitigations
+mitigations:
+  ground_risk:
+    - type: "technical"
+      description: "Parachute recovery system"
+      effectiveness: "high"
+    - type: "procedural"
+      description: "Operations only over controlled area"
+      effectiveness: "medium"
+  air_risk:
+    - type: "technical"
+      description: "ADS-B In receiver for traffic awareness"
+      effectiveness: "high"
+    - type: "procedural"
+      description: "Coordination with ATC"
+      effectiveness: "high"
+  tactical:
+    - type: "detect_and_avoid"
+      description: "Visual observers at operation boundaries"
+      effectiveness: "medium"
+    - type: "containment"
+      description: "Geofencing enabled"
+      effectiveness: "high"

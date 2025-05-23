@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  counter-uas:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: counter-uas
+    restart: unless-stopped
+    privileged: true  # Required for USB device access
+    volumes:
+      - ./config:/config
+      - /dev/bus/usb:/dev/bus/usb  # Mount USB devices
+    ports:
+      - "8000:8000"  # API port
+    environment:
+      - COUNTER_UAS_CONFIG=/config/counter_uas.yaml
+    depends_on:
+      - rabbitmq
+    networks:
+      - counter-uas-network
+
+  rabbitmq:
+    image: rabbitmq:3.9-management
+    container_name: counter-uas-rabbitmq
+    restart: unless-stopped
+    ports:
+      - "5672:5672"    # AMQP port
+      - "15672:15672"  # Management UI port
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    networks:
+      - counter-uas-network
+
+networks:
+  counter-uas-network:
+    driver: bridge
+
+volumes:
+  rabbitmq-data:

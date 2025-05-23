@@ -135,5 +135,5 @@ The Edge Kit is a plug-and-play Docker bundle for deploying Bulo.CloudSentinel c
 ## Support
 
 For technical support, please contact:
-- Email: support@bulocloud.com
-- Documentation: https://docs.bulocloud.com/edge-kit
+- Email: support@bulo.cloud
+- Documentation: https://docs.bulo.cloud/edge-kit

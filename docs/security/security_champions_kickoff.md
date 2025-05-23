@@ -122,7 +122,7 @@ Security Champions will receive ongoing support through:
 ## 4. Communication Channels
 
 - **Slack Channel:** #security-champions
-- **Email List:** security-champions@bulocloud.com
+- **Email List:** security-champions@bulo.cloud
 - **Documentation:** [Internal Wiki Link]
 - **Issue Tracking:** Security issues tagged with "security-champion"
 

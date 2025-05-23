@@ -201,9 +201,9 @@ If you experience issues with charging:
 
 If you need assistance with the Dock Stations feature, please contact our support team:
 
-- Email: support@bulocloud.com
+- Email: support@bulo.cloud
 - Phone: +1-555-123-4567
-- Web: https://bulocloud.com/support
+- Web: https://bulo.cloud/support
 
 ## References
 

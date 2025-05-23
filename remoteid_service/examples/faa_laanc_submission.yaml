@@ -1,0 +1,116 @@
+# Example FAA LAANC Submission for Bulo.Cloud Sentinel Remote ID & Regulatory Compliance Service
+
+# Operation Type
+operation_type: "part_107"
+
+# Airspace Class
+airspace_class: "d"
+
+# Area Information (GeoJSON Polygon)
+area:
+  points:
+    - latitude: 37.7694
+      longitude: -122.4862
+      altitude: 0
+    - latitude: 37.7694
+      longitude: -122.4762
+      altitude: 0
+    - latitude: 37.7654
+      longitude: -122.4762
+      altitude: 0
+    - latitude: 37.7654
+      longitude: -122.4862
+      altitude: 0
+    - latitude: 37.7694
+      longitude: -122.4862
+      altitude: 0
+
+# Altitude Information
+max_altitude: 120.0  # feet AGL
+
+# Time Information
+start_time: "2023-12-01T14:00:00Z"
+end_time: "2023-12-01T15:00:00Z"
+
+# Pilot Details
+pilot_details:
+  name: "John Doe"
+  phone: "+1-555-123-4567"
+  email: "john.doe@example.com"
+  certificate_number: "4123456"
+  certificate_type: "part_107"
+  address:
+    street: "123 Drone Street"
+    city: "San Francisco"
+    state: "CA"
+    zip: "94123"
+    country: "USA"
+  emergency_contact:
+    name: "Jane Doe"
+    phone: "+1-555-765-4321"
+    relationship: "Spouse"
+
+# Aircraft Details
+aircraft_details:
+  manufacturer: "Bulo.Cloud"
+  model: "Sentinel X1"
+  serial_number: "SN-SENTINEL-001"
+  registration_number: "FA1234567"
+  weight: 4.5  # kg
+  max_speed: 15.0  # m/s
+  max_flight_time: 30  # minutes
+  max_range: 5000  # meters
+  communication_links:
+    - type: "command_and_control"
+      frequency: "2.4GHz"
+    - type: "telemetry"
+      frequency: "900MHz"
+    - type: "video"
+      frequency: "5.8GHz"
+  sensors:
+    - type: "camera"
+      model: "RGB 20MP"
+    - type: "lidar"
+      model: "LiDAR-X1"
+    - type: "ads-b"
+      model: "ADS-B In Receiver"
+  remote_id_capability: true
+  remote_id_type: "broadcast"
+
+# Operation Details
+operation_details:
+  operation_description: "Aerial survey of Golden Gate Park for vegetation monitoring"
+  operation_purpose: "aerial_survey"
+  flight_rules: "vfr"
+  flight_visibility: true
+  cloud_clearance: true
+  visual_line_of_sight: true
+  daylight_operation: true
+  max_groundspeed: 15.0  # m/s
+  contingency_procedures:
+    lost_link: "Return to home at 50m altitude"
+    lost_gps: "Hover and wait for operator input"
+    low_battery: "Land at nearest safe location"
+    emergency_landing: "Activate parachute system"
+  waivers:
+    - waiver_number: "107W-2023-12345"
+      waiver_type: "night_operations"
+      expiration_date: "2024-12-31"
+  airspace_authorization:
+    facility_id: "SFO"
+    facility_name: "San Francisco International Airport"
+    authorization_type: "laanc"
+  nearby_airports:
+    - name: "San Francisco International Airport"
+      identifier: "KSFO"
+      distance: 15.2  # km
+      direction: "SE"
+    - name: "Oakland International Airport"
+      identifier: "KOAK"
+      distance: 18.7  # km
+      direction: "E"
+  nearby_heliports:
+    - name: "UCSF Medical Center Heliport"
+      identifier: "CA52"
+      distance: 3.1  # km
+      direction: "E"

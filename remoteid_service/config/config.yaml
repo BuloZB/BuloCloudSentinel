@@ -1,0 +1,60 @@
+# Configuration for the Remote ID & Regulatory Compliance Service
+
+# General settings
+PROJECT_NAME: "Remote ID & Regulatory Compliance Service"
+API_V1_STR: "/api/v1"
+ENVIRONMENT: "development"
+DEBUG: true
+LOG_LEVEL: "INFO"
+
+# CORS settings
+BACKEND_CORS_ORIGINS:
+  - "http://localhost"
+  - "http://localhost:8080"
+  - "http://localhost:3000"
+  - "http://localhost:5173"
+  - "https://bulo.cloud"
+  - "https://api.bulo.cloud"
+
+# Database settings
+DATABASE_URL: "postgresql+asyncpg://postgres:placeholderpassword@localhost:5432/remoteid"
+DATABASE_POOL_SIZE: 5
+DATABASE_MAX_OVERFLOW: 10
+DATABASE_POOL_RECYCLE: 3600
+
+# Redis settings
+REDIS_URL: "redis://:placeholderpassword@localhost:6379/0"
+
+# Security settings
+SECRET_KEY: "placeholdersecretkey"
+ALGORITHM: "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES: 30
+
+# Remote ID settings
+ENABLE_BROADCAST: false  # Set to true to enable actual broadcasting
+ENABLE_HARDWARE: false   # Set to true when running on hardware with BLE/WiFi capabilities
+BROADCAST_INTERVAL: 1    # seconds
+BROADCAST_METHODS:
+  - "wifi_nan"
+  - "bluetooth_le"
+DEFAULT_BROADCAST_MODE: "faa"  # faa or eu
+
+# Flight plan settings
+EASA_API_URL: "https://api.easa.europa.eu/sora/v1"
+EASA_API_KEY: "placeholderapikey"
+FAA_LAANC_API_URL: "https://api.faa.gov/laanc/v2"
+FAA_LAANC_API_KEY: "placeholderapikey"
+
+# NOTAM settings
+NOTAM_UPDATE_INTERVAL: 3600  # seconds
+NOTAM_SOURCES:
+  - "faa"
+  - "easa"
+
+# Logging settings
+LOG_RETENTION_DAYS: 7
+BROADCAST_LOG_RETENTION_HOURS: 24
+
+# Hardware settings
+BLUETOOTH_ADAPTER: "hci0"
+WIFI_ADAPTER: "wlan0"

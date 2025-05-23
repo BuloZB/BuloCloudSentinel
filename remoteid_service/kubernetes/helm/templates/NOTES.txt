@@ -1,0 +1,50 @@
+Thank you for installing {{ .Chart.Name }}.
+
+Your release is named {{ .Release.Name }}.
+
+To learn more about the release, try:
+
+  $ helm status {{ .Release.Name }}
+  $ helm get all {{ .Release.Name }}
+
+{{- if .Values.api.enabled }}
+{{- if .Values.api.ingress.enabled }}
+{{- range $host := .Values.api.ingress.hosts }}
+  {{- range .paths }}
+  The API can be accessed via http{{ if $.Values.api.ingress.tls }}s{{ end }}://{{ $host.host }}{{ .path }}
+  {{- end }}
+{{- end }}
+{{- else if contains "NodePort" .Values.api.service.type }}
+  The API can be accessed via http://NODE_IP:{{ .Values.api.service.port }}
+{{- else if contains "LoadBalancer" .Values.api.service.type }}
+  The API can be accessed via http://SERVICE_IP:{{ .Values.api.service.port }}
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        You can watch the status by running 'kubectl get --namespace {{ .Release.Namespace }} svc -w {{ .Values.api.name }}'
+{{- else if contains "ClusterIP" .Values.api.service.type }}
+  The API can be accessed within the cluster at http://{{ .Values.api.name }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.api.service.port }}
+  To access it from outside the cluster, you can use port-forwarding:
+  
+  $ kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ .Values.api.name }} {{ .Values.api.service.port }}:{{ .Values.api.service.port }}
+  
+  Then access the API at http://localhost:{{ .Values.api.service.port }}
+{{- end }}
+
+The API documentation is available at:
+{{- if .Values.api.ingress.enabled }}
+{{- range $host := .Values.api.ingress.hosts }}
+  {{- range .paths }}
+  http{{ if $.Values.api.ingress.tls }}s{{ end }}://{{ $host.host }}{{ .path }}docs
+  {{- end }}
+{{- end }}
+{{- else }}
+  http://API_URL/docs
+{{- end }}
+{{- end }}
+
+{{- if .Values.simulator.enabled }}
+The simulator is running with the following configuration:
+  Mode: {{ .Values.simulator.config.mode }}
+  Number of drones: {{ .Values.simulator.config.drones }}
+  Update interval: {{ .Values.simulator.config.interval }} seconds
+  Duration: {{ if eq .Values.simulator.config.duration 0 }}infinite{{ else }}{{ .Values.simulator.config.duration }} seconds{{ end }}
+{{- end }}

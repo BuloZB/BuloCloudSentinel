@@ -1,0 +1,84 @@
+# Counter-UAS module configuration
+
+# Hardware configuration
+hardware:
+  # KerberosSDR devices
+  kerberos_sdr_devices:
+    - device_id: "0"
+      center_frequency: 915000000  # 915 MHz (common drone frequency)
+      sample_rate: 2400000  # 2.4 MSPS
+      gain: 30.0  # dB
+      reference_channel: 0
+  
+  # Acconeer radar devices
+  acconeer_radar_devices:
+    - device_id: "0"
+      mode: "iq"  # IQ data (complex baseband)
+      start_range: 0.2  # 0.2 meters
+      end_range: 5.0  # 5.0 meters
+      update_rate: 10.0  # 10 Hz
+
+# Signal processing configuration
+processing:
+  # Direction of Arrival (DoA) processing
+  doa:
+    algorithm: "MUSIC"  # Multiple Signal Classification
+    update_rate: 10.0  # 10 Hz
+    smoothing_factor: 0.5  # Smoothing factor for DoA estimates
+  
+  # Radar processing
+  radar:
+    algorithm: "range_doppler"  # Range-Doppler processing
+    update_rate: 10.0  # 10 Hz
+    min_distance: 0.5  # 0.5 meters
+    max_distance: 5.0  # 5.0 meters
+    min_velocity: 0.1  # 0.1 m/s
+    max_velocity: 10.0  # 10.0 m/s
+  
+  # Sensor fusion
+  fusion:
+    algorithm: "ekf"  # Extended Kalman Filter
+    update_rate: 10.0  # 10 Hz
+    process_noise: 0.1  # Process noise covariance
+    measurement_noise: 0.1  # Measurement noise covariance
+
+# Detection configuration
+detection:
+  min_confidence: 0.5  # Minimum confidence for detection
+  max_age: 5.0  # Maximum age of a track in seconds
+  min_detections: 3  # Minimum number of detections to create a track
+
+# Event configuration
+events:
+  # RabbitMQ configuration
+  rabbitmq:
+    host: "localhost"
+    port: 5672
+    username: "guest"
+    password: "guest"
+    exchange: "counter_uas"
+    exchange_type: "topic"
+
+# API configuration
+api:
+  host: "0.0.0.0"
+  port: 8000
+  debug: false
+  cors_origins:
+    - "*"
+
+# Logging configuration
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  loggers:
+    counter_uas:
+      level: "DEBUG"
+    counter_uas.hardware:
+      level: "INFO"
+    counter_uas.processing:
+      level: "INFO"
+    counter_uas.events:
+      level: "INFO"
+    counter_uas.api:
+      level: "INFO"

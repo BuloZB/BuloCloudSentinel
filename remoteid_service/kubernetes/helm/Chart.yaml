@@ -1,0 +1,19 @@
+apiVersion: v2
+name: remoteid
+description: A Helm chart for the Remote ID & Regulatory Compliance Service
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+maintainers:
+  - name: Bulo.Cloud Sentinel Team
+    email: support@bulo.cloud
+keywords:
+  - remoteid
+  - drone
+  - regulatory
+  - compliance
+  - astm
+  - faa
+  - easa
+sources:
+  - https://github.com/BuloZB/BuloCloudSentinel

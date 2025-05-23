@@ -1,0 +1,46 @@
+{{- if and .Values.simulator.enabled .Values.api.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.simulator.name }}
+  labels:
+    app: {{ .Values.simulator.name }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.simulator.name }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.simulator.name }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: {{ .Values.simulator.name }}
+        image: "{{ .Values.simulator.image.repository }}:{{ .Values.simulator.image.tag }}"
+        imagePullPolicy: {{ .Values.simulator.image.pullPolicy }}
+        command: ["python", "-m", "remoteid_service.cli.simulator"]
+        args:
+        - "--mode"
+        - "{{ .Values.simulator.config.mode }}"
+        - "--drones"
+        - "{{ .Values.simulator.config.drones }}"
+        - "--interval"
+        - "{{ .Values.simulator.config.interval }}"
+        - "--duration"
+        - "{{ .Values.simulator.config.duration }}"
+        - "--server"
+        - "http://{{ .Values.api.name }}:{{ .Values.api.service.port }}"
+        env:
+        - name: ENVIRONMENT
+          value: {{ .Values.global.environment }}
+        - name: LOG_LEVEL
+          value: {{ .Values.global.logLevel }}
+        resources:
+          {{- toYaml .Values.simulator.resources | nindent 10 }}
+{{- end }}

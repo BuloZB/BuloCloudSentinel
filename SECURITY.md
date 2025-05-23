@@ -7,7 +7,7 @@ The Bulo.Cloud Sentinel team takes security issues seriously. We appreciate your
 To report a security vulnerability, please follow these steps:
 
 1. **Do not disclose the vulnerability publicly** until it has been addressed by the maintainers.
-2. Email your findings to [security@bulocloud.com](mailto:security@bulocloud.com). If possible, encrypt your message with our PGP key.
+2. Email your findings to [security@bulo.cloud](mailto:security@bulo.cloud). If possible, encrypt your message with our PGP key.
 3. Include the following information in your report:
    - Description of the vulnerability
    - Steps to reproduce the issue

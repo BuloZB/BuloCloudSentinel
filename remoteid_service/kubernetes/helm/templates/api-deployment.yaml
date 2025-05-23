@@ -1,0 +1,96 @@
+{{- if .Values.api.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.api.name }}
+  labels:
+    app: {{ .Values.api.name }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.api.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.api.name }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.api.name }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: {{ .Values.api.name }}
+        image: "{{ .Values.api.image.repository }}:{{ .Values.api.image.tag }}"
+        imagePullPolicy: {{ .Values.api.image.pullPolicy }}
+        ports:
+        - containerPort: 8080
+        env:
+        - name: ENVIRONMENT
+          value: {{ .Values.global.environment }}
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secrets
+              key: database-url
+        - name: REDIS_URL
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secrets
+              key: redis-url
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secrets
+              key: secret-key
+        - name: EASA_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secrets
+              key: easa-api-key
+        - name: FAA_LAANC_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secrets
+              key: faa-laanc-api-key
+        - name: LOG_LEVEL
+          value: {{ .Values.global.logLevel }}
+        - name: ENABLE_BROADCAST
+          value: "{{ .Values.api.config.enableBroadcast }}"
+        - name: ENABLE_HARDWARE
+          value: "{{ .Values.api.config.enableHardware }}"
+        - name: BROADCAST_INTERVAL
+          value: "{{ .Values.api.config.broadcastInterval }}"
+        - name: EASA_API_URL
+          value: {{ .Values.externalServices.easaApiUrl }}
+        - name: FAA_LAANC_API_URL
+          value: {{ .Values.externalServices.faaLaancApiUrl }}
+        - name: NOTAM_UPDATE_INTERVAL
+          value: "{{ .Values.api.config.notamUpdateInterval }}"
+        - name: LOG_RETENTION_DAYS
+          value: "{{ .Values.api.config.logRetentionDays }}"
+        - name: BROADCAST_LOG_RETENTION_HOURS
+          value: "{{ .Values.api.config.broadcastLogRetentionHours }}"
+        resources:
+          {{- toYaml .Values.api.resources | nindent 10 }}
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        volumeMounts:
+        - name: config-volume
+          mountPath: /app/config
+      volumes:
+      - name: config-volume
+        configMap:
+          name: {{ .Release.Name }}-config
+{{- end }}

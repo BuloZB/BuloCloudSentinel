@@ -25,8 +25,8 @@ class Settings(BaseSettings):
         return v
 
     # Host and CORS settings
-    ALLOWED_HOSTS: List[str] = ["localhost", "127.0.0.1", "app.bulocloud-sentinel.com"]
-    CORS_ORIGINS: List[str] = ["http://localhost:3000", "https://app.bulocloud-sentinel.com"]
+    ALLOWED_HOSTS: List[str] = ["localhost", "127.0.0.1", "app.bulo.cloud"]
+    CORS_ORIGINS: List[str] = ["http://localhost:3000", "https://app.bulo.cloud"]
     CORS_ALLOW_CREDENTIALS: bool = True
 
     @validator("ALLOWED_HOSTS", pre=True)

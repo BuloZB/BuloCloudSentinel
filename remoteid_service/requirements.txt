@@ -1,0 +1,63 @@
+# FastAPI and web server
+fastapi>=0.103.1
+uvicorn>=0.23.2
+pydantic>=2.4.2
+pydantic-settings>=2.0.3
+python-multipart>=0.0.6
+python-jose[cryptography]>=3.3.0
+passlib[bcrypt]>=1.7.4
+httpx>=0.25.0
+
+# Database
+sqlalchemy>=2.0.21
+alembic>=1.12.0
+asyncpg>=0.28.0
+psycopg2-binary>=2.9.7
+sqlalchemy-utils>=0.41.1
+greenlet>=2.0.2
+
+# GIS and spatial data
+geopandas>=0.14.0
+shapely>=2.0.1
+pyproj>=3.6.0
+postgis>=1.0.4
+
+# MAVLink and drone communication
+pymavlink>=2.4.37
+bleak>=0.20.2  # For Bluetooth LE
+aioblescan>=0.2.6
+pywifi>=1.1.12  # For Wi-Fi NAN
+
+# AIXM and NOTAM processing
+lxml>=4.9.3
+xmlschema>=2.4.0
+xmltodict>=0.13.0
+
+# Security
+cryptography>=41.0.4
+pyspiffe>=0.1.0
+pyopenssl>=23.2.0
+certifi>=2023.7.22
+
+# Utilities
+pyyaml>=6.0.1
+python-dateutil>=2.8.2
+tenacity>=8.2.3
+schedule>=1.2.0
+cachetools>=5.3.1
+structlog>=23.1.0
+rich>=13.5.3
+
+# Testing
+pytest>=7.4.2
+pytest-asyncio>=0.21.1
+pytest-cov>=4.1.0
+pytest-mock>=3.11.1
+requests-mock>=1.11.0
+aioresponses>=0.7.4
+
+# Development
+black>=23.9.1
+isort>=5.12.0
+flake8>=6.1.0
+mypy>=1.5.1

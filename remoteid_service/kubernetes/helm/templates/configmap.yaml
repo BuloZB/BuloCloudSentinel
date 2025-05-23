@@ -1,0 +1,52 @@
+{{- if .Values.api.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-config
+  labels:
+    app: {{ .Values.api.name }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  config.yaml: |
+    # Configuration for the Remote ID & Regulatory Compliance Service
+    
+    # General settings
+    PROJECT_NAME: "Remote ID & Regulatory Compliance Service"
+    API_V1_STR: "/api/v1"
+    ENVIRONMENT: {{ .Values.global.environment | quote }}
+    DEBUG: {{ if eq .Values.global.environment "development" }}true{{ else }}false{{ end }}
+    LOG_LEVEL: {{ .Values.global.logLevel | quote }}
+    
+    # CORS settings
+    BACKEND_CORS_ORIGINS:
+    {{- range .Values.api.config.corsOrigins }}
+      - {{ . | quote }}
+    {{- end }}
+    
+    # Remote ID settings
+    ENABLE_BROADCAST: {{ .Values.api.config.enableBroadcast }}
+    ENABLE_HARDWARE: {{ .Values.api.config.enableHardware }}
+    BROADCAST_INTERVAL: {{ .Values.api.config.broadcastInterval }}
+    BROADCAST_METHODS:
+    {{- range .Values.api.config.broadcastMethods }}
+      - {{ . | quote }}
+    {{- end }}
+    DEFAULT_BROADCAST_MODE: {{ .Values.api.config.defaultBroadcastMode | quote }}
+    
+    # Flight plan settings
+    EASA_API_URL: {{ .Values.externalServices.easaApiUrl | quote }}
+    FAA_LAANC_API_URL: {{ .Values.externalServices.faaLaancApiUrl | quote }}
+    
+    # NOTAM settings
+    NOTAM_UPDATE_INTERVAL: {{ .Values.api.config.notamUpdateInterval }}
+    NOTAM_SOURCES:
+    {{- range .Values.api.config.notamSources }}
+      - {{ . | quote }}
+    {{- end }}
+    
+    # Logging settings
+    LOG_RETENTION_DAYS: {{ .Values.api.config.logRetentionDays }}
+    BROADCAST_LOG_RETENTION_HOURS: {{ .Values.api.config.broadcastLogRetentionHours }}
+{{- end }}

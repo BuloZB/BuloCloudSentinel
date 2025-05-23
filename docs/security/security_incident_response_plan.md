@@ -62,7 +62,7 @@ Security incidents are classified into the following severity levels:
 
 #### Reporting Channels
 
-- Email: security@bulocloud.com
+- Email: security@bulo.cloud
 - Security Slack channel: #security-incidents
 - Phone: Emergency contact list (see internal documentation)
 

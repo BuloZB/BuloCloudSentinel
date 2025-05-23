@@ -1,0 +1,165 @@
+# Example Flight Plan for Bulo.Cloud Sentinel Remote ID & Regulatory Compliance Service
+
+# Basic Information
+name: "Golden Gate Park Survey"
+description: "Aerial survey of Golden Gate Park for vegetation monitoring"
+operator_id: "OP-BULO-001"
+drone_id: "DRN-SENTINEL-001"
+plan_type: "faa_laanc"
+
+# Time Information
+start_time: "2023-12-01T14:00:00Z"
+end_time: "2023-12-01T15:00:00Z"
+
+# Altitude Information
+max_altitude: 120.0  # feet AGL
+
+# Area Information (GeoJSON Polygon)
+area:
+  points:
+    - latitude: 37.7694
+      longitude: -122.4862
+      altitude: 0
+    - latitude: 37.7694
+      longitude: -122.4762
+      altitude: 0
+    - latitude: 37.7654
+      longitude: -122.4762
+      altitude: 0
+    - latitude: 37.7654
+      longitude: -122.4862
+      altitude: 0
+    - latitude: 37.7694
+      longitude: -122.4862
+      altitude: 0
+
+# Path Information (GeoJSON LineString)
+path:
+  points:
+    - latitude: 37.7694
+      longitude: -122.4862
+      altitude: 50
+    - latitude: 37.7694
+      longitude: -122.4762
+      altitude: 100
+    - latitude: 37.7654
+      longitude: -122.4762
+      altitude: 100
+    - latitude: 37.7654
+      longitude: -122.4862
+      altitude: 100
+    - latitude: 37.7694
+      longitude: -122.4862
+      altitude: 50
+
+# Waypoints
+waypoints:
+  - sequence: 1
+    position:
+      latitude: 37.7694
+      longitude: -122.4862
+      altitude: 50
+    speed: 5.0
+    hold_time: 0
+    action: "takeoff"
+    parameters: null
+
+  - sequence: 2
+    position:
+      latitude: 37.7694
+      longitude: -122.4812
+      altitude: 100
+    speed: 10.0
+    hold_time: 0
+    action: null
+    parameters: null
+
+  - sequence: 3
+    position:
+      latitude: 37.7674
+      longitude: -122.4812
+      altitude: 100
+    speed: 10.0
+    hold_time: 0
+    action: null
+    parameters: null
+
+  - sequence: 4
+    position:
+      latitude: 37.7674
+      longitude: -122.4762
+      altitude: 100
+    speed: 10.0
+    hold_time: 0
+    action: null
+    parameters: null
+
+  - sequence: 5
+    position:
+      latitude: 37.7654
+      longitude: -122.4762
+      altitude: 100
+    speed: 10.0
+    hold_time: 0
+    action: null
+    parameters: null
+
+  - sequence: 6
+    position:
+      latitude: 37.7654
+      longitude: -122.4812
+      altitude: 100
+    speed: 10.0
+    hold_time: 0
+    action: null
+    parameters: null
+
+  - sequence: 7
+    position:
+      latitude: 37.7654
+      longitude: -122.4862
+      altitude: 100
+    speed: 10.0
+    hold_time: 0
+    action: null
+    parameters: null
+
+  - sequence: 8
+    position:
+      latitude: 37.7674
+      longitude: -122.4862
+      altitude: 100
+    speed: 10.0
+    hold_time: 0
+    action: null
+    parameters: null
+
+  - sequence: 9
+    position:
+      latitude: 37.7694
+      longitude: -122.4862
+      altitude: 50
+    speed: 5.0
+    hold_time: 0
+    action: "land"
+    parameters: null
+
+# Additional Metadata
+metadata:
+  mission_type: "survey"
+  equipment:
+    drone_model: "Sentinel X1"
+    camera: "RGB 20MP"
+    sensors: ["multispectral", "thermal"]
+  contact:
+    name: "John Doe"
+    phone: "+1-555-123-4567"
+    email: "john.doe@example.com"
+  emergency_procedures:
+    lost_link: "Return to home"
+    low_battery: "Land at current position"
+    emergency_landing_sites:
+      - latitude: 37.7674
+        longitude: -122.4812
+      - latitude: 37.7654
+        longitude: -122.4812

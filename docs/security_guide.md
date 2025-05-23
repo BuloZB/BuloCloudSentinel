@@ -159,9 +159,9 @@ python scripts/dependency_scan.py --fix
 6. **Lessons Learned**: Learning from incidents
 
 ### Security Contacts
-- **Security Team**: security@bulocloud.com
-- **Bug Bounty**: https://bulocloud.com/security/bounty
-- **Vulnerability Reporting**: https://bulocloud.com/security/report
+- **Security Team**: security@bulo.cloud
+- **Bug Bounty**: https://bulo.cloud/security/bounty
+- **Vulnerability Reporting**: https://bulo.cloud/security/report
 
 ## Compliance
 

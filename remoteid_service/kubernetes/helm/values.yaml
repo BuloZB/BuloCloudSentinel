@@ -1,0 +1,135 @@
+# Default values for the Remote ID & Regulatory Compliance Service
+# This is a YAML-formatted file.
+
+# Global settings
+global:
+  environment: production
+  logLevel: INFO
+
+# API service settings
+api:
+  enabled: true
+  name: remoteid-api
+  image:
+    repository: bulo/remoteid-service
+    tag: latest
+    pullPolicy: Always
+  replicas: 2
+  resources:
+    limits:
+      cpu: "1"
+      memory: 1Gi
+    requests:
+      cpu: 500m
+      memory: 512Mi
+  service:
+    type: ClusterIP
+    port: 8080
+  ingress:
+    enabled: false
+    annotations: {}
+    hosts:
+      - host: remoteid.bulo.cloud
+        paths:
+          - path: /
+            pathType: Prefix
+    tls: []
+  config:
+    enableBroadcast: false
+    enableHardware: false
+    broadcastInterval: 1
+    broadcastMethods:
+      - wifi_nan
+      - bluetooth_le
+    defaultBroadcastMode: faa
+    notamUpdateInterval: 3600
+    notamSources:
+      - faa
+      - easa
+    logRetentionDays: 30
+    broadcastLogRetentionHours: 48
+    corsOrigins:
+      - https://bulo.cloud
+      - https://api.bulo.cloud
+
+# Database settings
+database:
+  enabled: true
+  name: remoteid-db
+  image:
+    repository: postgis/postgis
+    tag: 14-3.3
+    pullPolicy: IfNotPresent
+  resources:
+    limits:
+      cpu: "1"
+      memory: 2Gi
+    requests:
+      cpu: 500m
+      memory: 1Gi
+  service:
+    port: 5432
+  persistence:
+    enabled: true
+    size: 10Gi
+    storageClass: ""
+  credentials:
+    user: postgres
+    password: placeholderpassword
+    database: remoteid
+
+# Redis settings
+redis:
+  enabled: true
+  name: remoteid-redis
+  image:
+    repository: redis
+    tag: 7-alpine
+    pullPolicy: IfNotPresent
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  service:
+    port: 6379
+  persistence:
+    enabled: true
+    size: 1Gi
+    storageClass: ""
+  credentials:
+    password: placeholderpassword
+
+# Secrets
+secrets:
+  secretKey: placeholdersecretkey
+  easaApiKey: placeholderapikey
+  faaLaancApiKey: placeholderapikey
+
+# External services
+externalServices:
+  easaApiUrl: https://api.easa.europa.eu/sora/v1
+  faaLaancApiUrl: https://api.faa.gov/laanc/v2
+
+# Simulator settings
+simulator:
+  enabled: false
+  name: remoteid-simulator
+  image:
+    repository: bulo/remoteid-service
+    tag: latest
+    pullPolicy: Always
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  config:
+    mode: basic
+    drones: 5
+    interval: 1
+    duration: 0

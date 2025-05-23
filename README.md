@@ -94,6 +94,22 @@ The Tactical Capabilities module provides advanced features for tactical operati
 - **🔄 Multi-Drone Coordination**: Coordinated operations across multiple drones
 - **🔍 OSINT Integration**: Open-source intelligence integration for enhanced situational awareness
 - **🛡️ Anti-Jamming**: Protection against GPS and communication jamming
+- **🚫 Counter-UAS**: Detection, tracking, and reporting of unauthorized drone activity
+
+### 🚫 Counter-UAS / Intrusion Detection
+
+The Counter-UAS / Intrusion Detection module provides comprehensive capabilities for detecting and tracking unauthorized drones:
+
+- **📡 RF Direction Finding**: KerberosSDR integration for direction of arrival estimation
+- **📊 Radar Processing**: Acconeer radar integration for range and velocity measurement
+- **🔄 Sensor Fusion**: Extended Kalman Filter for combining RF and radar data
+- **🔔 Alert System**: Multi-level alerts with configurable thresholds
+- **🌡️ Heat Map Visualization**: Real-time visualization of detection probability zones
+- **📋 Track Management**: Real-time track list with threat classification
+- **🔌 Event Distribution**: RabbitMQ integration for real-time event distribution
+- **⚡ Low Latency**: Detection time < 2 seconds from target entry
+- **📏 High Accuracy**: Bearing accuracy < 5° and range accuracy within 10%
+- **🔒 Secure Operation**: Isolated components with encrypted communications
 
 ### 🔍 Vision System
 
@@ -147,6 +163,19 @@ The Digital Twin & Simulation environment provides a deterministic, software-in-
 - **📈 Visualization Tools**: Real-time 3D visualization of trajectories, sensor data, and metrics
 - **☁️ Kubernetes Deployment**: Helm charts for easy deployment to Kubernetes clusters
 - **🔒 Security Hardened**: Non-root containers with read-only filesystem and parameter validation
+
+### 🔖 Remote ID & Regulatory Compliance
+
+The Remote ID & Regulatory Compliance module ensures compliance with international aviation standards:
+
+- **🪪 Remote ID Broadcasting**: ASTM F3411-22a compliant broadcasting over Wi-Fi NAN and Bluetooth LE
+- **📝 Flight Plan Management**: Automated submission to EASA SORA and FAA LAANC systems
+- **📢 NOTAM Integration**: Import and visualization of NOTAMs with spatial conflict detection
+- **🔐 Secure Communication**: Mutual TLS (mTLS) with SPIFFE IDs for secure drone-to-service communication
+- **📊 Broadcast Logging**: 24-hour retention of broadcast logs for regulatory compliance
+- **🌍 Multi-Region Support**: Compliance with both EU and FAA regulatory environments
+- **🔄 MAVLink Integration**: Conversion of MAVLink telemetry to standardized Remote ID format
+- **🚀 Kubernetes Deployment**: Helm charts for easy deployment to Kubernetes clusters
 
 ### 🔌 Dock Stations
 
@@ -433,6 +462,16 @@ bulo-cloud-sentinel/
 │   ├── mqtt/             # MQTT configuration for secure communication
 │   ├── config/           # Configuration files
 │   └── certs/            # Certificates for secure communication
+├── remoteid_service/     # Remote ID & Regulatory Compliance Service
+│   ├── api/              # API endpoints for Remote ID, flight plans, and NOTAMs
+│   ├── broadcast/        # Wi-Fi NAN and Bluetooth LE broadcasting
+│   ├── adapters/         # Adapters for EASA SORA and FAA LAANC APIs
+│   ├── cli/              # Command-line tools for Remote ID and flight plans
+│   ├── config/           # Configuration files
+│   ├── core/             # Core functionality
+│   ├── db/               # Database models and connections
+│   ├── kubernetes/       # Kubernetes deployment manifests and Helm charts
+│   └── services/         # Business logic services
 ├── sim/                  # Digital Twin & Simulation environment
 │   ├── bazel/            # Bazel build configuration
 │   ├── docker/           # Docker configuration files
@@ -470,6 +509,16 @@ bulo-cloud-sentinel/
 │   ├── sentinel_beacon/  # Meshtastic-based mesh communication for drones
 │   ├── sigint_service/   # Signal Intelligence service
 │   └── tacs/             # Target Acquisition and Coordination System
+├── counter_uas/          # Counter-UAS / Intrusion Detection module
+│   ├── hardware/         # Hardware interfaces for KerberosSDR and Acconeer radar
+│   ├── processing/       # Signal processing for direction finding and radar
+│   ├── services/         # Business logic services
+│   ├── api/              # API endpoints
+│   ├── models/           # Data models
+│   ├── utils/            # Utility functions
+│   ├── config/           # Configuration files
+│   ├── docs/             # Documentation
+│   └── tests/            # Test files
 ├── tests/                # Test files
 │   └── test_tinygrad_backend.py # Tests for TinyGrad inference backend
 ├── vision_system/        # Vision System for crowd and vehicle analysis
