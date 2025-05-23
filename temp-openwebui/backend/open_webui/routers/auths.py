@@ -72,6 +72,16 @@ router = APIRouter()
 log = logging.getLogger(__name__)
 log.setLevel(SRC_LOG_LEVELS["MAIN"])
 
+def validate_openid_provider_url(url: str) -> bool:
+    """Validate the OpenID provider URL to ensure it is trusted."""
+    trusted_domains = ["example.com", "trustedprovider.com"]  # Replace with actual trusted domains
+    try:
+        parsed_url = urlparse(url)
+        return parsed_url.scheme in {"http", "https"} and parsed_url.netloc in trusted_domains
+    except Exception as e:
+        log.error(f"Error validating URL: {str(e)}")
+        return False
+
 ############################
 # GetSessionUser
 ############################
@@ -557,8 +567,15 @@ async def signout(request: Request, response: Response):
         oauth_id_token = request.cookies.get("oauth_id_token")
         if oauth_id_token:
             try:
+                openid_provider_url = OPENID_PROVIDER_URL.value
+                if not validate_openid_provider_url(openid_provider_url):
+                    log.error(f"Invalid OPENID_PROVIDER_URL: {openid_provider_url}")
+                    raise HTTPException(
+                        status_code=400,
+                        detail="Invalid OpenID provider URL configuration.",
+                    )
                 async with ClientSession() as session:
-                    async with session.get(OPENID_PROVIDER_URL.value) as resp:
+                    async with session.get(openid_provider_url) as resp:
                         if resp.status == 200:
                             openid_data = await resp.json()
                             logout_url = openid_data.get("end_session_endpoint")
