@@ -1,8 +1,7 @@
 # Web framework
 fastapi==0.115.12  # Updated to latest version for security improvements
 uvicorn>=0.23.2
-python-multipart==0.0.21  # Updated to latest version to fix CVE-2024-53981
-websockets>=11.0.3
+python-multipart==0.0.18  # Updated to latest version to fix CVE-2024-53981websockets>=11.0.3
 
 # Database
 sqlalchemy>=2.0.21

@@ -3,7 +3,7 @@ fastapi>=0.103.1
 uvicorn>=0.23.2
 pydantic>=2.4.2
 pydantic-settings>=2.0.3
-python-multipart>=0.0.6
+python-multipart==0.0.18
 python-jose[cryptography]>=3.3.0
 passlib[bcrypt]>=1.7.4
 httpx>=0.25.0
@@ -57,7 +57,7 @@ requests-mock>=1.11.0
 aioresponses>=0.7.4
 
 # Development
-black>=23.9.1
+black==24.3.0
 isort>=5.12.0
 flake8>=6.1.0
 mypy>=1.5.1

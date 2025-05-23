@@ -1,4 +1,4 @@
-torch>=2.1.0
+torch==2.5.2
 torchvision>=0.14.0
 flwr>=1.4.0
 opacus>=1.4.0

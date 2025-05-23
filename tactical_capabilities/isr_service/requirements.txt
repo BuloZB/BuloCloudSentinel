@@ -7,8 +7,7 @@ asyncpg==0.29.0
 # # # # # # python-jose==3.4.0  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663
 pyjwt==2.8.0  # Using a secure version that doesn't have CVE-2024-53861  # Downgraded to fix CVE-2024-53861
 passlib==1.7.4
-python-multipart==0.0.21  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-539810  # Updated to latest version to fix CVE-2024-539810  # Updated to latest version to fix CVE-2024-53981
-httpx==0.27.0  # Updated from 0.26.0 for security fixes
+python-multipart==0.0.18  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-539810  # Updated to latest version to fix CVE-2024-539810  # Updated to latest version to fix CVE-2024-53981httpx==0.27.0  # Updated from 0.26.0 for security fixes
 python-dotenv==1.0.0
 pika==1.3.2
 redis==5.0.4  # Updated to latest version

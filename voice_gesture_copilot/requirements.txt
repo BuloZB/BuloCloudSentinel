@@ -3,7 +3,7 @@ fastapi==0.115.12
 uvicorn[standard]==0.34.2
 pydantic==2.11.4
 httpx==0.28.1
-python-multipart==0.0.21
+python-multipart==0.0.18
 aiohttp==3.11.18
 
 # Audio processing
@@ -19,8 +19,7 @@ mediapipe==0.10.17  # Holistic pose tracking
 opencv-python==4.11.0.86  # Computer vision utilities
 
 # NLU and command processing
-rasa==3.6.21        # Intent classification (Security fix for CVE-2024-49375)
-networkx==3.2.1     # For mission graph implementation
+rasa==3.6.21  # Intent classification (Security fix for CVE-2024-49375)networkx==3.2.1     # For mission graph implementation
 
 # Security
 cryptography==46.0.0

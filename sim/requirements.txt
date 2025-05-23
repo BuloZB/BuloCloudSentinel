@@ -31,21 +31,20 @@ tqdm>=4.66.2
 pytest-cov>=4.1.0
 pytest-xdist>=3.5.0
 flake8>=7.0.0
-black>=24.2.0
+black==24.3.0
 isort>=5.13.2
 
 # Security
 cryptography==46.0.0  # Updated to latest version to fix CVE-2024-26130, CVE-2024-12797, CVE-2024-6119
 pyjwt==2.8.0  # Using a secure version that doesn't have CVE-2024-53861
-python-multipart==0.0.21  # Updated to latest version to fix CVE-2024-53981
-
+python-multipart==0.0.18  # Updated to latest version to fix CVE-2024-53981
 # Visualization
 open3d>=0.17.0
 pyqtgraph>=0.13.3
 pyopengl>=3.1.7
 
 # Machine learning (optional)
-torch>=2.1.0
+torch==2.5.2
 torchvision>=0.17.0
 tinygrad>=0.9.0
 argon2-cffi==23.1.0  # For secure password hashing

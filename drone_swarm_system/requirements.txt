@@ -4,8 +4,7 @@ pydantic==2.11.4  # Updated to latest version
 sqlalchemy==2.0.38
 alembic==1.14.0
 psycopg2-binary==2.9.9
-python-multipart==0.0.21  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-539810  # Updated to latest version to fix CVE-2024-539810  # Updated to latest version to fix CVE-2024-53981
-aiofiles==23.2.0
+python-multipart==0.0.18  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-539810  # Updated to latest version to fix CVE-2024-539810  # Updated to latest version to fix CVE-2024-53981aiofiles==23.2.0
 numpy==1.26.4
 redis==5.0.4  # Updated to latest version
 websockets==12.0

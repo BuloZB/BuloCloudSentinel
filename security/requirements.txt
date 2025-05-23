@@ -6,8 +6,7 @@ sqlalchemy==2.0.38
 # # # # # # python-jose[cryptography]==3.3.0  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663
 passlib[bcrypt]==1.7.4
 argon2-cffi==23.1.0
-python-multipart==0.0.21  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-539810  # Updated to latest version to fix CVE-2024-539810  # Updated to latest version to fix CVE-2024-53981
-cryptography==46.0.0  # Updated to latest version to fix CVE-2024-26130, CVE-2024-12797, CVE-2024-6119
+python-multipart==0.0.18  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-539811  # Updated to latest version to fix CVE-2024-539810  # Updated to latest version to fix CVE-2024-539810  # Updated to latest version to fix CVE-2024-53981cryptography==46.0.0  # Updated to latest version to fix CVE-2024-26130, CVE-2024-12797, CVE-2024-6119
 pyopenssl==24.0.0
 certifi==2024.10.5  # Updated to latest version
 oauthlib==3.2.2
