@@ -14,6 +14,14 @@ on:
   schedule:
     - cron: '0 0 * * *'  # Run daily at midnight
 
+
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+  actions: read
+  security-events: read
+
 jobs:
   build-edge-inference:
     name: Build Edge Inference Container

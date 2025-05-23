@@ -9,6 +9,14 @@ on:
     branches: [ main ]
   workflow_dispatch:  # Allow manual triggering
 
+
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+  actions: read
+  security-events: read
+
 jobs:
   code-quality:
     name: Code Quality

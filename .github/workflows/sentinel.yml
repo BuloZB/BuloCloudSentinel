@@ -8,6 +8,14 @@ on:
       - "main"
   workflow_dispatch:  # Allow manual triggering
 
+
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+  actions: read
+  security-events: read
+
 jobs:
   docker:
     runs-on: ubuntu-latest

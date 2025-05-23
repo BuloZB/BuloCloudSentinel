@@ -8,6 +8,14 @@ on:
   schedule:
     - cron: '0 0 * * *'  # Run daily at midnight
 
+
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+  actions: read
+  security-events: read
+
 jobs:
   safety:
     runs-on: ubuntu-latest

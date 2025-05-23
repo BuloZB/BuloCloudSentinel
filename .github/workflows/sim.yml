@@ -15,6 +15,14 @@ on:
       - '.github/workflows/sim.yml'
   workflow_dispatch:
 
+
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+  actions: read
+  security-events: read
+
 jobs:
   build:
     runs-on: ubuntu-latest

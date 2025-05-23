@@ -8,6 +8,14 @@ on:
       - 'remoteid_service/**'
       - '.github/workflows/remoteid-service.yml'
 
+
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+  actions: read
+  security-events: read
+
 jobs:
   lint:
     name: Lint
