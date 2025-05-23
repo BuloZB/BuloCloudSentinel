@@ -398,7 +398,7 @@ class DJIAdapter(FlightControllerAdapter):
                 return True
             elif command_name == "set_precision_landing":
                 enabled = parameters.get("enabled", True)
-                logger.info(f"Setting precision landing to {enabled}")
+                logger.info("Setting precision landing feature")
                 self._precision_landing_enabled = enabled
                 return True
 
