@@ -19,7 +19,7 @@ mediapipe==0.10.17  # Holistic pose tracking
 opencv-python==4.11.0.86  # Computer vision utilities
 
 # NLU and command processing
-rasa==3.6.15        # Intent classification
+rasa==3.6.21        # Intent classification
 networkx==3.2.1     # For mission graph implementation
 
 # Security
