@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  voice-gesture-copilot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: bulocloud/voice-gesture-copilot:latest
+    container_name: voice-gesture-copilot
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./models:/app/models
+    environment:
+      - DEBUG=false
+      - LOG_LEVEL=INFO
+      - SENTINEL_API_URL=http://bulocloud-sentinel-api:8000
+      - SENTINEL_API_TOKEN=${SENTINEL_API_TOKEN}
+      - WHISPER_MODEL=tiny-int8
+      - WHISPER_LANGUAGE=en
+      - WHISPER_BEAM_SIZE=5
+      - WHISPER_VAD_FILTER=true
+      - MEDIAPIPE_MODEL_COMPLEXITY=1
+      - MEDIAPIPE_MIN_DETECTION_CONFIDENCE=0.5
+      - MEDIAPIPE_MIN_TRACKING_CONFIDENCE=0.5
+      - COMMAND_CONFIDENCE_THRESHOLD=0.7
+      - MAX_LATENCY_MS=400
+      - TARGET_ACCURACY=0.95
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - CORS_ORIGINS=http://localhost:3000,http://localhost:8000,http://bulocloud-sentinel-web:3000
+    networks:
+      - bulocloud-network
+
+networks:
+  bulocloud-network:
+    external: true

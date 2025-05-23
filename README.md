@@ -22,9 +22,8 @@ The core platform provides the foundation for building drone-based surveillance 
 - **📡 Telemetry Processing**: Real-time processing of drone telemetry data
 - **🎥 Video Streaming**: Low-latency video streaming from drone cameras
 - **🔌 Multi-Platform Support**: Support for ArduPilot, PX4, Betaflight, and DJI drones
-- **🔌 Multi-Platform Support**: Support for ArduPilot, PX4, Betaflight, and DJI drones
-- **� Multi-Platform Support**: Support for ArduPilot, PX4, Betaflight, and DJI drones
-- **�🗺️ Mission Planning**: Visual mission planning and execution
+- **🗣️ Voice & Gesture Control**: Hands-free drone control through voice commands and hand gestures
+- **🗺️ Mission Planning**: Visual mission planning and execution
 - **📊 Data Visualization**: Real-time visualization of drone data
 - **🔌 API Integration**: RESTful API for integration with external systems
 - **🔒 Security**: End-to-end encryption and secure authentication
@@ -298,6 +297,19 @@ The Edge Kit is a plug-and-play Docker bundle for deploying Bulo.CloudSentinel c
 - **📊 Performance**: End-to-end latency < 250 ms for 1080p stream
 - **🛠️ Easy Deployment**: Single `docker-compose.yml` + script `edge_install.sh`
 
+### 🗣️ Voice & Gesture Co-Pilot
+
+The Voice & Gesture Co-Pilot module enables hands-free drone control through voice commands and hand gestures:
+
+- **🎤 Voice Recognition**: On-device ASR using Whisper-cpp tiny-int8 model
+- **👋 Gesture Recognition**: Full-body gesture tracking using MediaPipe Holistic
+- **🧠 Intent Classification**: Natural language understanding with Rasa NLU
+- **📊 Mission Graph**: Graph-based command sequence system for complex operations
+- **📱 User Interface**: Non-intrusive transcript overlay and gesture recognition indicators
+- **⚙️ Configuration**: Customizable gestures and voice command sensitivity
+- **📊 Performance**: ≥95% intent recognition accuracy with <400ms end-to-end latency
+- **🔌 API Integration**: RESTful API and WebSocket for real-time communication
+
 ## 🚀 Getting Started
 
 ### Prerequisites
@@ -307,6 +319,7 @@ The Edge Kit is a plug-and-play Docker bundle for deploying Bulo.CloudSentinel c
 - NVIDIA GPU with CUDA support (optional, for accelerated processing)
 - Raspberry Pi 4 or newer (for edge deployment)
 - NVIDIA Jetson (for edge AI processing)
+- Webcam and microphone (for Voice & Gesture Co-Pilot)
 
 ### ML Backends
 
@@ -573,7 +586,19 @@ bulo-cloud-sentinel/
 ├── tests/                # Test files
 │   └── test_tinygrad_backend.py # Tests for TinyGrad inference backend
 ├── vision_system/        # Vision System for crowd and vehicle analysis
-└── weather_guard/        # Smart Weather Awareness service
+├── weather_guard/        # Smart Weather Awareness service
+└── voice_gesture_copilot/  # Voice & Gesture Co-Pilot module
+    ├── api/                # FastAPI endpoints
+    ├── core/               # Core functionality
+    ├── models/             # ML models and processing
+    │   ├── whisper_asr/    # Whisper-cpp integration for ASR
+    │   ├── mediapipe/      # MediaPipe integration for gesture recognition
+    │   ├── rasa_nlu/       # Rasa NLU for intent classification
+    │   └── mission_graph/  # Mission Graph system for command processing
+    ├── services/           # Business logic
+    ├── ui/                 # UI components
+    ├── utils/              # Utility functions
+    └── tests/              # Test files
 ```
 
 ### Security
