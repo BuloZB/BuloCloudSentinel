@@ -5,7 +5,7 @@ on:
   workflow_dispatch: # Allow manual triggering
 
 permissions:
-  contents: read
+  contents: write
   issues: read
   pull-requests: read
   actions: read
@@ -84,10 +84,25 @@ jobs:
         jq -s 'add' reports/pip-audit-*.json > pip-audit-results.json || echo "[]" > pip-audit-results.json
         echo "Pip-audit check completed. See pip-audit-results.json for details."
 
-    - name: Run custom dependency update script
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Run Python dependency update script
       run: |
-        python scripts/update_dependencies.py
-        echo "Custom dependency update script completed."
+        python update_dependencies.py
+        echo "Python dependency update script completed."
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Run JavaScript dependency update script
+      run: |
+        node fix_js_dependencies.js
+        echo "JavaScript dependency update script completed."
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Check for changes
       id: git-check
@@ -103,7 +118,8 @@ jobs:
         git commit -m "security: update dependencies to fix vulnerabilities
 
         Updated dependencies to their latest secure versions.
-        - Fixed vulnerable packages identified by safety and pip-audit
+        - Fixed vulnerable packages identified by CodeQL, safety, and pip-audit
+        - Updated both Python and JavaScript dependencies
         - Applied exact version pinning for better reproducibility
         - Ensured compatibility across all requirements files
 
