@@ -617,7 +617,7 @@ async def main():
                 latitude = telemetry['position']['latitude']
                 longitude = telemetry['position']['longitude']
 
-                logger.info(f"Starting follow me mission at lat={latitude}, lon={longitude}")
+                logger.info("Starting follow me mission at the current location.")
                 command = {
                     "command": "start_follow_me_mission",
                     "parameters": {
