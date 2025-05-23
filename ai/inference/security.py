@@ -295,7 +295,7 @@ def safe_load_model(file_path: str, model_type: str = None) -> Any:
                     return None
 
                 # Load only the state dictionary for better security
-                state_dict = torch.load(file_path, map_location="cpu")
+                state_dict = torch.load(file_path, map_location="cpu", map_location="cpu", pickle_module=RestrictedUnpickle)
                 if not isinstance(state_dict, dict):
                     logger.error(f"Invalid state dictionary format in: {file_path}")
                     return None

@@ -380,7 +380,7 @@ def convert_onnx_to_tflite(input_path: str, output_path: str) -> None:
             tflite_model = converter.convert()
 
             # Save the TFLite model
-            with open(output_path, "wb") as f:
+            with open(os.path.normpath(output_path), "wb") as f:
                 f.write(tflite_model)
 
         logger.info(f"Model converted successfully to {output_path}")
@@ -463,7 +463,7 @@ def optimize_model(input_path: str, output_path: str, optimization_level: int = 
             optimized_model = converter.convert()
 
             # Save optimized model
-            with open(output_path, "wb") as f:
+            with open(os.path.normpath(output_path), "wb") as f:
                 f.write(optimized_model)
 
         else:
@@ -539,7 +539,7 @@ def quantize_model(input_path: str, output_path: str, quantization_type: str = "
             quantized_model = converter.convert()
 
             # Save quantized model
-            with open(output_path, "wb") as f:
+            with open(os.path.normpath(output_path), "wb") as f:
                 f.write(quantized_model)
 
         else:
@@ -663,7 +663,7 @@ def print_model_info(model_path: str) -> None:
 
             # Load PyTorch model safely
             # Use torch.jit.load for TorchScript models or load only the state_dict
-            model = torch.load(model_path, map_location="cpu")
+            model = torch.load(model_path, map_location="cpu", map_location="cpu", pickle_module=RestrictedUnpickle)
             if not isinstance(model, dict) or "state_dict" not in model:
                 raise ValueError("Invalid PyTorch model format. Expected a state_dict.")
             state_dict = model["state_dict"]

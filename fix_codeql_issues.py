@@ -113,37 +113,115 @@ def fix_path_injection(file_path, start_line, end_line):
     """
     try:
         # Read file
-        with open(file_path, "r") as f:
+        with open(file_path, "r", encoding="utf-8") as f:
             lines = f.readlines()
 
         # Extract vulnerable code
         vulnerable_code = "".join(lines[start_line-1:end_line])
 
         # Check for common patterns
-        if "open(" in vulnerable_code and not "os.path.normpath" in vulnerable_code:
+        if "open(" in vulnerable_code and "os.path.normpath" not in vulnerable_code:
             # Fix path injection in open() calls
             fixed_code = re.sub(
-                r'open\((.*?)\)',
-                r'open(os.path.normpath(\1))',
+                r'open\((.*?)(,\s*["\'].*?["\']\s*.*?)?\)',
+                r'open(os.path.normpath(\1)\2)',
                 vulnerable_code
             )
 
             # Add import if needed
             if "import os" not in "".join(lines[:20]) and "from os import" not in "".join(lines[:20]):
-                lines.insert(0, "import os\n")
+                # Find the last import statement
+                last_import_line = 0
+                for i, line in enumerate(lines[:30]):
+                    if line.strip().startswith(("import ", "from ")):
+                        last_import_line = i
+
+                # Add import after the last import statement
+                lines.insert(last_import_line + 1, "import os\n")
+
+                # Adjust start_line if it's after the import
+                if start_line > last_import_line:
+                    start_line += 1
+                    end_line += 1
 
             # Update file
             lines[start_line-1:end_line] = [fixed_code]
 
-            with open(file_path, "w") as f:
+            with open(file_path, "w", encoding="utf-8") as f:
                 f.writelines(lines)
 
             return True
 
+        # Check for os.path.join with user input
+        elif "os.path.join" in vulnerable_code and "os.path.normpath" not in vulnerable_code:
+            # Add path validation
+            fixed_code = re.sub(
+                r'os\.path\.join\((.*?)\)',
+                r'os.path.normpath(os.path.join(\1))',
+                vulnerable_code
+            )
+
+            # Update file if a fix was applied
+            if fixed_code != vulnerable_code:
+                lines[start_line-1:end_line] = [fixed_code]
+
+                with open(file_path, "w", encoding="utf-8") as f:
+                    f.writelines(lines)
+
+                return True
+
+        # Check for direct path concatenation
+        elif "/" in vulnerable_code and "+" in vulnerable_code:
+            # Find the function or method containing this code
+            function_start = -1
+            for i in range(start_line-2, max(0, start_line-50), -1):
+                if re.match(r'^\s*def\s+', lines[i]):
+                    function_start = i + 1
+                    break
+
+            if function_start >= 0:
+                # Add path validation code
+                indent = re.match(r'^(\s*)', lines[function_start]).group(1)
+                validation_code = f"""
+{indent}# Validate path to prevent path traversal
+{indent}def validate_path(path_str):
+{indent}    # Normalize path and check for path traversal attempts
+{indent}    import os
+{indent}    normalized = os.path.normpath(path_str)
+{indent}    # Check if the path attempts to go outside the allowed directory
+{indent}    if ".." in normalized or normalized.startswith("/") or normalized.startswith("\\\\"):
+{indent}        raise ValueError(f"Invalid path: {{path_str}}")
+{indent}    return normalized
+"""
+
+                # Insert the validation code
+                lines.insert(function_start, validation_code)
+
+                # Adjust start_line if it's after the validation
+                if start_line > function_start:
+                    start_line += validation_code.count("\n") + 1
+                    end_line += validation_code.count("\n") + 1
+
+                # Replace path concatenation with validation
+                fixed_code = re.sub(
+                    r'([\'"].*?[\'"])\s*\+\s*([^+]+?)(\s*\+\s*[\'"].*?[\'"])?',
+                    r'validate_path(\1 + \2\3)',
+                    vulnerable_code
+                )
+
+                # Update file if a fix was applied
+                if fixed_code != vulnerable_code:
+                    lines[start_line-1:end_line] = [fixed_code]
+
+                    with open(file_path, "w", encoding="utf-8") as f:
+                        f.writelines(lines)
+
+                    return True
+
         return False
 
     except Exception as e:
-        print(f"Error fixing path injection in {file_path}: {e}")
+        logger.error(f"Error fixing path injection in {file_path}: {e}")
         return False
 
 def fix_xss(file_path, start_line, end_line):
