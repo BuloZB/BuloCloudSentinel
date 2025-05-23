@@ -647,9 +647,12 @@ def print_model_info(model_path: str) -> None:
 
             logger.info(f"Loading PyTorch model from {model_path}")
 
-            # Load PyTorch model with security measures
-            # Use weights_only=True for better security when loading models
-            model = torch.load(model_path, map_location="cpu", weights_only=True)
+            # Load PyTorch model safely
+            # Use torch.jit.load for TorchScript models or load only the state_dict
+            model = torch.load(model_path, map_location="cpu")
+            if not isinstance(model, dict) or "state_dict" not in model:
+                raise ValueError("Invalid PyTorch model format. Expected a state_dict.")
+            state_dict = model["state_dict"]
 
             # Print model info
             print("\nPyTorch Model Information:")
