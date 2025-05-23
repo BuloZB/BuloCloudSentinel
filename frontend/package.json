@@ -16,7 +16,7 @@
     "react-grid-layout": "^1.4.4",
     "react-leaflet": "^4.2.1",
     "react-router-dom": "^6.22.3",
-    "react-scripts": "^3.0.1",
+    "react-scripts": "^5.0.1",
     "web-vitals": "^3.5.2"
   },
   "scripts": {
@@ -45,8 +45,8 @@
   },
   "proxy": "http://backend:8000",
   "devDependencies": {
-    "cookie": "^0.7.0",
+    "cookie": "^1.0.2",
     "nth-check": "^2.1.1",
-    "postcss": "^8.4.31"
+    "postcss": "^8.4.32"
   }
 }
