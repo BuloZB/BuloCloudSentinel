@@ -1371,7 +1371,7 @@ async def process_chat_response(
                     if not tag_content:  # Ensure tag_content is not None
                         return attributes
                     # Match attributes in the format: key="value" (ignores single quotes for simplicity)
-                    matches = re.findall(r'(\w+)\s*=\s*"([^"]+)"', tag_content)
+                    matches = re.findall(r'(\w+)\s*=\s*"([^"]+)"', tag_content, timeout=1)
                     for key, value in matches:
                         attributes[key] = value
                     return attributes
