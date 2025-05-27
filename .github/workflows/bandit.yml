@@ -1,5 +1,6 @@
 name: Bandit Security Scan
-true:
+
+on:
   push:
     branches:
     - main
@@ -7,7 +8,7 @@ true:
     branches:
     - main
   schedule:
-  - cron: 0 0 * * *
+  - cron: '0 0 * * *'
 permissions:
   contents: read
   security-events: write

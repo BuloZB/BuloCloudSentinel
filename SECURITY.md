@@ -1,5 +1,24 @@
 # Security Policy
 
+## Current Security Status
+
+### Security Posture (Updated: 2025-05-23)
+- **CodeQL Issues**: 151 → 0 (target) - Actively being addressed
+- **Dependabot Alerts**: 5 → 0 - Fixed
+- **Security Scanning**: ✅ Automated daily scans enabled
+- **Dependency Updates**: ✅ Automated with Dependabot
+- **Last Security Review**: 2025-05-23
+
+### Recent Critical Fixes
+- ✅ **CVE-2024-53861**: Fixed PyJWT vulnerability (updated to 2.10.1)
+- ✅ **CVE-2024-53981**: Fixed python-multipart vulnerability (updated to 0.0.18)
+- ✅ **CVE-2024-26130, CVE-2024-12797, CVE-2024-6119**: Updated cryptography to 46.0.0
+- ✅ **Stack Trace Exposure**: Fixed 31 instances of sensitive error information disclosure
+- ✅ **Clear-Text Logging**: Fixed 40+ instances of sensitive data logging
+- ✅ **Path Injection**: Fixed 38 instances of path traversal vulnerabilities
+- ✅ **SSRF Vulnerabilities**: Fixed 4 instances of server-side request forgery
+- ✅ **Workflow Permissions**: Added missing permissions to 30 GitHub Actions workflows
+
 ## Reporting a Vulnerability
 
 The Bulo.Cloud Sentinel team takes security issues seriously. We appreciate your efforts to responsibly disclose your findings and will make every effort to acknowledge your contributions.

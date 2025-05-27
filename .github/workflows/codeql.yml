@@ -8,6 +8,11 @@ on:
   schedule:
     - cron: '0 0 * * 0'  # Run weekly on Sunday at midnight
 
+permissions:
+  contents: read
+  actions: read
+  security-events: write
+
 jobs:
   analyze:
     name: Analyze
@@ -31,6 +36,13 @@ jobs:
       with:
         languages: ${{ matrix.language }}
         queries: security-extended,security-and-quality
+        config: |
+          paths-ignore:
+            - "**/*.log"
+            - "**/node_modules/**"
+            - "**/__pycache__/**"
+            - "**/venv/**"
+            - "**/.venv/**"
 
     - name: Autobuild
       uses: github/codeql-action/autobuild@v3
@@ -39,3 +51,4 @@ jobs:
       uses: github/codeql-action/analyze@v3
       with:
         category: "/language:${{matrix.language}}"
+        upload: true

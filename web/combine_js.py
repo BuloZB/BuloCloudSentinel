@@ -17,9 +17,9 @@ parts = [
 output_file = 'web/static/js/app_combined.js'
 
 # Combine the files
-with open(output_file, 'w') as outfile:
+with open(os.path.normpath(output_file), 'w') as outfile:
     for part in parts:
-        with open(part, 'r') as infile:
+        with open(os.path.normpath(part), 'r') as infile:
             outfile.write(infile.read())
             outfile.write('\n')
 

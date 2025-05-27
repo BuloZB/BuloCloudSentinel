@@ -749,7 +749,7 @@ def transcribe(request: Request, file_path):
             log.exception("Error parsing Azure response")
             raise HTTPException(
                 status_code=500,
-                detail=f"Failed to parse Azure response: {str(e)}",
+                detail="Failed to parse Azure response",
             )
         except requests.exceptions.RequestException as e:
             log.exception(e)
