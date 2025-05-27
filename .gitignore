@@ -67,3 +67,8 @@ security_reports/
 security_reports_summary_*.md
 security_documentation_email_*.md
 bandit-results.json
+codeql_analysis/
+*-post-fix.json
+security-scan-*.json
+fix_security_issues.log
+run_security_fixes.log
