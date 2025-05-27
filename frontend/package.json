@@ -48,7 +48,7 @@
     "@babel/helpers": "^7.26.10",
     "@babel/runtime": "^7.27.1",
     "braces": "^3.0.2",
-    "cookie": "^0.7.0",
+    "cookie": "^1.0.2",
     "cross-spawn": "^7.0.5",
     "html-minifier": "^4.0.0",
     "http-proxy-middleware": "^2.0.9",
