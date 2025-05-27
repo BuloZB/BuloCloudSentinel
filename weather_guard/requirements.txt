@@ -6,8 +6,10 @@ pydantic>=2.4.2
 pydantic-settings>=2.0.3
 aiomqtt>=1.2.0
 # python-jose>=3.3.0  # Removed due to vulnerabilities CVE-2024-33664 and CVE-2024-33663
-pyjwt==2.8.0  # Using a secure version that doesn't have CVE-2024-53861
-python-multipart==0.0.18  # Updated to latest version to fix CVE-2024-53981prometheus-client>=0.17.0pytest>=7.4.0
+pyjwt==2.10.1  # Updated to fix CVE-2024-53861
+python-multipart==0.0.20  # Updated to latest version to fix CVE-2024-53981
+prometheus-client>=0.17.0
+pytest>=7.4.0
 pytest-asyncio>=0.21.1
 pytest-cov>=4.1.0
 black==24.3.0
