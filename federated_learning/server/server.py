@@ -329,7 +329,11 @@ def load_config(config_path: Optional[str] = None) -> Dict[str, Any]:
     config = DEFAULT_CONFIG.copy()
     
     if config_path and os.path.exists(config_path):
-        with open(os.path.normpath(config_path, "r")) as f:
+        safe_path = os.path.normpath(config_path)
+        # Prevent path traversal
+        if ".." in safe_path or safe_path.startswith(("/", "\\")):
+            raise ValueError(f"Invalid config path: {config_path}")
+        with open(safe_path, "r") as f:
             file_config = yaml.safe_load(f)
             
         # Update config with file values

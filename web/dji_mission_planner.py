@@ -241,7 +241,10 @@ def get_mission(filename):
         return jsonify({"success": False, "error": "Mission not found"})
     
     try:
-        with open(os.path.normpath(mission_path, 'r')) as f:
+        safe_path = os.path.normpath(mission_path)
+        if ".." in safe_path or safe_path.startswith(("/", "\\")):
+            return jsonify({"success": False, "error": "Invalid mission path"})
+        with open(safe_path, 'r') as f:
             mission_data = json.load(f)
         return jsonify({"success": True, "mission": mission_data})
     except Exception as e:
@@ -262,7 +265,10 @@ def create_mission():
         mission_path = os.path.join(MISSION_DIR, filename)
         
         # Save mission
-        with open(os.path.normpath(mission_path, 'w')) as f:
+        safe_path = os.path.normpath(mission_path)
+        if ".." in safe_path or safe_path.startswith(("/", "\\")):
+            return jsonify({"success": False, "error": "Invalid mission path"})
+        with open(safe_path, 'w') as f:
             json.dump(data, f, indent=2)
         
         return jsonify({"success": True, "filename": filename})
@@ -284,7 +290,10 @@ def update_mission(filename):
     
     try:
         # Save mission
-        with open(os.path.normpath(mission_path, 'w')) as f:
+        safe_path = os.path.normpath(mission_path)
+        if ".." in safe_path or safe_path.startswith(("/", "\\")):
+            return jsonify({"success": False, "error": "Invalid mission path"})
+        with open(safe_path, 'w') as f:
             json.dump(data, f, indent=2)
         
         return jsonify({"success": True})
