@@ -1,4 +1,4 @@
-torch==2.6.1
+torch==2.7.0
 torchvision>=0.14.0
 flwr>=1.4.0
 numpy>=1.22.0
